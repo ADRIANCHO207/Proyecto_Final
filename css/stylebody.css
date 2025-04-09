@@ -1,0 +1,43 @@
+*{
+    text-decoration: none;
+}
+
+.contenido{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.contenido img {
+    width: 350px;
+    height: 350px;
+    margin-right: 50px;
+}
+
+.parrafo {  
+    text-align: justify;
+}
+
+.parrafo h3 {
+    font-weight: bold;
+    font-size: 30px;
+    text-align: center;
+    color: #d32f2f;
+}
+
+.parrafo p {
+    font-size: 15px;
+}
+
+@media(max-width: 1034px){
+    .parrafo h3 {
+        border: solid 3px blue;
+        font-size: 15px;
+    }
+
+    .parrafo p{
+        font-size: 10px;
+    }
+    
+}
+
