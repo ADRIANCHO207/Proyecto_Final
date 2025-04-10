@@ -116,7 +116,7 @@ if (isset ($_POST['enviar'])){
 <?php
     include ('footer.html');
 ?>
-<script src="js/script.js"></script>
+<script src="js/scriptcontacto.js"></script>
 
 </body>
 </html>
