@@ -17,7 +17,7 @@ if($_POST['log']){
         
     if ($doc == '' || $nom == '' || $_POST['passw'] ==''){
         echo '<script>alert("Documento, Nombre Completo o Contraseña estan vacios...")</script>';
-        echo '<script>window.location = "../login.php"</script>';
+        echo '<script>window.location = "../login/login.php"</script>';
     }
 
     
@@ -29,13 +29,13 @@ if($_POST['log']){
 
     if ($doc != $fila['documento']){
         echo '<script>alert("Documento no Encontrado...")</script>';
-        echo '<script>window.location = "../login.php"</script>';
+        echo '<script>window.location = "../login/login.php"</script>';
 
     }
 
     if ($nom != $fila['nombre_completo']){
         echo '<script>alert("Nombre incorrecto...")</script>';
-        echo '<script>window.location = "../login.php"</script>';
+        echo '<script>window.location = "../login/login.php"</script>';
 
 
     }else{
@@ -75,12 +75,12 @@ if($_POST['log']){
         } 
         else {
             echo '<script>alert("Contraseña Incorrecta...")</script>';
-            echo '<script>window.location = "../login.php"</script>';
+            echo '<script>window.location = "../login/login.php"</script>';
         }
     } 
     else {
         echo '<script>alert("Documento No Encontrado.")</script>';
-        echo '<script>window.location = "../login.php"</script>';
+        echo '<script>window.location = "../login/login.php"</script>';
     }
 }
 }

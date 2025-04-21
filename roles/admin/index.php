@@ -21,7 +21,8 @@ $con = $db->conectar();
 
 <div class="header">
     <div class="logo">
-        <img src="css/img/logo.jpeg" alt="Logo">
+
+        <img src="../../css/img/logo_sinfondo.png" alt="Loo">
         <span class="empresa">Flotax AGC</span>
     </div>
     <div class="menu">
@@ -29,11 +30,9 @@ $con = $db->conectar();
         <a href="#">Registro de vehículos</a>
     </div>
     <div class="perfil">
-        <img src="perfil.jpg" alt="Usuario" class="imagen-usuario">
         <div class="info-usuario">
-            <span>Nombres, Apellidos</span>
+            <span> <?php echo""?></span>
             <br>
-            <span>Perfil Administrador</span>
         </div>
     </div>
 </div>

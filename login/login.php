@@ -1,5 +1,5 @@
 <?php
-require_once('conecct/conex.php');
+require_once('../conecct/conex.php');
 $db = new Database();
 $con = $db->conectar();
 session_start();
@@ -12,16 +12,16 @@ $estado = 1 ;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>login</title>
-    <link rel="shortcut icon" href="css/img/logo_sinfondo.png">
+    <link rel="shortcut icon" href="../css/img/logo_sinfondo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/stylelog.css">
+    <link rel="stylesheet" href="../css/stylelog.css">
 </head>
 <body>  
     
         <div class = "contenido">
             <div class="re">
-                <a href="index.php" class="regresar">
+                <a href="../index.php" class="regresar">
                     <i class="bi bi-house-door-fill"></i>
                 </a>
             </div>
@@ -30,10 +30,10 @@ $estado = 1 ;
                 <div class = "form-info">
                     
                     <div class = "form-infor">
-                        <a href="index.php"><img src="css/img/logo_sinfondo.png" alt="logo" class="logo"></a>
+                        <a href="../index.php"><img src="../css/img/logo_sinfondo.png" alt="logo" class="logo"></a>
                         <h1 class = "titu">Login</h1>
                     
-                        <form action="includes/inicio.php" method= "POST" enctype = "multipart/form-data">
+                        <form action="../includes/inicio.php" method= "POST" enctype = "multipart/form-data">
 
                             <div class = "input-gruop">
                                 <div class = "input_field">
@@ -58,7 +58,7 @@ $estado = 1 ;
                             <div class = "btn-field">
                                 <button type="submit" name = "log" id="log" value = "Log" class="btn btn-primary">Log in</button>
                             </div>
-                            <a href="#"><label>Olvidaste tu contraseña?</label></a> 
+                            <p>¿Olvidaste tu <a href="recovery.php" class="signUpBtn-link">contraseña?</a></p>
                             <a href="register.php"><label class="col">No tienes cuenta, Registrate</label></a> 
                         </form>
                     </div>

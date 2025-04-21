@@ -1,5 +1,5 @@
 <?php
-require_once('conecct/conex.php');
+require_once('../conecct/conex.php');
 $db = new Database();
 $con = $db->conectar();
 session_start();
@@ -16,7 +16,6 @@ $estado = 1 ;
         $cel = $_POST['cel'];
         $rol = $_POST['id_rol'];
 
-        // echo $doc,"\n", $nom, "\n", $correo, "\n", $cont, "\n", $con2, "\n", $cel, "\n", $rol, "\n", $estado;
 
         if ($cont != $con2){
             echo '<script>alert ("Contraseñas no son iguales...")</script>';
@@ -65,13 +64,13 @@ $estado = 1 ;
     <link rel="shortcut icon" href="css/img/logo_sinfondo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/stylelog.css">
+    <link rel="stylesheet" href="../css/stylelog.css">
 </head>
 <body>
     <div class ="contenido">
         <div class = "conten_form">
             <div class="form_infor">
-                <a href="index.php"><img src="css/img/logo_sinfondo.png" alt="logo" class="logo"></a>
+                <a href="../index.php"><img src="../css/img/logo_sinfondo.png" alt="logo" class="logo"></a>
                 
                 <h1 class= "titulo" >Registro</h1>
                 <form action = "" method = "post" enctype = "multipart/form-data">
