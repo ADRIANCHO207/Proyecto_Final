@@ -13,7 +13,7 @@ if (!isset($_GET['token'])) {
 $token = $_GET['token'];
 $expira = $_GET['token'];
 
-$query = $conex->prepare("SELECT * FROM usuarios WHERE reset_token = ? AND reset_expira >= NOW()");
+$query = $con->prepare("SELECT * FROM usuarios WHERE reset_token = ? AND reset_expira >= NOW()");
 $query->execute([$token] );
 $user = $query->fetch(PDO::FETCH_ASSOC);
 
@@ -37,7 +37,7 @@ if (isset($_POST['submit'])) {
     } else {
         $hashedPassword = password_hash($password2, PASSWORD_DEFAULT, array("cost" => 12));
 
-        $update = $conex->prepare("UPDATE usuarios SET contraseña = ?, reset_token = NULL, reset_expira = NULL WHERE ID_usuario = ?");
+        $update = $con->prepare("UPDATE usuarios SET contraseña = ?, reset_token = NULL, reset_expira = NULL WHERE documento = ?");
         $update->execute([$hashedPassword, $id_usuario]);
 
         if ($update) {
