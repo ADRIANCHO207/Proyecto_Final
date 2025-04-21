@@ -69,9 +69,13 @@ $estado = 1 ;
 </head>
 <body>
     <div class ="contenido">
+            <div class="regresar"><a href="index.php" class="re">
+                <i class="bi bi-house-door-fill"></i>
+            </a>
+            </div>
         <div class = "conten_form">
             <div class="form_infor">
-                <a href="index.php"><img src="css/img/logo_sinfondo.png" alt="logo" class="logo"></a>
+                <img src="css/img/logo_sinfondo.png" alt="logo" class="logo">
                 
                 <h1 class= "titulo" >Registro</h1>
                 <form action = "" method = "post" enctype = "multipart/form-data">
@@ -131,7 +135,7 @@ $estado = 1 ;
                         </div>
                     </div>
                     <div class = "btn-field">
-                        <button type="submit" name = "enviar" id="enviar" value = "Guardar" class="btn btn-primary">Guardar</button>
+                        <button type="submit" name = "enviar" id="enviar" value = "Guardar" class="btn btn-primary">Registrarse</button>
                     </div>
                     <p>¿Ya tienes una cuenta?<a class="re"href="login.php">Inicia Sesion</a></p>
             

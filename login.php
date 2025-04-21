@@ -20,17 +20,16 @@ $estado = 1 ;
 <body>  
     
         <div class = "contenido">
-            <div class="re">
-                <a href="index.php" class="regresar">
-                    <i class="bi bi-house-door-fill"></i>
-                </a>
+            <div class="regresar"><a href="index.php" class="re">
+                <i class="bi bi-house-door-fill"></i>
+            </a>
             </div>
 
             <div class = "conten_form">
                 <div class = "form-info">
                     
                     <div class = "form-infor">
-                        <a href="index.php"><img src="css/img/logo_sinfondo.png" alt="logo" class="logo"></a>
+                        <img src="css/img/logo_sinfondo.png" alt="logo" class="logo">
                         <h1 class = "titu">Login</h1>
                     
                         <form action="includes/inicio.php" method= "POST" enctype = "multipart/form-data">
