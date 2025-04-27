@@ -73,25 +73,25 @@ if (isset ($_POST['enviar'])){
             <form action="" method= "post" class = "form"  id = "form" enctype = "multipart/form-data">
                 <div class = "input-gruop">
                     <div class = "input_field" id = "grupo_nom">
-                        <label for="nom" class = "input_label">Nombre:</label>
+                        <label for="nom" class = "input_label">Nombre:*</label>
                         <input type="text" name = "nom" id="nom" placeholder = "Juan" >
-                        <p class= "warnings" id = "warnings">Asegurate de escribir bien el nombre</p>
+                        <p class= "warnings" id = "warnings">Ingrese el nombre sin caracteres especiales</p>
                     </div>
 
                     <div class = "input_field">
-                        <label for="ape">Apellido:</label>
+                        <label for="ape">Apellido:*</label>
                         <input type="text" name = "ape" id = "ape" placeholder = "Lopez">
-                        <p class= "warnings" id = "warnings1">Asegurate de escribir bien el apellido</p>
+                        <p class= "warnings" id = "warnings1">Ingrese el apellido sin caracteres especiales</p>
                     </div>
 
                     <div class = "input_field">
-                        <label for="corre">Correo Electrónico:</label>
+                        <label for="corre">Correo Electrónico(Solo Gmail):*</label>
                         <input type="email" name = "corre" id = "corre"  placeholder = "aaaaaa30@gmail.com">
-                        <p class= "warnings" id = "warnings2">Asegurate de escribir bien el correo</p>
+                        <p class= "warnings" id = "warnings2">Ingrese un correo electrónico válido (ejemplo@gmail.com).</p>
                     </div>
 
                     <div class = "input_fiel">
-                        <label for="mensa">Mensaje:</label>
+                        <label for="mensa">Mensaje:*</label>
                         <textarea class = "input_mensa" type="text" name = "mensa" id = "mensa" placeholder = "Escribe tu mensaje aquí..." ></textarea>
                         <p class= "warnings" id = "warnings3"></p>
                     </div>

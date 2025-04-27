@@ -4,7 +4,7 @@
 class Database
 {
     private $hostname = "localhost";
-    private $database = "proyecto_flota";
+    private $database = "proyecto";
     private $username = "root";
     private $password = "";
     private $charset = "utf8";

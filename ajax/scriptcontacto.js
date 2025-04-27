@@ -7,7 +7,7 @@ const inputs = document.querySelectorAll('#form input')
 const expresiones = {
     validanombre:  /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{2,50}$/,
     validaapellido: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{2,50}$/,
-    validacorreo:  /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+    validacorreo:  /^[a-zA-Z0-9._%+-]+@gmail\.com$/,
     valodaparrafo: /^[\s\S]{10,500}$/
 }
 

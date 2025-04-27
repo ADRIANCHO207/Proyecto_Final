@@ -5,7 +5,9 @@
     
 }
 
-.contenido {
+/* general */
+
+.content{
     width: 100%;
     display: flex;
     align-items: center;
@@ -32,20 +34,31 @@
     font-weight: bold;
 }
 
-.input_field {
-    background-color: #989898;
-    margin: 15px 0;
+.input_field{
+    background-color: #c2c2c2;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+
+}
+
+/* campos inicio de sesion */
+
+.input_field_nom, .input_field_doc, .input_field_passw{
+    background-color: #c2c2c2;
     border-radius: 10px;
     display: flex;
     align-items: center;
 }
 
+/* general */
 input {
     width: 100%;
     background: transparent;
     border: none;
     outline: none;
-    padding: 10px 30px;
+    padding: 10px 15px;
     color: black;
 }
 
@@ -54,17 +67,38 @@ input::placeholder {
 }
 
 .input_field i {
-    margin-left: 15px;
+    margin-left: 20px;
     color: white;
 }
+
+ /* este es para login  */
+
+ .input_field_doc i {
+    margin-left: 20px;
+    color: white;
+}
+
+.input_field_nom i {
+    margin-left: 20px;
+    color: white;
+}
+
+.input_field_passw   i {
+    margin-left: 20px;
+    color: white;
+}
+
+/* general */
 
 a label {
     color: black;
     cursor: pointer;
+    font-weight: bold;
 }
 
 a label:hover {
     color: red;
+    font-weight: bold;
     cursor: pointer;
 }
 
@@ -82,6 +116,7 @@ a label:hover {
     font-weight: bold;
     transition: 0.5s;
     margin-bottom: 10px;
+    border-radius: 10px
 }
 
 .btn-field button:hover {
@@ -106,7 +141,7 @@ p {
 
 .re {
     color: black;
-    font-weight: 500;
+    font-weight: bold;
     transition: 0.5s;
 }
 
@@ -150,3 +185,203 @@ option {
 .regresar i:hover {
     color: #000;
 }
+
+/* estilos para las validaciones para documento de login */
+
+.validacion1 {
+    font-weight: bold;
+    font-size: 10px;
+    opacity: 0;
+}
+
+.formulario_error{
+    font-weight: bold;
+    font-size: 13px;
+    transition: opacity 0.5s ease;
+    opacity: 0;
+    
+}
+
+.formulario_exito{
+    opacity: 0;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+
+.input_field_doc_incorrecto{
+    background-color: #c2c2c2;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    border: solid 3px rgb(197, 0, 0);
+    color: rgb(197, 0, 0);
+}
+
+.input_field_doc_incorrecto i{
+    margin-left: 20px;
+    color: rgb(197, 0, 0);
+}
+
+
+
+.formulario_error_doc{
+    color: rgb(197, 0, 0);
+}
+
+.input_field_doc_correcto{
+    background-color: #c2c2c2;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    border: solid 3px #158000;
+    color: #158000;
+
+}
+
+.input_field_doc_correcto i{
+    margin-left: 20px;
+    color: #158000;
+}
+
+/* estilos para validaciones para el campo nombre */
+
+.validacion {
+    font-weight: bold;
+    font-size: 10px;
+    opacity: 0;
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+
+.input_field_nom_incorrecto{
+    background-color: #c2c2c2;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    border: solid 3px rgb(197, 0, 0);
+    color: rgb(197, 0, 0);
+}
+
+.input_field_nom_incorrecto i{
+    margin-left: 20px;
+    color: rgb(197, 0, 0);
+}
+
+
+
+.formulario_error_nom{
+    color: rgb(197, 0, 0);
+}
+
+.input_field_nom_correcto{
+    background-color: #c2c2c2;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    border: solid 3px #158000;
+    color: #158000;
+
+}
+
+.input_field_nom_correcto i{
+    margin-left: 20px;
+    color: #158000;
+}
+
+/* estilos para validacion del campo password */
+
+.validacion2 {
+    font-weight: bold;
+    font-size: 10px;
+    opacity: 0;
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+
+.input_field_passw_incorrecto{
+    background-color: #c2c2c2;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    border: solid 3px rgb(197, 0, 0);
+    color: rgb(197, 0, 0);
+}
+
+.input_field_passw_incorrecto i{
+    margin-left: 20px;
+    color: rgb(197, 0, 0);
+}
+
+
+
+.formulario_error_passw{
+    color: rgb(197, 0, 0);
+}
+
+.input_field_passw_correcto{
+    background-color: #c2c2c2;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    border: solid 3px #158000;
+    color: #158000;
+
+}
+
+.input_field_passw_correcto i{
+    margin-left: 20px;
+    color: #158000;
+}
+
+/* estilos para validacion de olvidaste contraseña */
+
+.input_field_correo {
+    background-color: #c2c2c2;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.input_field_correo i {
+    margin-left: 20px;
+    color: white;
+}
+
+.formulario_error_olv_con {
+    font-weight: bold;
+    padding-top: 10px;
+    font-size: 10px;
+    color: #d32f2f;
+    opacity: 0;
+}
+
+.input_field_correo_incorrecto {
+    background-color: #c2c2c2;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    border: solid 3px rgb(197, 0, 0);
+    color: rgb(197, 0, 0);
+}
+
+.input_field_correo_incorrecto i {
+    margin-left: 20px;
+    color: rgb(197, 0, 0);
+}
+
+.input_field_correo_correcto {
+    background-color: #c2c2c2;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    border: solid 3px #158000;
+    color: #158000;
+}
+
+.input_field_correo_correcto i{
+    margin-left: 20px;
+    color: #158000;
+}
+
+
