@@ -47,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
     <link rel="stylesheet" href="../css/stylelog_re.css">
 
 </head>
-<body>
+<body onload="formulario_olvidate_con.email.focus()">
 <div class = "content">
     <div class="regresar"><a href="login.php" class="re">
             <i class="bi bi-house-door-fill"></i>
@@ -119,6 +119,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
                 e.preventDefault();
                 document.getElementById('input_field_correo').classList.add('input_field_correo_incorrecto')
                 document.getElementById('vali_correo').style.opacity = 1;
+                document.getElementById('formulario_error').style.opacity = 1;
+                document.getElementById('formulario_error').style.color = "#d32f2f"
+                document.getElementById('email').focus();
+
+                setTimeout(() => {
+                document.getElementById('formulario_error').style.opacity = 0;
+                }, 3000)
+            }else{
+                document.getElementById('formulario_exito').style.opacity = 1;
+                document.getElementById('formulario_exito').style.color = "#158000"
+
+                setTimeout(() => {
+                document.getElementById('formulario_exito').style.opacity = 0;
+                }, 3000)
             }
         })
 

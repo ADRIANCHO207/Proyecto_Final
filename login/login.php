@@ -19,7 +19,7 @@ $estado = 1 ;
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="../css/stylelog_re.css">
 </head>
-<body>  
+<body onload="formulario.doc.focus()">  
     
         <div class = "content">
             <div class="regresar"><a href="../index.php" class="re">
@@ -44,7 +44,7 @@ $estado = 1 ;
                                         <input type="number" name = "doc" id="doc" placeholder = "Documento">
                                     </div>
                                     <div class="formulario_error_doc" id="formulario_correcto_doc">
-                                        <p class="validacion1" id="validacion1">El documento solo debe contener numeros y el maximo son 10 dígitos.</p>
+                                        <p class="validacion" id="validacion">El documento solo debe contener numeros y el maximo son 10 dígitos.</p>
                                     </div>
                                 </div>
                                 
@@ -56,7 +56,7 @@ $estado = 1 ;
                                         <input type="text" name = "nom" id = "nom" placeholder = "Nombre completo">
                                     </div>
                                     <div class="formulario_error_nom" id="formulario_correcto_nom">
-                                        <p class="validacion" id="validacion">Ingrese el nombre completo sin caracteres especiales</p>
+                                        <p class="validacion1" id="validacion1">Ingrese el nombre completo sin caracteres especiales</p>
                                     </div>
                                 </div>
                                 
@@ -118,6 +118,6 @@ $estado = 1 ;
     </script>
 </body>
 
-<script src="../ajax/scriptlogin.js"></script>
+<script src="../js/scriptlogin.js"></script>
 </html>
                             

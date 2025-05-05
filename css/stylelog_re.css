@@ -188,7 +188,7 @@ option {
 
 /* estilos para las validaciones para documento de login */
 
-.validacion1 {
+.validacion {
     font-weight: bold;
     font-size: 10px;
     opacity: 0;
@@ -246,7 +246,7 @@ option {
 
 /* estilos para validaciones para el campo nombre */
 
-.validacion {
+.validacion1 {
     font-weight: bold;
     font-size: 10px;
     opacity: 0;
@@ -383,5 +383,76 @@ option {
     margin-left: 20px;
     color: #158000;
 }
+
+/* estilos para registro */
+
+.input_field_con, .input_field_con2, .input_field_cel {
+    background-color: #c2c2c2;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+}
+
+
+.input_field_con i,
+.input_field_con2 i, 
+.input_field_cel i{
+    margin-left: 20px;
+    color: white;
+}
+
+.validacion3,
+.validacion4, 
+.validacion5 {
+    font-weight: bold;
+    font-size: 10px;
+    opacity: 0;
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+
+.formulario_error_con,
+.formulario_error_correo,
+.formulario_error_con2,
+.formulario_error_cel{
+    color: rgb(197, 0, 0);
+}
+
+.input_field_con_correcto,
+.input_field_con2_correcto,
+.input_field_cel_correcto{
+    background-color: #c2c2c2;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    border: solid 3px #158000;
+    color: #158000;
+}
+
+.input_field_con_correcto i,
+.input_field_con2_correcto i,
+.input_field_cel_correcto i{
+    margin-left: 20px;
+    color: #158000;
+}
+
+.input_field_con_incorrecto,
+.input_field_con2_incorrecto,
+.input_field_cel_incorrecto{
+    background-color: #c2c2c2;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    border: solid 3px rgb(197, 0, 0);
+    color: rgb(197, 0, 0);
+}
+
+.input_field_con_incorrecto i,
+.input_field_con2_incorrecto i,
+.input_field_cel_incorrecto i{
+    margin-left: 20px;
+    color: rgb(197, 0, 0);
+}
+
 
 

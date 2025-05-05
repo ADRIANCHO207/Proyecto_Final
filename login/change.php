@@ -62,7 +62,7 @@ if (isset($_POST['submit'])) {
     <link rel="stylesheet" href="../css/stylelog.css">
 
 </head>
-<body>
+<body onload="form_con.password1.focus()">
 <div class = "contenido">
             <div class="re">
                 <a href="login.php" class="regresar">
@@ -75,7 +75,7 @@ if (isset($_POST['submit'])) {
         <h2>Cambiar Contraseña</h2>
         <p>Por favor, ingresa tu nueva contraseña.</p>
 
-            <form action="" method="POST" autocomplete="off">
+            <form action="" method="POST" autocomplete="off" id="form_con">
             
                 <div class="input-field">
                     <input type="password" id="password1" name="password1" required>
