@@ -455,4 +455,120 @@ option {
 }
 
 
+/* estilos para cambiar contraseña */
+
+.validacion_passw1,
+.validacion_passw2{
+    font-weight: bold;
+    font-size: 10px;
+    opacity: 0;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    color: rgb(197, 0, 0);
+}
+
+.contenido {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.input_field_passw1,
+.input_field_passw2{
+    background-color: #c2c2c2;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.input_field_passw1 i,
+.input_field_passw2 i{
+    margin-left: 20px;
+    color: white;
+}
+
+.input_field_passw1_correcto,
+.input_field_passw2_correcto{
+    background-color: #c2c2c2;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    border: solid 3px #158000;
+    color: #158000;
+}
+
+.input_field_passw1_correcto i,
+.input_field_passw2_correcto i{
+    margin-left: 20px;
+    color: #158000;
+}
+
+.input_field_passw1_incorrecto,
+.input_field_passw2_incorrecto {
+    background-color: #c2c2c2;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    border: solid 3px rgb(197, 0, 0);
+    color: rgb(197, 0, 0);
+}
+
+.input_field_passw1_incorrecto i,
+.input_field_passw2_incorrecto i{
+    margin-left: 20px;
+    color: rgb(197, 0, 0);
+}
+
+@media screen and (max-width: 480px) {
+    .conten_form {
+        padding: 70px;
+    }
+
+    .conten_form h1 {
+        font-size: 20px;
+    }
+
+    .conten_form img {
+        width: 100px;
+        height: 100px;
+    }
+
+    .btn-field {
+        flex-direction: column;
+    }
+
+    .btn-field button {
+        width: 100%;
+    }
+
+    .regresar {
+        position: fixed;
+        top:0px;
+        left: 0px;
+    }
+
+    .regresar a {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 35px;
+        background-color: #d32f2f;
+        border-radius: 50%;
+        color: #fff;
+        font-size: 10px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+
+    .regresar a:hover {
+        background-color: transparent;
+        border: solid 3px #d32f2f;
+        color: #000;
+    }
+}
+      
+
 

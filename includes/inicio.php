@@ -30,7 +30,7 @@ if (isset($_POST['log'])) {
         exit();
     }
 
-    if (!password_verify($passw, $fila['contraseña'])) {
+    if (!password_verify($passw, $fila['password'])) {
         echo "Contraseña incorrecta";
         exit();
     }

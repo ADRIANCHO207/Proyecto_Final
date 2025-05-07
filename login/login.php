@@ -34,7 +34,7 @@ $estado = 1 ;
                         <img src="../css/img/logo_sinfondo.png" alt="logo" class="logo">
                         <h1 class = "titu">Login</h1>
                     
-                        <form action="../includes/inicio.php" method= "POST"  id="formulario" enctype = "multipart/form-data">
+                        <form action="../includes/inicio.php" method= "POST"  id="formulario" enctype = "multipart/form-data" autocomplete="off">
 
                             <div class = "input-gruop">
                                 <div>
@@ -104,7 +104,7 @@ $estado = 1 ;
                         if (respuesta === "OK_ADMIN") {
                             window.location.href = "../roles/admin/index.php";
                         } else if (respuesta === "OK_USUARIO") {
-                            window.location.href = "../usuario/panel.php";
+                            window.location.href = "../roles/usuario/index.php";
                         } else {
                             alert(respuesta);
                         }

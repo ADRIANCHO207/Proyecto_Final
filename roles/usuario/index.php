@@ -1,105 +1,171 @@
+<?php
+session_start();
+require_once('../../conecct/conex.php');
+include '../../includes/validarsession.php';
+$db = new Database();
+$con = $db->conectar();
+
+// Check for documento in session
+$documento = $_SESSION['documento'] ?? null;
+if (!$documento) {
+    header('Location: ../../login.php');
+    exit;
+}
+
+// Fetch nombre_completo and foto_perfil if not in session
+$nombre_completo = $_SESSION['nombre_completo'] ?? null;
+$foto_perfil = $_SESSION['foto_perfil'] ?? null;
+if (!$nombre_completo || !$foto_perfil) {
+    $user_query = $con->prepare("SELECT nombre_completo, foto_perfil FROM usuarios WHERE documento = :documento");
+    $user_query->bindParam(':documento', $documento, PDO::PARAM_STR);
+    $user_query->execute();
+    $user = $user_query->fetch(PDO::FETCH_ASSOC);
+    $nombre_completo = $user['nombre_completo'] ?? 'Usuario';
+    $foto_perfil = $user['foto_perfil'] ? $user['foto_perfil'] . '?v=' . time() : 'css/img/default.jpg';
+    $_SESSION['nombre_completo'] = $nombre_completo;
+    $_SESSION['foto_perfil'] = $foto_perfil;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Consulta de Multas - SIMIT</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f7f7f7;
-      padding: 40px;
-    }
-    .container {
-      max-width: 500px;
-      margin: auto;
-      background-color: white;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    label, input, select, button {
-      display: block;
-      width: 100%;
-      margin-bottom: 15px;
-    }
-    button {
-      padding: 10px;
-      background-color: #2196f3;
-      color: white;
-      border: none;
-      border-radius: 5px;
-    }
-    #resultado {
-      margin-top: 20px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flotax AGC - Inicio</title>
+    <link rel="shortcut icon" href="../../css/img/logo_sinfondo.png">
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="container">
-    <h2>Consulta de Multas</h2>
-    <label for="placa">Placa del vehículo:</label>
-    <input type="text" id="placa" placeholder="Ej: ABC123">
 
-    <label for="tipoDoc">Tipo de documento:</label>
-    <select id="tipoDoc">
-      <option value="CC">Cédula de Ciudadanía</option>
-      <option value="CE">Cédula de Extranjería</option>
-      <option value="NIT">NIT</option>
-    </select>
+<div class="header">
+    <div class="logo">
+        <img src="css/img/logo.jpeg" alt="Logo">
+        <span class="empresa">Flotax AGC</span>
+    </div>
+    <div class="menu">
+        <a href="vehiculos/formulario.php" class="boton">Registrar Vehículo</a>
+    </div>
+    <div class="perfil" onclick="openModal()">
+        <img src="<?php echo htmlspecialchars($foto_perfil); ?>" alt="Usuario" class="imagen-usuario">
+        <div class="info-usuario">
+            <span><?php echo htmlspecialchars($nombre_completo); ?></span>
+            <span>Perfil Usuario</span>
+        </div>
+    </div>
+</div>
 
-    <label for="numeroDoc">Número de documento:</label>
-    <input type="text" id="numeroDoc" placeholder="Ej: 123456789">
+<?php if (isset($_SESSION['success']) || isset($_SESSION['error'])): ?>
+<div class="notification">
+    <?php if (isset($_SESSION['success'])): ?>
+        <div class="alert success"><?php echo htmlspecialchars($_SESSION['success']); ?></div>
+        <?php unset($_SESSION['success']); ?>
+    <?php elseif (isset($_SESSION['error'])): ?>
+        <div class="alert error"><?php echo htmlspecialchars($_SESSION['error']); ?></div>
+        <?php unset($_SESSION['error']); ?>
+    <?php endif; ?>
+</div>
+<?php endif; ?>
 
-    <button onclick="consultarMultas()">Consultar</button>
+<div class="alertas">
+    <h1>Mis Alertas</h1>
+    <div class="alertas-grid">
+        <a href="vehiculos/gestionar_documento.php?tipo=SOAT" class="boton">
+            <i class="bi bi-shield-check"></i> SOAT
+        </a>
+        <a href="vehiculos/gestionar_documento.php?tipo=Tecnomecanica" class="boton">
+            <i class="bi bi-tools"></i> Tecnomecánica
+        </a>
+        <a href="vehiculos/gestionar_documento.php?tipo=Licencia_Conduccion" class="boton">
+            <i class="bi bi-card-heading"></i> Licencia de Conducción
+        </a>
+        <a href="vehiculos/gestionar_pico_placa.php" class="boton">
+            <i class="bi bi-sign-stop"></i> Pico y Placa
+        </a>
+        <a href="vehiculos/gestionar_llantas.php" class="boton">
+            <i class="bi bi-circle"></i> Llantas
+        </a>
+        <a href="vehiculos/gestionar_mantenimiento.php" class="boton">
+            <i class="bi bi-oil"></i> Mantenimiento y Aceite
+        </a>
+    </div>
+</div>
 
-    <div id="resultado"></div>
-  </div>
+<div class="garage">
+    <div class="garage-content">
+        <h2>Mis Vehículos</h2>
+        <form action="vehiculos/listar/listar.php" method="get">
+            <div class="form-group">
+                <select name="vehiculo">
+                    <option value="">Seleccionar Vehículo</option>
+                    <?php
+                    $vehiculos_query = $con->prepare("SELECT placa FROM vehiculos WHERE Documento = :documento");
+                    $vehiculos_query->bindParam(':documento', $documento, PDO::PARAM_STR);
+                    $vehiculos_query->execute();
+                    $vehiculos = $vehiculos_query->fetchAll(PDO::FETCH_ASSOC);
+                    foreach ($vehiculos as $vehiculo) {
+                        echo '<option value="' . htmlspecialchars($vehiculo['placa']) . '">' . htmlspecialchars($vehiculo['placa']) . '</option>';
+                    }
+                    ?>
+                </select>
+                <button type="submit">Mostrar</button>
+            </div>
+        </form>
+    </div>
+</div>
 
-  <script>
-    async function consultarMultas() {
-      const placa = document.getElementById("placa").value.toUpperCase();
-      const tipoDoc = document.getElementById("tipoDoc").value;
-      const numeroDoc = document.getElementById("numeroDoc").value;
+<div class="sidebar">
+    <a href="../../includes/salir.php" class="logout" title="Cerrar Sesión">
+        <i class="bi bi-box-arrow-right"></i>
+    </a>
+</div>
 
-      const resultado = document.getElementById("resultado");
-      resultado.innerHTML = "Consultando...";
+<div id="profileModal" class="modal">
+    <div class="modal-content">
+        <button class="close" onclick="closeModal()">Cerrar</button>
+        <h2>Información del Usuario</h2>
+        <img src="<?php echo htmlspecialchars($foto_perfil); ?>" alt="Foto de Perfil" class="imagen-usuario modal-imagen-usuario">
+        <?php
+        $user_query = $con->prepare("SELECT documento, nombre_completo, email, telefono FROM usuarios WHERE documento = :documento");
+        $user_query->bindParam(':documento', $documento, PDO::PARAM_STR);
+        $user_query->execute();
+        $user = $user_query->fetch(PDO::FETCH_ASSOC);
+        ?>
+        <p><strong>Documento:</strong> <?php echo htmlspecialchars($user['documento']); ?></p>
+        <p><strong>Nombre:</strong> <?php echo htmlspecialchars($user['nombre_completo']); ?></p>
+        <p><strong>Email:</strong> <?php echo htmlspecialchars($user['email']); ?></p>
+        <p><strong>Teléfono:</strong> <?php echo htmlspecialchars($user['telefono']); ?></p>
+        <form action="actualizar_foto.php" method="post" enctype="multipart/form-data">
+            <label for="foto_perfil">Cambiar Foto de Perfil:</label>
+            <p class="upload-instructions">Formatos: JPEG, PNG, GIF. Máximo 5MB. Recomendado: 512x512 píxeles.</p>
+            <input type="file" id="foto_perfil" name="foto_perfil" accept="image/jpeg,image/png,image/gif" required>
+            <button type="submit">Actualizar Foto</button>
+        </form>
+    </div>
+</div>
 
-      try {
-        // ⚠️ Simulación: Aquí iría el endpoint real de la API del SIMIT o RUNT
-        const response = await fetch("https://api.simit.gov.co/consulta-multas", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer TU_API_KEY_AQUI"
-          },
-          body: JSON.stringify({
-            placa: placa,
-            tipo_documento: tipoDoc,
-            numero_documento: numeroDoc
-          })
-        });
+<footer class="footer">
+    <div class="footer-content">
+        <p>© 2024 Flotax AGC. Todos los derechos reservados.</p>
+        <div class="social-media">
+            <a href="https://facebook.com" target="_blank" class="social-icon"><i class="bi bi-facebook"></i></a>
+            <a href="https://twitter.com" target="_blank" class="social-icon"><i class="bi bi-twitter"></i></a>
+            <a href="https://instagram.com" target="_blank" class="social-icon"><i class="bi bi-instagram"></i></a>
+            <a href="https://wa.me/1234567890" target="_blank" class="social-icon"><i class="bi bi-whatsapp"></i></a>
+        </div>
+    </div>
+</footer>
 
-        if (!response.ok) throw new Error("Error en la consulta");
+<script>
+function openModal() {
+    document.getElementById('profileModal').style.display = 'flex';
+}
+function closeModal() {
+    document.getElementById('profileModal').style.display = 'none';
+}
+</script>
 
-        const data = await response.json();
-
-        // Supongamos que la respuesta tiene un array de multas
-        if (data.multas && data.multas.length > 0) {
-          let html = "<h3>Multas encontradas:</h3><ul>";
-          data.multas.forEach(multa => {
-            html += `<li><strong>${multa.fecha}</strong>: ${multa.valor} - ${multa.estado}</li>`;
-          });
-          html += "</ul>";
-          resultado.innerHTML = html;
-        } else {
-          resultado.innerHTML = "<p>No se encontraron multas para este vehículo.</p>";
-        }
-
-      } catch (error) {
-        console.error(error);
-        resultado.innerHTML = `<p style="color:red;">Error al consultar multas. Intenta más tarde.</p>`;
-      }
-    }
-  </script>
 </body>
 </html>

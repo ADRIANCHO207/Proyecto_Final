@@ -70,7 +70,7 @@ if (isset ($_POST['enviar'])){
     <div class="contenido_form">
 
         <div class="formulario">
-            <form action="" method= "post" class = "form"  id = "form" enctype = "multipart/form-data">
+            <form action="" method= "post" class = "form"  id = "form" enctype = "multipart/form-data" autocomplete="off">
                 <div class = "input-gruop">
                     <div class = "input_field" id = "grupo_nom">
                         <label for="nom" class = "input_label">Nombre:*</label>

@@ -81,7 +81,7 @@ $rol = 2;
                 <img src="../css/img/logo_sinfondo.png" alt="logo" class="logo">
                 
                 <h1 class= "titulo" >Registro</h1>
-                <form action = "" method = "post" id="formulario" enctype = "multipart/form-data">
+                <form action = "" method = "post" id="formulario" enctype = "multipart/form-data" autocomplete="off">
                     <div class= "input_grupo">
                         <div>
                             <div class = "input_field_doc" id="grupo_doc">

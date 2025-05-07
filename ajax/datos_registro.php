@@ -63,7 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     // Insertar nuevo usuario
-    $inserto = $con->prepare("INSERT INTO usuarios(documento, nombre_completo, email, contraseña, telefono, id_estado_usuario, id_rol) 
+    $inserto = $con->prepare("INSERT INTO usuarios(documento, nombre_completo, email, password, telefono, id_estado_usuario, id_rol) 
         VALUES (?, ?, ?, ?, ?, ?, ?)");
 
     if ($inserto->execute([$doc, $nom, $correo, $cont_enc, $cel, $estado, $rol])) {

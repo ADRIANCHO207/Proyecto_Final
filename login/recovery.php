@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
                   <script>document.getElementById("sendForm").submit();</script>';
             exit;
         } else {
-            echo '<script>alert("Correo incorrecto");</script>';
+            echo '<script>alert("Correo no registrado");</script>';
         }
     }
 }
