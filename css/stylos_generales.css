@@ -156,7 +156,6 @@ h1 {
 }
 
 .informa{
-    padding-top: 40px;
     width: 50%;
     height: 100%;
 }
@@ -186,7 +185,7 @@ h1 {
 }
 
 .informa .img2 {
-    padding-left: 30px;
+    padding-left: 10px;
     width: 100%;
 }
 
@@ -268,6 +267,103 @@ h1 {
     padding-top: 10px;
     opacity: 0;
 }
+
+
+/*  Media moviles (hasta 767px) */
+
+@media (max-width: 767px) {
+    .contenido_info {
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
+    }
+
+    .informa, .contenido_form {
+        width: 100%;
+    }
+
+    .formulario {
+        width: 90%;
+        max-width: none;
+        background: #333;
+        padding: 30px 20px;
+        border-radius: 20px;
+        box-sizing: border-box;
+    }
+
+    .form input,
+    .form .input_fiel .input_mensa {
+        width: 100%;
+    }
+
+    .form label {
+        font-size: 14px;
+    }
+
+    .boton button {
+        width: 100%;
+    }
+}
+
+
+/* Media tablets(768px a 1199px) */
+
+@media (min-width: 768px) and (max-width: 1199px) {
+    .contenido_info {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .informa, .contenido_form {
+        width: 80%;
+    }
+
+    .informa h2 {
+        font-size: 24px;
+    }
+
+    .formulario {
+        padding: 40px;
+        border-radius: 10%;
+    }
+
+    .form .input_fiel .input_mensa {
+        height: 200px;
+    }
+}
+
+
+/* Pantallas grandes (desde 1200px) */
+
+@media (min-width: 1200px) {
+    .contenido_info {
+        flex-direction: row;
+        justify-content: center;
+        gap: 30px;
+        padding: 20px;
+    }
+
+    .informa, .contenido_form {
+        width: 45%;
+    }
+
+    .formulario {
+        padding: 60px;
+    }
+
+    .form .input_fiel .input_mensa {
+        height: 250px;
+    }
+
+    .informa h2 {
+        font-size: 28px;
+    }
+
+    .informa p {
+        font-size: 16px;
+    }
+}
+
 
 
 

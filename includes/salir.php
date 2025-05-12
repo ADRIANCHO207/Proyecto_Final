@@ -6,7 +6,7 @@ unset($_SESSION['estado']);
 session_destroy();
 session_write_close();
 
-header("location: ../login.php")
+header("location: ../login/login.php")
 
 
 ?>

@@ -35,6 +35,8 @@ if (isset ($_POST['enviar'])){
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="shortcut icon" href="css/img/logo_sinfondo.png">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="css/stylos_generales.css">
 </head>
 <body>
@@ -68,28 +70,28 @@ if (isset ($_POST['enviar'])){
     <div class="contenido_form">
 
         <div class="formulario">
-            <form action="" method= "post" class = "form"  id = "form" enctype = "multipart/form-data">
+            <form action="" method= "post" class = "form"  id = "form" enctype = "multipart/form-data" autocomplete="off">
                 <div class = "input-gruop">
                     <div class = "input_field" id = "grupo_nom">
-                        <label for="nom" class = "input_label">Nombre:</label>
+                        <label for="nom" class = "input_label">Nombre:*</label>
                         <input type="text" name = "nom" id="nom" placeholder = "Juan" >
-                        <p class= "warnings" id = "warnings">Asegurate de escribir bien el nombre</p>
+                        <p class= "warnings" id = "warnings">Ingrese el nombre sin caracteres especiales</p>
                     </div>
 
                     <div class = "input_field">
-                        <label for="ape">Apellido:</label>
+                        <label for="ape">Apellido:*</label>
                         <input type="text" name = "ape" id = "ape" placeholder = "Lopez">
-                        <p class= "warnings" id = "warnings1">Asegurate de escribir bien el apellido</p>
+                        <p class= "warnings" id = "warnings1">Ingrese el apellido sin caracteres especiales</p>
                     </div>
 
                     <div class = "input_field">
-                        <label for="corre">Correo Electrónico:</label>
+                        <label for="corre">Correo Electrónico(Solo Gmail):*</label>
                         <input type="email" name = "corre" id = "corre"  placeholder = "aaaaaa30@gmail.com">
-                        <p class= "warnings" id = "warnings2">Asegurate de escribir bien el correo</p>
+                        <p class= "warnings" id = "warnings2">Ingrese un correo electrónico válido (ejemplo@gmail.com).</p>
                     </div>
 
                     <div class = "input_fiel">
-                        <label for="mensa">Mensaje:</label>
+                        <label for="mensa">Mensaje:*</label>
                         <textarea class = "input_mensa" type="text" name = "mensa" id = "mensa" placeholder = "Escribe tu mensaje aquí..." ></textarea>
                         <p class= "warnings" id = "warnings3"></p>
                     </div>
@@ -116,7 +118,7 @@ if (isset ($_POST['enviar'])){
 <?php
     include ('footer.html');
 ?>
-<script src="js/script.js"></script>
+<script src="js/scriptcontacto.js"></script>
 
 </body>
 </html>

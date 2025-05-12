@@ -8,8 +8,9 @@ $con = $db->conectar();
 
 ?>
 <?php
-if($_POST['log']){
+if (isset($_POST['log'])) {
 
+<<<<<<< HEAD
     $doc = $_POST['doc'];
     $nom = $_POST['nom'];
     
@@ -19,14 +20,19 @@ if($_POST['log']){
         echo '<script>alert("Documento, Nombre Completo o Contraseña estan vacios...")</script>';
         echo '<script>window.location = "../login/login.php"</script>';
     }
+=======
+    $doc = $_POST['doc'] ?? '';
+    $nom = $_POST['nom'] ?? '';
+    $passw = $_POST['passw'] ?? '';
+>>>>>>> a7018a5 (apis y admin)
 
-    
-    
-    $sql = $con->prepare("SELECT * FROM usuarios WHERE documento = '$doc'");
-    $sql->execute();
-        
+
+
+    $sql = $con->prepare("SELECT * FROM usuarios WHERE documento = ?");
+    $sql->execute([$doc]);
     $fila = $sql->fetch();
 
+<<<<<<< HEAD
     if ($doc != $fila['documento']){
         echo '<script>alert("Documento no Encontrado...")</script>';
         echo '<script>window.location = "../login/login.php"</script>';
@@ -81,6 +87,33 @@ if($_POST['log']){
     else {
         echo '<script>alert("Documento No Encontrado.")</script>';
         echo '<script>window.location = "../login/login.php"</script>';
+=======
+    if (!$fila) {
+        echo "Documento no encontrado";
+        exit();
     }
+
+    if ($nom != $fila['nombre_completo']) {
+        echo "Nombre incorrecto";
+        exit();
+>>>>>>> a7018a5 (apis y admin)
+    }
+
+    if (!password_verify($passw, $fila['password'])) {
+        echo "Contraseña incorrecta";
+        exit();
+    }
+
+    if ($fila['id_estado_usuario'] != 1) {
+        echo "Usuario inactivo";
+        exit();
+    }
+
+    $_SESSION['documento'] = $fila['documento'];
+    $_SESSION['tipo'] = $fila['id_rol'];
+
+    echo $fila['id_rol'] == 1 ? "OK_ADMIN" : "OK_USUARIO";
+
 }
-}
+
+?>
