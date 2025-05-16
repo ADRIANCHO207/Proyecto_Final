@@ -5,10 +5,10 @@ include '../../../includes/validarsession.php';
 
 // Instantiate the Database class and get the PDO connection
 $database = new Database();
-$conn = $database->conectar();
+$con = $database->conectar();
 
 // Check if the connection is successful
-if (!$conn) {
+if (!$con) {
     die("Error: No se pudo conectar a la base de datos. Verifique el archivo conex.php.");
 }
 
@@ -24,7 +24,7 @@ $nombre_completo = $_SESSION['nombre_completo'] ?? 'Usuario';
 
 // Fetch vehicles for the user
 $query_vehiculos = "SELECT placa FROM vehiculos WHERE Documento = :documento";
-$stmt_vehiculos = $conn->prepare($query_vehiculos);
+$stmt_vehiculos = $con->prepare($query_vehiculos);
 $stmt_vehiculos->bindParam(':documento', $documento);
 $stmt_vehiculos->execute();
 $vehiculos = $stmt_vehiculos->fetchAll(PDO::FETCH_ASSOC);
@@ -33,6 +33,20 @@ $vehiculos = $stmt_vehiculos->fetchAll(PDO::FETCH_ASSOC);
 $success = false;
 if (isset($_GET['success']) && $_GET['success'] == 'true') {
     $success = true;
+}
+
+// Fetch nombre_completo and foto_perfil if not in session
+$nombre_completo = $_SESSION['nombre_completo'] ?? null;
+$foto_perfil = $_SESSION['foto_perfil'] ?? null;
+if (!$nombre_completo || !$foto_perfil) {
+    $user_query = $con->prepare("SELECT nombre_completo, foto_perfil FROM usuarios WHERE documento = :documento");
+    $user_query->bindParam(':documento', $documento, PDO::PARAM_STR);
+    $user_query->execute();
+    $user = $user_query->fetch(PDO::FETCH_ASSOC);
+    $nombre_completo = $user['nombre_completo'] ?? 'Usuario';
+    $foto_perfil = $user['foto_perfil'] ?: 'proyecto/roles/usuario/css/img/perfil.jpg';
+    $_SESSION['nombre_completo'] = $nombre_completo;
+    $_SESSION['foto_perfil'] = $foto_perfil;
 }
 ?>
 
@@ -46,24 +60,9 @@ if (isset($_GET['success']) && $_GET['success'] == 'true') {
     <link rel="stylesheet" href="../css/estilos_formulario_carro.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 </head>
-<body>
-    <div class="header">
-        <div class="logo">
-            <img src="../../../css/img/logo.png" alt="Logo">
-            <span class="empresa">Flotax AGC</span>
-        </div>
-        <div class="menu">
-            <a href="../index.php">Volver al Panel</a>
-        </div>
-        <div class="perfil">
-            <img src="../css/img/perfil.jpg" alt="Usuario" class="imagen-usuario">
-            <div class="info-usuario">
-                <span><?php echo htmlspecialchars($nombre_completo); ?></span>
-                <br>
-                <span>Usuario</span>
-            </div>
-        </div>
-    </div>
+    <?php
+        include('../header.php')
+    ?>
 
     <?php if ($success): ?>
         <div class="success-message" style="text-align: center; color: green; margin: 20px 0;">

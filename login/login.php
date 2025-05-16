@@ -63,7 +63,7 @@ $estado = 1 ;
                                 <div>
                                     <div class = "input_field_passw" id="grupo_passw">
                                         <label for="passw"></label>
-                                        <i class="bi bi-lock-fill"></i>
+                                        <i class="bi bi-eye-slash" id="showpass1" onclick="showpass1()"></i>
                                         <input type="password" name = "passw" id = "passw" placeholder = "Contraseña">
                                     </div>
                                     <div class="formulario_error_passw" id=" formulario_correcto_passw">
@@ -115,6 +115,20 @@ $estado = 1 ;
                 });
             });
         });
+        function showpass1() {
+            const passw = document.getElementById("passw");
+            const icon = document.getElementById("showpass1");
+
+            if (passw.type === "password") {
+                passw.type = "text";
+                icon.classList.remove("bi-eye-slash");
+                icon.classList.add("bi-eye");
+            } else {
+                passw.type = "password";
+                icon.classList.remove("bi-eye");
+                icon.classList.add("bi-eye-slash");
+            }
+        }
     </script>
 </body>
 

@@ -118,7 +118,7 @@ $rol = 2;
                         <div>
                             <div class = "input_field_con" id="grupo_con">
                                 <label for="con"></label>
-                                <i class="bi bi-lock-fill"></i>
+                                <i class="bi bi-eye-slash" id="showpass1" onclick="showpass1()"></i>
                                 <input type="password" name = "con" id = "con" placeholder = "Contraseña" value="" maxlength= "15" minlength = "8">
                             </div>
                             <div class="formulario_error_con">
@@ -129,7 +129,7 @@ $rol = 2;
                         <div>
                             <div class = "input_field_con2" id="grupo_con2">
                                 <label for="con2"></label>
-                                <i class="bi bi-lock-fill"></i>
+                                <i class="bi bi-eye-slash" id="showpass2" onclick="showpass2()"></i>
                                 <input type="password" name = "con2" id = "con2" placeholder = "Confirmar Contraseña" value="" maxlength= "15" minlength = "8">
                             </div>
                             <div class="formulario_error_con2">
@@ -164,7 +164,38 @@ $rol = 2;
             </div>
         </div>
     </div>
+    <script>
+        function showpass1() {
+            const passw = document.getElementById("con");
+            const icon = document.getElementById("showpass1");
 
+            if (passw.type === "password") {
+                passw.type = "text";
+                icon.classList.remove("bi-eye-slash");
+                icon.classList.add("bi-eye");
+            } else {
+                passw.type = "password";
+                icon.classList.remove("bi-eye");
+                icon.classList.add("bi-eye-slash");
+            }
+        }
+
+        function showpass2() {
+            const passw = document.getElementById("con2");
+            const icon = document.getElementById("showpass2");
+
+            if (passw.type === "password") {
+                passw.type = "text";
+                icon.classList.remove("bi-eye-slash");
+                icon.classList.add("bi-eye");
+            } else {
+                passw.type = "password";
+                icon.classList.remove("bi-eye");
+                icon.classList.add("bi-eye-slash");
+            }
+        }
+    </script>
+    
     <script src="../js/scriptregistro.js"></script>
 </body>
 </html>

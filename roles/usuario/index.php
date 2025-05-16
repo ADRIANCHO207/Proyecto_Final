@@ -21,10 +21,13 @@ if (!$nombre_completo || !$foto_perfil) {
     $user_query->execute();
     $user = $user_query->fetch(PDO::FETCH_ASSOC);
     $nombre_completo = $user['nombre_completo'] ?? 'Usuario';
-    $foto_perfil = $user['foto_perfil'] ? $user['foto_perfil'] . '?v=' . time() : 'css/img/default.jpg';
+    $foto_perfil = $user['foto_perfil'] ?: 'proyecto/roles/usuario/css/img/perfil.jpg';
     $_SESSION['nombre_completo'] = $nombre_completo;
     $_SESSION['foto_perfil'] = $foto_perfil;
 }
+
+
+
 ?>
 
 <!DOCTYPE html>
@@ -40,22 +43,9 @@ if (!$nombre_completo || !$foto_perfil) {
 </head>
 <body>
 
-<div class="header">
-    <div class="logo">
-        <img src="css/img/logo.jpeg" alt="Logo">
-        <span class="empresa">Flotax AGC</span>
-    </div>
-    <div class="menu">
-        <a href="vehiculos/formulario.php" class="boton">Registrar Vehículo</a>
-    </div>
-    <div class="perfil" onclick="openModal()">
-        <img src="<?php echo htmlspecialchars($foto_perfil); ?>" alt="Usuario" class="imagen-usuario">
-        <div class="info-usuario">
-            <span><?php echo htmlspecialchars($nombre_completo); ?></span>
-            <span>Perfil Usuario</span>
-        </div>
-    </div>
-</div>
+<?php
+include('header.php')
+?>
 
 <?php if (isset($_SESSION['success']) || isset($_SESSION['error'])): ?>
 <div class="notification">
@@ -122,50 +112,6 @@ if (!$nombre_completo || !$foto_perfil) {
     </a>
 </div>
 
-<div id="profileModal" class="modal">
-    <div class="modal-content">
-        <button class="close" onclick="closeModal()">Cerrar</button>
-        <h2>Información del Usuario</h2>
-        <img src="<?php echo htmlspecialchars($foto_perfil); ?>" alt="Foto de Perfil" class="imagen-usuario modal-imagen-usuario">
-        <?php
-        $user_query = $con->prepare("SELECT documento, nombre_completo, email, telefono FROM usuarios WHERE documento = :documento");
-        $user_query->bindParam(':documento', $documento, PDO::PARAM_STR);
-        $user_query->execute();
-        $user = $user_query->fetch(PDO::FETCH_ASSOC);
-        ?>
-        <p><strong>Documento:</strong> <?php echo htmlspecialchars($user['documento']); ?></p>
-        <p><strong>Nombre:</strong> <?php echo htmlspecialchars($user['nombre_completo']); ?></p>
-        <p><strong>Email:</strong> <?php echo htmlspecialchars($user['email']); ?></p>
-        <p><strong>Teléfono:</strong> <?php echo htmlspecialchars($user['telefono']); ?></p>
-        <form action="actualizar_foto.php" method="post" enctype="multipart/form-data">
-            <label for="foto_perfil">Cambiar Foto de Perfil:</label>
-            <p class="upload-instructions">Formatos: JPEG, PNG, GIF. Máximo 5MB. Recomendado: 512x512 píxeles.</p>
-            <input type="file" id="foto_perfil" name="foto_perfil" accept="image/jpeg,image/png,image/gif" required>
-            <button type="submit">Actualizar Foto</button>
-        </form>
-    </div>
-</div>
-
-<footer class="footer">
-    <div class="footer-content">
-        <p>© 2024 Flotax AGC. Todos los derechos reservados.</p>
-        <div class="social-media">
-            <a href="https://facebook.com" target="_blank" class="social-icon"><i class="bi bi-facebook"></i></a>
-            <a href="https://twitter.com" target="_blank" class="social-icon"><i class="bi bi-twitter"></i></a>
-            <a href="https://instagram.com" target="_blank" class="social-icon"><i class="bi bi-instagram"></i></a>
-            <a href="https://wa.me/1234567890" target="_blank" class="social-icon"><i class="bi bi-whatsapp"></i></a>
-        </div>
-    </div>
-</footer>
-
-<script>
-function openModal() {
-    document.getElementById('profileModal').style.display = 'flex';
-}
-function closeModal() {
-    document.getElementById('profileModal').style.display = 'none';
-}
-</script>
 
 </body>
 </html>
