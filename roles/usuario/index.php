@@ -21,7 +21,7 @@ if (!$nombre_completo || !$foto_perfil) {
     $user_query->execute();
     $user = $user_query->fetch(PDO::FETCH_ASSOC);
     $nombre_completo = $user['nombre_completo'] ?? 'Usuario';
-    $foto_perfil = $user['foto_perfil'] ?: 'proyecto/roles/usuario/css/img/perfil.jpg';
+    $foto_perfil = $user['foto_perfil'] ?: '/proyecto/roles/usuario/css/img/perfil.jpg';
     $_SESSION['nombre_completo'] = $nombre_completo;
     $_SESSION['foto_perfil'] = $foto_perfil;
 }
@@ -74,10 +74,10 @@ include('header.php')
         <a href="vehiculos/gestionar_pico_placa.php" class="boton">
             <i class="bi bi-sign-stop"></i> Pico y Placa
         </a>
-        <a href="vehiculos/gestionar_llantas.php" class="boton">
+        <a href="mantenimiento/gestionar_llantas.php" class="boton">
             <i class="bi bi-circle"></i> Llantas
         </a>
-        <a href="vehiculos/gestionar_mantenimiento.php" class="boton">
+        <a href="mantenimiento/gestionar_mantenimiento.php" class="boton">
             <i class="bi bi-oil"></i> Mantenimiento y Aceite
         </a>
     </div>

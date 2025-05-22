@@ -57,7 +57,7 @@ if (!$nombre_completo || !$foto_perfil) {
     $user_query->execute();
     $user = $user_query->fetch(PDO::FETCH_ASSOC);
     $nombre_completo = $user['nombre_completo'] ?? 'Usuario';
-    $foto_perfil = $user['foto_perfil'] ?: 'proyecto/roles/usuario/css/img/perfil.jpg';
+    $foto_perfil = $user['foto_perfil'] ?: '/proyecto/roles/usuario/css/img/perfil.jpg';
     $_SESSION['nombre_completo'] = $nombre_completo;
     $_SESSION['foto_perfil'] = $foto_perfil;
 }
@@ -133,4 +133,222 @@ if (!$nombre_completo || !$foto_perfil) {
         </form>
     </div>
 </body>
+
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registro de Licencia</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="estilos.css">
+  <script defer src="validacion.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+</head>
+<body class="bg-light">
+
+  <div class="container mt-5">
+    <div class="card shadow-lg">
+      <div class="card-header bg-primary text-white">
+        <h4><i class="bi bi-person-vcard-fill"></i> Registro de Licencia de Conducción</h4>
+      </div>
+      <div class="card-body">
+        <form id="formLicencia" method="post" action="">
+          <div class="mb-3">
+            <label class="form-label">Número de Licencia</label>
+            <input type="text" class="form-control" id="numeroLicencia" name="numeroLicencia" required>
+            <div class="error" id="errorNumero"></div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Nombre Completo</label>
+            <input type="text" class="form-control" id="nombre" name="nombre" required>
+            <div class="error" id="errorNombre"></div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Documento de Identidad</label>
+            <input type="text" class="form-control" id="documento" name="documento" required>
+            <div class="error" id="errorDocumento"></div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Fecha de Expedición</label>
+            <input type="date" class="form-control" id="fechaExpedicion" name="fechaExpedicion" required>
+            <div class="error" id="errorExpedicion"></div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Fecha de Vencimiento</label>
+            <input type="date" class="form-control" id="fechaVencimiento" name="fechaVencimiento" required>
+            <div class="error" id="errorVencimiento"></div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Categoría</label>
+            <select class="form-select" id="categoria" name="categoria" required>
+              <option value="">Seleccione...</option>
+              <option value="A1">A1</option>
+              <option value="A2">A2</option>
+              <option value="B1">B1</option>
+              <option value="B2">B2</option>
+              <option value="C1">C1</option>
+              <option value="C2">C2</option>
+            </select>
+            <div class="error" id="errorCategoria"></div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Estado</label>
+            <select class="form-select" id="estado" name="estado" required>
+              <option value="">Seleccione...</option>
+              <option value="activo">Activo</option>
+              <option value="vencido">Vencido</option>
+              <option value="suspendido">Suspendido</option>
+            </select>
+            <div class="error" id="errorEstado"></div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">servicio</label>
+            <select class="form-select" id="estado" name="estado" required>
+              <option value="">Seleccione...</option>
+              <option>particular</option>
+              <option>publica</option>
+            </select>
+            <div class="error" id="errorEstado"></div>
+          </div>
+
+          <button type="submit" class="btn btn-success">
+            <i class="bi bi-save-fill"></i> Registrar Licencia
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+                            <!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registro de SOAT</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="estilos.css">
+  <script defer src="validar_soat.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+</head>
+<body class="bg-light">
+
+  <div class="container mt-5">
+    <div class="card shadow-lg">
+      <div class="card-header bg-success text-white">
+        <h4><i class="bi bi-shield-check"></i> Registro de SOAT</h4>
+      </div>
+      <div class="card-body">
+        <form id="formSoat" method="post" action="">
+          <div class="mb-3">
+            <label class="form-label">Número de Póliza</label>
+            <input type="text" class="form-control" id="numeroPoliza" name="numeroPoliza" required>
+            <div class="error" id="errorPoliza"></div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Placa del Vehículo</label>
+            <input type="text" class="form-control" id="placa" name="placa" required>
+            <div class="error" id="errorPlaca"></div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Fecha de Expedición</label>
+            <input type="date" class="form-control" id="fechaExpedicion" name="fechaExpedicion" required>
+            <div class="error" id="errorExpedicion"></div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Fecha de Vencimiento</label>
+            <input type="date" class="form-control" id="fechaVencimiento" name="fechaVencimiento" required>
+            <div class="error" id="errorVencimiento"></div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Aseguradora</label>
+            <input type="text" class="form-control" id="aseguradora" name="aseguradora" required>
+            <div class="error" id="errorAseguradora"></div>
+          </div>
+
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-save-fill"></i> Registrar SOAT
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registro de Técnico-Mecánica</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="estilos.css">
+  <script defer src="validar_tecnico.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+</head>
+<body class="bg-light">
+
+  <div class="container mt-5">
+    <div class="card shadow-lg">
+      <div class="card-header bg-warning text-dark">
+        <h4><i class="bi bi-tools"></i> Registro de Revisión Técnico-Mecánica</h4>
+      </div>
+      <div class="card-body">
+        <form id="formTecnico" method="post" action="">
+          <div class="mb-3">
+            <label class="form-label">Placa del Vehículo</label>
+            <input type="text" class="form-control" id="placa" name="placa" required>
+            <div class="error" id="errorPlaca"></div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Centro de Revisión</label>
+            <input type="text" class="form-control" id="centro" name="centro" required>
+            <div class="error" id="errorCentro"></div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Fecha de Revisión</label>
+            <input type="date" class="form-control" id="fechaRevision" name="fechaRevision" required>
+            <div class="error" id="errorRevision"></div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Fecha de Vencimiento</label>
+            <input type="date" class="form-control" id="fechaVencimiento" name="fechaVencimiento" required>
+            <div class="error" id="errorVencimiento"></div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Resultado</label>
+            <select class="form-select" id="resultado" name="resultado" required>
+              <option value="">Seleccione...</option>
+              <option value="aprobado">Aprobado</option>
+              <option value="rechazado">Rechazado</option>
+            </select>
+            <div class="error" id="errorResultado"></div>
+          </div>
+
+          <button type="submit" class="btn btn-dark">
+            <i class="bi bi-save-fill"></i> Registrar Revisión
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
+
+</body>
+</html>
+
 </html>

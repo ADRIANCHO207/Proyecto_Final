@@ -2,13 +2,13 @@
 <div class="header">
     <div class="logo">
         <a href="/proyecto/roles/usuario/index.php">
-            <img src="/proyecto/roles/usuario/css/img/logo.jpeg" alt="Logo">
+            <img src="/proyecto/roles/usuario/css/img/logo_sinfondo.png" alt="Logo">
             <span class="empresa">Flotax AGC</span>
         </a>
     </div>
     <div class="menu">
         <a href="/proyecto/roles/usuario/index.php" class="boton">Inicio</a>
-        <a href="/proyecto/roles/usuario/vehiculos/formulario.php" class="boton">Registrar Vehículo</a>
+        <a href="/proyecto/roles/usuario/vehiculos/registrar_vehiculos.php" class="boton">Registrar Vehículo</a>
     </div>
     <div class="perfil" onclick="openModal()">
         <img src="<?= $_SESSION['foto_perfil'] ?>" alt="Foto de perfil" class="imagen-usuario">
