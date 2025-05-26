@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-
 <?php
 session_start();
 require_once('../../../conecct/conex.php');
@@ -79,5 +77,3 @@ $fila = $sql->fetch();
 
 </body>
 </html>
-=======
->>>>>>> a7018a5 (apis y admin)

@@ -5,10 +5,10 @@ include '../../../includes/validarsession.php';
 
 // Instantiate the Database class and get the PDO connection
 $database = new Database();
-$conn = $database->conectar();
+$con = $database->conectar();
 
 // Check if the connection is successful
-if (!$conn) {
+if (!$con) {
     die("Error: No se pudo conectar a la base de datos. Verifique el archivo conex.php.");
 }
 
@@ -23,25 +23,25 @@ if (!$documento) {
 $nombre_completo = $_SESSION['nombre_completo'] ?? null;
 $foto_perfil = $_SESSION['foto_perfil'] ?? null;
 if (!$nombre_completo || !$foto_perfil) {
-    $user_query = $conn->prepare("SELECT nombre_completo, foto_perfil FROM usuarios WHERE documento = :documento");
+    $user_query = $con->prepare("SELECT nombre_completo, foto_perfil FROM usuarios WHERE documento = :documento");
     $user_query->bindParam(':documento', $documento, PDO::PARAM_STR);
     $user_query->execute();
     $user = $user_query->fetch(PDO::FETCH_ASSOC);
     $nombre_completo = $user['nombre_completo'] ?? 'Usuario';
-    $foto_perfil = $user['foto_perfil'] ?? '../css/img/perfil.jpg';
+    $foto_perfil = $user['foto_perfil'] ?? '/proyecto/roles/usuario/css/img/perfil.jpg';
     $_SESSION['nombre_completo'] = $nombre_completo;
     $_SESSION['foto_perfil'] = $foto_perfil;
 }
 
 // Fetch vehicle types from the tipo_vehiculo table using PDO
 $query_tipos = "SELECT id_tipo_vehiculo, vehiculo FROM tipo_vehiculo";
-$stmt_tipos = $conn->prepare($query_tipos);
+$stmt_tipos = $con->prepare($query_tipos);
 $stmt_tipos->execute();
 $result_tipos = $stmt_tipos->fetchAll(PDO::FETCH_ASSOC);
 
 // Fetch states from the estado_vehiculo table using PDO
 $query_estados = "SELECT id_estado, estado FROM estado_vehiculo";
-$stmt_estados = $conn->prepare($query_estados);
+$stmt_estados = $con->prepare($query_estados);
 $stmt_estados->execute();
 $result_estados = $stmt_estados->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -52,31 +52,18 @@ $result_estados = $stmt_estados->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Técnico-Mecánica - Flotax AGC</title>
+    <link rel="shortcut icon" href="../../../css/img/logo_sinfondo.png">
     <link rel="stylesheet" href="../css/styles.css">
-    <link rel="stylesheet" href="../css/estilos_formulario_carro.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="header">
-        <div class="logo">
-            <img src="../css/img/logo.jpeg" alt="Logo">
-            <span class="empresa">Flotax AGC</span>
-        </div>
-        <div class="menu">
-            <a href="../index.php">Volver al Panel</a>
-        </div>
-        <div class="perfil">
-            <img src="../<?php echo htmlspecialchars($foto_perfil); ?>" alt="Usuario" class="imagen-usuario">
-            <div class="info-usuario">
-                <span><?php echo htmlspecialchars($nombre_completo); ?></span>
-                <br>
-                <span>Usuario</span>
-            </div>
-        </div>
-    </div>
+    <?php
+        include('../header.php')
+    ?>
 
     <div class="form-container">
-        <form method="POST" action="guardar_vehiculo.php" enctype="multipart/form-data">
+        <form method="POST" action="guardar_vehiculo.php" enctype="multipart/form-data" class="form">
             <h2>Registrar Vehículo</h2>
             <div class="form-grid">
                 <div class="form-group">

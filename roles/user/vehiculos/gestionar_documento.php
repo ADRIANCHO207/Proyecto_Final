@@ -5,10 +5,10 @@ include '../../../includes/validarsession.php';
 
 // Instantiate the Database class and get the PDO connection
 $database = new Database();
-$conn = $database->conectar();
+$con = $database->conectar();
 
 // Check if the connection is successful
-if (!$conn) {
+if (!$con) {
     die("Error: No se pudo conectar a la base de datos. Verifique el archivo conex.php.");
 }
 
@@ -22,18 +22,46 @@ if (!$documento) {
 // Fetch user's full name for the profile section
 $nombre_completo = $_SESSION['nombre_completo'] ?? 'Usuario';
 
+// Get the tipo from the URL (e.g., SOAT, Tecnomecanica, Licencia_Conduccion)
+$tipo = $_GET['tipo'] ?? '';
+if (empty($tipo) || !in_array($tipo, ['SOAT', 'Tecnomecanica', 'Licencia_Conduccion'])) {
+    header('Location: ../index.php');
+    exit;
+}
+
 // Fetch vehicles for the user
 $query_vehiculos = "SELECT placa FROM vehiculos WHERE Documento = :documento";
-$stmt_vehiculos = $conn->prepare($query_vehiculos);
+$stmt_vehiculos = $con->prepare($query_vehiculos);
 $stmt_vehiculos->bindParam(':documento', $documento);
 $stmt_vehiculos->execute();
 $vehiculos = $stmt_vehiculos->fetchAll(PDO::FETCH_ASSOC);
+
+// Fetch empresas tramite
+$query_empresas = "SELECT id, Empresa FROM empresa_tramite";
+$stmt_empresas = $con->prepare($query_empresas);
+$stmt_empresas->execute();
+$empresas = $stmt_empresas->fetchAll(PDO::FETCH_ASSOC);
 
 // Check if form was just submitted (for success message)
 $success = false;
 if (isset($_GET['success']) && $_GET['success'] == 'true') {
     $success = true;
 }
+
+// Fetch nombre_completo and foto_perfil if not in session
+$nombre_completo = $_SESSION['nombre_completo'] ?? null;
+$foto_perfil = $_SESSION['foto_perfil'] ?? null;
+if (!$nombre_completo || !$foto_perfil) {
+    $user_query = $con->prepare("SELECT nombre_completo, foto_perfil FROM usuarios WHERE documento = :documento");
+    $user_query->bindParam(':documento', $documento, PDO::PARAM_STR);
+    $user_query->execute();
+    $user = $user_query->fetch(PDO::FETCH_ASSOC);
+    $nombre_completo = $user['nombre_completo'] ?? 'Usuario';
+    $foto_perfil = $user['foto_perfil'] ?: 'proyecto/roles/usuario/css/img/perfil.jpg';
+    $_SESSION['nombre_completo'] = $nombre_completo;
+    $_SESSION['foto_perfil'] = $foto_perfil;
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -41,29 +69,15 @@ if (isset($_GET['success']) && $_GET['success'] == 'true') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestionar Pico y Placa - Flotax AGC</title>
+    <title>Gestionar <?php echo htmlspecialchars($tipo); ?> - Flotax AGC</title>
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="../css/estilos_formulario_carro.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
-    <div class="header">
-        <div class="logo">
-            <img src="../../../css/img/logo.png" alt="Logo">
-            <span class="empresa">Flotax AGC</span>
-        </div>
-        <div class="menu">
-            <a href="../index.php">Volver al Panel</a>
-        </div>
-        <div class="perfil">
-            <img src="../css/img/perfil.jpg" alt="Usuario" class="imagen-usuario">
-            <div class="info-usuario">
-                <span><?php echo htmlspecialchars($nombre_completo); ?></span>
-                <br>
-                <span>Usuario</span>
-            </div>
-        </div>
-    </div>
+    <?php
+        include('../header.php')   
+    ?>
 
     <?php if ($success): ?>
         <div class="success-message" style="text-align: center; color: green; margin: 20px 0;">
@@ -72,9 +86,9 @@ if (isset($_GET['success']) && $_GET['success'] == 'true') {
     <?php endif; ?>
 
     <div class="form-container">
-        <form method="POST" action="guardar_pico_placa.php">
+        <form method="POST" action="guardar_documento.php">
             <a href="../index.php" class="btn-back">← Atrás</a>
-            <h2>Gestionar Pico y Placa</h2>
+            <h2>Gestionar <?php echo htmlspecialchars($tipo); ?></h2>
             <div class="form-grid">
                 <div class="form-group">
                     <label for="placa">Vehículo (Placa):</label>
@@ -89,18 +103,28 @@ if (isset($_GET['success']) && $_GET['success'] == 'true') {
                 </div>
 
                 <div class="form-group">
-                    <label for="dia">Día de Pico y Placa:</label>
-                    <select name="dia" id="dia" required>
+                    <label for="empresa_tramite">Empresa de Trámite:</label>
+                    <select name="empresa_tramite" id="empresa_tramite" required>
                         <option value="">Seleccione...</option>
-                        <option value="Lunes">Lunes</option>
-                        <option value="Martes">Martes</option>
-                        <option value="Miércoles">Miércoles</option>
-                        <option value="Jueves">Jueves</option>
-                        <option value="Viernes">Viernes</option>
-                        <option value="Sábado">Sábado</option>
-                        <option value="No aplica">No aplica</option>
+                        <?php foreach ($empresas as $empresa) { ?>
+                            <option value="<?php echo htmlspecialchars($empresa['id']); ?>">
+                                <?php echo htmlspecialchars($empresa['Empresa']); ?>
+                            </option>
+                        <?php } ?>
                     </select>
                 </div>
+
+                <div class="form-group">
+                    <label for="fecha_inicio">Fecha de Inicio:</label>
+                    <input type="date" name="fecha_inicio" id="fecha_inicio" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="fecha_vencimiento">Fecha de Vencimiento:</label>
+                    <input type="date" name="fecha_vencimiento" id="fecha_vencimiento" required>
+                </div>
+
+                <input type="hidden" name="tipo_documento" value="<?php echo htmlspecialchars($tipo); ?>">
 
                 <div class="btn-container">
                     <button type="submit">Guardar</button>

@@ -21,10 +21,12 @@ if (!$nombre_completo || !$foto_perfil) {
     $user_query->execute();
     $user = $user_query->fetch(PDO::FETCH_ASSOC);
     $nombre_completo = $user['nombre_completo'] ?? 'Usuario';
-    $foto_perfil = $user['foto_perfil'] ?: 'css/img/perfil.jpg';
+    $foto_perfil = $user['foto_perfil'] ?: 'Proyecto_Final/roles/usuario/css/img/perfil.jpg';
     $_SESSION['nombre_completo'] = $nombre_completo;
     $_SESSION['foto_perfil'] = $foto_perfil;
 }
+
+
 ?>
 
 <!DOCTYPE html>
@@ -33,16 +35,14 @@ if (!$nombre_completo || !$foto_perfil) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flotax AGC - Inicio</title>
-    <link rel="shortcut icon" href="../../css/img/logo_sinfondo.png">
+    <link rel="shortcut icon" href="../../css/img/Imagen_de_WhatsApp_2025-05-21_a_las_07.17-Photoroom__1_-removebg-preview.png">
     <link rel="stylesheet" href="css/styles.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<?php
-include('header.php')
-?>
+
 
 <?php if (isset($_SESSION['success']) || isset($_SESSION['error'])): ?>
 <div class="notification">
@@ -61,6 +61,9 @@ include('header.php')
     <div class="alertas-grid">
         <a href="vehiculos/gestionar_documento.php?tipo=SOAT" class="boton">
             <i class="bi bi-shield-check"></i> SOAT
+        </a>
+           <a href="vehiculos/multas.php?tipo=SOAT" class="boton">
+            <i class="bi bi-shield-check"></i> Multas y Comparendos
         </a>
         <a href="vehiculos/gestionar_documento.php?tipo=Tecnomecanica" class="boton">
             <i class="bi bi-tools"></i> Tecnomecánica
@@ -109,51 +112,6 @@ include('header.php')
     </a>
 </div>
 
-<div id="profileModal" class="modal">
-    <div class="modal-content">
-        <button class="close" onclick="closeModal()">Cerrar</button>
-        <h2>Información del Usuario</h2>
-        <?php
-        // Usar la misma lógica que en el header: simplemente mostrar la imagen con cache-busting
-        $imagePath = htmlspecialchars($foto_perfil) . '?v=' . time();
-        ?>
-        <img src="<?php echo $imagePath; ?>" alt="Foto de Perfil" class="usu_imagen" style="max-width: 100%; height: auto;">
-        <?php if ($foto_perfil === 'css/img/perfil.jpg'): ?>
-            <p>Debug: Usando imagen predeterminada.</p>
-        <?php endif; ?>
-        <form action="actualizar_foto.php" method="post" enctype="multipart/form-data">
-            <label for="foto_perfil">Cambiar Foto de Perfil:</label>
-            <p class="upload-instructions">Formatos: JPEG, PNG, GIF. Máximo 5MB. Recomendado: 512x512 píxeles.</p>
-            <input type="file" id="foto_perfil" name="foto_perfil" accept="image/jpeg,image/png,image/gif">
-            <button type="submit" class="boton">Actualizar Foto</button>
-        </form>
-        <form action="actualizar_foto.php" method="post">
-            <input type="hidden" name="reset_image" value="1">
-            <button type="submit" class="boton">Restablecer Imagen</button>
-        </form>
-    </div>
-</div>
-
-<footer class="footer">
-    <div class="footer-content">
-        <p>© 2024 Flotax AGC. Todos los derechos reservados.</p>
-        <div class="social-media">
-            <a href="https://facebook.com" target="_blank" class="social-icon"><i class="bi bi-facebook"></i></a>
-            <a href="https://twitter.com" target="_blank" class="social-icon"><i class="bi bi-twitter"></i></a>
-            <a href="https://instagram.com" target="_blank" class="social-icon"><i class="bi bi-instagram"></i></a>
-            <a href="https://wa.me/1234567890" target="_blank" class="social-icon"><i class="bi bi-whatsapp"></i></a>
-        </div>
-    </div>
-</footer>
-
-<script>
-function openModal() {
-    document.getElementById('profileModal').style.display = 'flex';
-}
-function closeModal() {
-    document.getElementById('profileModal').style.display = 'none';
-}
-</script>
 
 </body>
 </html>

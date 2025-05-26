@@ -4,11 +4,8 @@ $db = new Database();
 $con = $db->conectar();
 session_start();
 $estado = 1 ;
-<<<<<<< HEAD
-=======
 $rol = 2;
 
->>>>>>> a7018a5 (apis y admin)
 ?>
 
 <?php
@@ -19,13 +16,8 @@ $rol = 2;
         $cont = $_POST['con'];
         $con2 = $_POST['con2'];
         $cel = $_POST['cel'];
-<<<<<<< HEAD
-        $rol = $_POST['id_rol'];
-
-=======
 
         // echo $doc,"\n", $nom, "\n", $correo, "\n", $cont, "\n", $con2, "\n", $cel, "\n", $rol, "\n", $estado;
->>>>>>> a7018a5 (apis y admin)
 
         if ($cont != $con2){
             echo '<script>alert ("Contraseñas no son iguales...")</script>';
@@ -46,11 +38,7 @@ $rol = 2;
                 echo '<script>alert ("Documento ya existe no se puede repetir")</script>';
                 echo '<script>window.location = "register.php"</script>';
             }
-<<<<<<< HEAD
-            if ($doc=="" || $nom == "" || $correo == "" || $cont=="" || $con2=="" || $cel=="" || $rol==""){
-=======
             if ($doc=="" || $nom == "" || $correo == "" || $cont=="" || $con2=="" || $cel==""){
->>>>>>> a7018a5 (apis y admin)
                 echo '<script>alert("Existen datos vacios...")</script>';
             echo '<script>window.location = "register.php"</script>';
             }
@@ -75,79 +63,6 @@ $rol = 2;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro</title>
-<<<<<<< HEAD
-    <link rel="shortcut icon" href="css/img/logo_sinfondo.png">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../css/stylelog.css">
-</head>
-<body>
-    <div class ="contenido">
-        <div class = "conten_form">
-            <div class="form_infor">
-                <a href="../index.php"><img src="../css/img/logo_sinfondo.png" alt="logo" class="logo"></a>
-                
-                <h1 class= "titulo" >Registro</h1>
-                <form action = "" method = "post" enctype = "multipart/form-data">
-                    <div class= "input_grupo">
-                        <div class = "input_field">
-                            <label for="doc"></label>
-                            <i class="bi bi-person-vcard"></i>
-                            <input type="number" name = "doc" id = "doc" placeholder = "Documento">
-            
-                        </div>
-                        
-                        <div class = "input_field">
-                            <label for="nom"></label>
-                            <i class="bi bi-card-heading"></i>
-                            <input type="text" name = "nom" id = "nom" placeholder = "Nombre Completo">
-                        </div>
-
-                        <div class = "input_field">
-                            <label for="correo"></label>
-                            <i class="bi bi-envelope-fill"></i>
-                            <input type="email" name = "correo" id = "correo" placeholder = "Correo">
-                        </div>
-
-                        <div class = "input_field">
-                            <label for="con"></label>
-                            <i class="bi bi-lock-fill"></i>
-                            <input type="password" name = "con" id = "con" placeholder = "Contraseña" value="" maxlength= "15" minlength = "8">
-                        </div>
-
-                        <div class = "input_field">
-                            <label for="con2"></label>
-                            <i class="bi bi-lock-fill"></i>
-                            <input type="password" name = "con2" id = "con2" placeholder = "Confirmar Contraseña" value="" maxlength= "15" minlength = "8">
-                        </div>
-
-                        <div class = "input_field">
-                            <label for="cel"></label>
-                            <i class="bi bi-telephone-fill"></i>
-                            <input type="number" name = "cel" id = "cel" placeholder = "Telefono">
-                        </div>
-
-
-        
-                        <div class = "input_field">
-                        <label for="id_rol"></label>
-                        <select name="id_rol"class="form-select" aria-label="Default select example">
-                            <option value="">Selecciona el rol</option>
-                            <?php
-                                $sql = $con ->prepare("SELECT * FROM roles WHERE id_rol >1");
-                                $sql->execute();
-                                while ($fila=$sql->fetch(PDO::FETCH_ASSOC)) {
-                                    echo "<option value =" . $fila['id_rol'] . ">" . $fila['tip_rol'] ."</option>";
-                                }
-                            ?>
-
-                        </select>
-                        </div>
-                    </div>
-                    <div class = "btn-field">
-                        <button type="submit" name = "enviar" id="enviar" value = "Guardar" class="btn btn-primary">Guardar</button>
-                    </div>
-=======
     <link rel="shortcut icon" href="../css/img/logo_sinfondo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -163,7 +78,7 @@ $rol = 2;
             </div>
         <div class = "conten_form">
             <div class="form_infor">
-                <img src="../css/img/logo_sinfondo.png" alt="logo" class="logo">
+                <img src="../css/img/logoagc-Photoroom.png" alt="logo" class="logo">
                 
                 <h1 class= "titulo" >Registro</h1>
                 <form action = "" method = "post" id="formulario" enctype = "multipart/form-data" autocomplete="off">
@@ -203,7 +118,7 @@ $rol = 2;
                         <div>
                             <div class = "input_field_con" id="grupo_con">
                                 <label for="con"></label>
-                                <i class="bi bi-lock-fill"></i>
+                                <i class="bi bi-eye-slash" id="showpass1" onclick="showpass1()"></i>
                                 <input type="password" name = "con" id = "con" placeholder = "Contraseña" value="" maxlength= "15" minlength = "8">
                             </div>
                             <div class="formulario_error_con">
@@ -214,7 +129,7 @@ $rol = 2;
                         <div>
                             <div class = "input_field_con2" id="grupo_con2">
                                 <label for="con2"></label>
-                                <i class="bi bi-lock-fill"></i>
+                                <i class="bi bi-eye-slash" id="showpass2" onclick="showpass2()"></i>
                                 <input type="password" name = "con2" id = "con2" placeholder = "Confirmar Contraseña" value="" maxlength= "15" minlength = "8">
                             </div>
                             <div class="formulario_error_con2">
@@ -243,21 +158,44 @@ $rol = 2;
                         <button type="submit" name = "enviar" id="enviar" value = "Guardar" class="btn btn-primary">Registrarse</button>
                     </div>
                     <p class="formulario_exito" id="formulario_exito">Registro exitoso...</p>
->>>>>>> a7018a5 (apis y admin)
                     <p>¿Ya tienes una cuenta?<a class="re"href="login.php">Inicia Sesion</a></p>
             
                 </form>
             </div>
         </div>
     </div>
+    <script>
+        function showpass1() {
+            const passw = document.getElementById("con");
+            const icon = document.getElementById("showpass1");
 
-<<<<<<< HEAD
+            if (passw.type === "password") {
+                passw.type = "text";
+                icon.classList.remove("bi-eye-slash");
+                icon.classList.add("bi-eye");
+            } else {
+                passw.type = "password";
+                icon.classList.remove("bi-eye");
+                icon.classList.add("bi-eye-slash");
+            }
+        }
 
+        function showpass2() {
+            const passw = document.getElementById("con2");
+            const icon = document.getElementById("showpass2");
 
-</body>
-</html>
-=======
+            if (passw.type === "password") {
+                passw.type = "text";
+                icon.classList.remove("bi-eye-slash");
+                icon.classList.add("bi-eye");
+            } else {
+                passw.type = "password";
+                icon.classList.remove("bi-eye");
+                icon.classList.add("bi-eye-slash");
+            }
+        }
+    </script>
+    
     <script src="../js/scriptregistro.js"></script>
 </body>
 </html>
->>>>>>> a7018a5 (apis y admin)

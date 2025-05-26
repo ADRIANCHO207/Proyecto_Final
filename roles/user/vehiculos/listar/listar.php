@@ -7,12 +7,12 @@ include '../../../../includes/validarsession.php';
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Instantiate the Database class and get the PDO connection
+// Instantiate the Database class and get the PDO conection
 $database = new Database();
-$conn = $database->conectar();
+$con = $database->conectar();
 
-// Check if the connection is successful
-if (!$conn) {
+// Check if the conection is successful
+if (!$con) {
     die("Error: No se pudo conectar a la base de datos.");
 }
 
@@ -27,7 +27,7 @@ if (!$documento) {
 $nombre_completo = $_SESSION['nombre_completo'] ?? null;
 $foto_perfil = $_SESSION['foto_perfil'] ?? null;
 if (!$nombre_completo || !$foto_perfil) {
-    $user_query = $conn->prepare("SELECT nombre_completo, foto_perfil FROM usuarios WHERE documento = :documento");
+    $user_query = $con->prepare("SELECT nombre_completo, foto_perfil FROM usuarios WHERE documento = :documento");
     $user_query->bindParam(':documento', $documento, PDO::PARAM_STR);
     $user_query->execute();
     $user = $user_query->fetch(PDO::FETCH_ASSOC);
@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['new_foto_vehiculo'])
                     error_log("File successfully uploaded to: $upload_path");
 
                     // Fetch the current image path to delete it
-                    $current_image_query = $conn->prepare("SELECT foto_vehiculo FROM vehiculos WHERE placa = :placa AND Documento = :documento");
+                    $current_image_query = $con->prepare("SELECT foto_vehiculo FROM vehiculos WHERE placa = :placa AND Documento = :documento");
                     $current_image_query->bindParam(':placa', $placa, PDO::PARAM_STR);
                     $current_image_query->bindParam(':documento', $documento, PDO::PARAM_STR);
                     $current_image_query->execute();
@@ -119,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['new_foto_vehiculo'])
                     }
 
                     // Update the database with the new image path
-                    $update_query = $conn->prepare("UPDATE vehiculos SET foto_vehiculo = :foto_vehiculo WHERE placa = :placa AND Documento = :documento");
+                    $update_query = $con->prepare("UPDATE vehiculos SET foto_vehiculo = :foto_vehiculo WHERE placa = :placa AND Documento = :documento");
                     $update_query->bindParam(':foto_vehiculo', $foto_vehiculo, PDO::PARAM_STR);
                     $update_query->bindParam(':placa', $placa, PDO::PARAM_STR);
                     $update_query->bindParam(':documento', $documento, PDO::PARAM_STR);
@@ -129,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['new_foto_vehiculo'])
                         error_log("Database updated with new image: $foto_vehiculo");
                     } else {
                         $upload_error = "Error al actualizar la imagen en la base de datos.";
-                        error_log("Database update failed: " . print_r($conn->errorInfo(), true));
+                        error_log("Database update failed: " . print_r($con->errorInfo(), true));
                         unlink($upload_path); // Remove the uploaded file if DB update fails
                     }
                 } else {
@@ -150,7 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['new_foto_vehiculo'])
 // Handle image reset if form is submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reset_image']) && $placa) {
     // Fetch the current image path to delete it
-    $current_image_query = $conn->prepare("SELECT foto_vehiculo FROM vehiculos WHERE placa = :placa AND Documento = :documento");
+    $current_image_query = $con->prepare("SELECT foto_vehiculo FROM vehiculos WHERE placa = :placa AND Documento = :documento");
     $current_image_query->bindParam(':placa', $placa, PDO::PARAM_STR);
     $current_image_query->bindParam(':documento', $documento, PDO::PARAM_STR);
     $current_image_query->execute();
@@ -169,7 +169,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reset_image']) && $pl
     $default_image = 'vehiculos/listar/guardar_foto_vehiculo/sin_foto_carro.png';
 
     // Update the database with the default image path
-    $reset_query = $conn->prepare("UPDATE vehiculos SET foto_vehiculo = :foto_vehiculo WHERE placa = :placa AND Documento = :documento");
+    $reset_query = $con->prepare("UPDATE vehiculos SET foto_vehiculo = :foto_vehiculo WHERE placa = :placa AND Documento = :documento");
     $reset_query->bindParam(':foto_vehiculo', $default_image, PDO::PARAM_STR);
     $reset_query->bindParam(':placa', $placa, PDO::PARAM_STR);
     $reset_query->bindParam(':documento', $documento, PDO::PARAM_STR);
@@ -179,7 +179,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reset_image']) && $pl
         error_log("Database updated to: $default_image");
     } else {
         $upload_error = "Error al restablecer la imagen en la base de datos.";
-        error_log("Database update failed: " . print_r($conn->errorInfo(), true));
+        error_log("Database update failed: " . print_r($con->errorInfo(), true));
     }
 }
 
@@ -195,7 +195,7 @@ if ($placa) {
         INNER JOIN estado_vehiculo ev ON v.id_estado = ev.id_estado
         WHERE v.placa = :placa AND v.Documento = :documento
     ";
-    $stmt = $conn->prepare($query);
+    $stmt = $con->prepare($query);
     $stmt->bindParam(':placa', $placa, PDO::PARAM_STR);
     $stmt->bindParam(':documento', $documento, PDO::PARAM_STR);
     $stmt->execute();
@@ -209,6 +209,7 @@ if ($placa) {
     $error = "Por favor, seleccione un vehículo.";
     error_log("No vehicle selected.");
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -224,22 +225,9 @@ if ($placa) {
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="header">
-        <div class="logo">
-            <img src="../../css/img/logo.jpeg" alt="Logo">
-            <span class="empresa">Flotax AGC</span>
-        </div>
-        <div class="menu">
-            <a href="../../index.php">Volver al Inicio</a>
-        </div>
-        <div class="perfil">
-            <img src="../../<?php echo htmlspecialchars($foto_perfil); ?>" alt="Usuario" class="imagen-usuario">
-            <div class="info-usuario">
-                <span><?php echo htmlspecialchars($nombre_completo); ?></span>
-                <span>Usuario</span>
-            </div>
-        </div>
-    </div>
+    <?php
+        include('../../header.php')
+    ?>
 
     <div class="container">
         <h2>Detalles del Vehículo</h2>
@@ -302,17 +290,5 @@ if ($placa) {
             </div>
         <?php endif; ?>
     </div>
-
-    <footer class="footer">
-        <div class="footer-content">
-            <p>© 2024 Flotax AGC. Todos los derechos reservados.</p>
-            <div class="social-media">
-                <a href="https://www.facebook.com/profile.php?id=100061808662027" target="_blank" class="social-icon"><i class="bi bi-facebook"></i></a>
-                <a href="https://www.instagram.com/flota_vehicular_agc/" target="_blank" class="social-icon"><i class="bi bi-instagram"></i></a>
-                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=flotavehicularagc@gmail.com" target="_blank" class="social-icon"><i class="bi bi-google"></i></a>
-                <a href="https://wa.me/1234567890" target="_blank" class="social-icon"><i class="bi bi-whatsapp"></i></a>
-            </div>
-        </div>
-    </footer>
 </body>
 </html>

@@ -60,84 +60,73 @@ if (!$nombre_completo || !$foto_perfil) {
   <div class="sidebar">
     <?php include 'menu.html'; ?> 
   </div>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Control de Documentos - Flota Vehicular</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .status-vigente { background-color: #d4edda; }
+    .status-proximo { background-color: #fff3cd; }
+    .status-vencido { background-color: #f8d7da; }
+    .documento-link { text-decoration: underline; color: #0d6efd; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="container py-4">
+    <h2 class="mb-4">🗂️ Control de Documentos</h2>
 
-  <div class="buscador mb-3">
-    <input type="text" id="buscar" class="form-control" placeholder="Buscar por nombre, documento o correo" onkeyup="filtrarTabla()">
-</div>
-
-
-  <div class="table-responsive">
-  <table class="table table-striped table-bordered" id="tablaUsuarios">
-  <thead class="text-center">
-                <tr>
-                    <th>#</th>
-                    <th>Placa</th>
-                    <th>Documento</th>
-                    <th>Propietario</th>
-                    <th>Marca</th>
-                    <th>Modelo</th>
-                    <th>Estado</th>
-                    <th>Kilometraje</th>
-                    <th>Registro</th>
-                    <th>Imagen</th>
-                    <th>Accciones</th>
-
-                    <!-- <th>SOAT(vencimiento)</th>
-                    <th>SOAT</th>
-                    <th>Revisión Tec.</th> -->
-
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                $sql = $con->prepare("SELECT * FROM vehiculos
-                                            INNER JOIN usuarios ON vehiculos.Documento = usuarios.documento 
-                                            INNER JOIN marca ON vehiculos.id_marca = marca.id_marca
-                                            INNER JOIN estado_vehiculo ON vehiculos.id_estado = estado_vehiculo.id_estado");
-                $sql->execute();
-                $fila = $sql->fetchAll(PDO::FETCH_ASSOC);
-                $count = 1;
-                foreach ($fila as $resu) {
-                ?>
-                <tr class="text-center">    
-                    <td><?php echo $count++; ?></td>
-                    <td><?php echo htmlspecialchars($resu['placa']); ?></td>
-                    <td><?php echo htmlspecialchars($resu['Documento']); ?></td>
-                    <td><?php echo htmlspecialchars($resu['nombre_completo']); ?></td>
-                    <td><?php echo htmlspecialchars($resu['nombre_marca']); ?></td>
-                    <td><?php echo htmlspecialchars($resu['modelo']); ?></td>
-                    <td><?php echo htmlspecialchars($resu['estado']); ?></td>
-                    <td><?php echo htmlspecialchars($resu['kilometraje_actual']); ?></td>
-                    <td><?php echo htmlspecialchars(string: $resu['fecha_registro']); ?></td>
-                    <td> <img src="../usuario/<?php echo htmlspecialchars($resu['foto_vehiculo']); ?>" alt="Imagen del vehículo" width="70px"></td>
-                    <td>
-                        <div class="d-flex justify-content-center">
-                            <a href="#" onclick="window.open('actualizar.php?id=<?php echo $resu['documento']; ?>', '', 'width=600, height=500, toolbar=NO')" class="text-primary me-2">
-                                <i class="bi bi-pencil-square action-icon" title="Editar"></i>
-                            </a>
-                            <a href="#" onclick="confirmarEliminacion('<?php echo $resu['documento']; ?>')" class="text-danger">
-                                <i class="bi bi-trash action-icon" title="Eliminar"></i>
-                            </a>
-                        </div>
-                    </td>
-                </tr>
-                <?php
-                }
-                ?>
-            </tbody>
-        </table>
-        <nav>
-      <ul class="pagination justify-content-center" id="paginacion"></ul>
-    </nav>
-
+    <div class="mb-3">
+      <button class="btn btn-success">➕ Nuevo Documento</button>
     </div>
-    
-    
-    <div class="boton-agregar">
-        <a href="agregar_usuario.php" class="boton">
-            <i class="bi bi-plus-circle"></i> <i class="bi bi-search"></i>Agregar Usuario
-        </a>
+
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>Placa</th>
+            <th>SOAT</th>
+            <th>TecnoMecánica</th>
+            <th>Licencia Conductor</th>
+            <th>Tarjeta de Propiedad</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Ejemplo vehículo 1 -->
+          <tr>
+            <td>ABC123</td>
+            <td class="status-vigente">Vigente (vence: 12/08/2025)</td>
+            <td class="status-vencido">Vencido (vence: 01/04/2024)</td>
+            <td class="status-vigente">Vigente</td>
+            <td><span class="documento-link">Ver PDF</span></td>
+            <td>
+              <button class="btn btn-primary btn-sm">Editar</button>
+              <button class="btn btn-danger btn-sm">Eliminar</button>
+            </td>
+          </tr>
+
+          <!-- Ejemplo vehículo 2 -->
+          <tr>
+            <td>XYZ789</td>
+            <td class="status-proximo">Por vencer (15/06/2025)</td>
+            <td class="status-vigente">Vigente</td>
+            <td class="status-vigente">Vigente</td>
+            <td><span class="documento-link">Ver PDF</span></td>
+            <td>
+              <button class="btn btn-primary btn-sm">Editar</button>
+              <button class="btn btn-danger btn-sm">Eliminar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
+  </div>
+</body>
+</html>
+
 <script>
 
         function filtrarTabla() {

@@ -2,9 +2,10 @@
 require_once('../conecct/conex.php');
 $db = new Database();
 $con = $db->conectar();
-session_start();
+session_start(); //conexion a la base de datos y inicio de sesion
 $estado = 1;
 $rol = 2;
+// predeterminar estado y rol
 
 header('Content-Type: application/json');
 

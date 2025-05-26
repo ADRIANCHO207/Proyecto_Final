@@ -1,6 +1,12 @@
 <?php
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $documentNumber = $_POST['documentNumber'];
+session_start();
+if (!isset($_SESSION['documento'])) {
+    echo "No hay una cédula registrada en la sesión.";
+    exit;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $documentNumber = $_SESSION['documento'];
     $documentType = 'CC';
     $token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRJZCI6IjY4MWUwZWQ5MDA3OWM4ZjkxZGE5ZmY3YiIsInAiOiJ2ayIsIkpXVFBocmFzZSI6IjY3ZjljYTg3MjQ5ZDVmOTFhNmE0NjA4ZiIsImV4cGlyZXNBdCI6MTc0OTQ4MDc0OSwiaWF0IjoxNzQ2ODAyMzQ5fQ.aBdzb5vTFMTv4lTeHbXSffPHMW25qTqAYVbvyEGSaH4';
 

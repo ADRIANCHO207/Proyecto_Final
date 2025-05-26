@@ -1,3 +1,34 @@
+<?php
+session_start();
+require_once('../../conecct/conex.php');
+include '../../includes/validarsession.php';
+$db = new Database();
+$con = $db->conectar();
+
+// Check for documento in session
+$documento = $_SESSION['documento'] ?? null;
+if (!$documento) {
+    header('Location: ../../login.php');
+    exit;
+}
+
+// Fetch nombre_completo and foto_perfil if not in session
+$nombre_completo = $_SESSION['nombre_completo'] ?? null;
+$foto_perfil = $_SESSION['foto_perfil'] ?? null;
+if (!$nombre_completo || !$foto_perfil) {
+    $user_query = $con->prepare("SELECT nombre_completo, foto_perfil FROM usuarios WHERE documento = :documento");
+    $user_query->bindParam(':documento', $documento, PDO::PARAM_STR);
+    $user_query->execute();
+    $user = $user_query->fetch(PDO::FETCH_ASSOC);
+    $nombre_completo = $user['nombre_completo'] ?? 'Usuario';
+    $foto_perfil = $user['foto_perfil'] ?: 'Proyecto_Final/roles/user/css/img/perfil.jpg';
+    $_SESSION['nombre_completo'] = $nombre_completo;
+    $_SESSION['foto_perfil'] = $foto_perfil;
+}
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -11,26 +42,15 @@
  
 </head>
 <body>
-<<<<<<< HEAD
 
-<div class="header">
-    <div class="logo">
-
-        <img src="../../css/img/logo_sinfondo.png" alt="Loo">
-        <span class="empresa">Flotax AGC</span>
-=======
-  <!-- Navbar con notificaciones -->
-  <div class="navbar">
-    <h1>Panel de Administrador</h1>
+    <!-- <h1>Panel de Administrador</h1>
     <div class="notification" onclick="toggleDropdown()"><i class="bi bi-bell"></i> <span class="badge">3</span>
       <div class="dropdown" id="dropdown">
         <p><i class="bi bi-record-fill" style="c:#d32f2f ;"></i> SOAT de vehículo JSK13 vence en 3 días</p>
         <p><i class="bi bi-record-fill" style="color:#d32f2f ;"></i> Multa sin pagar del vehículo ASDJ</p>
         <p><i class="bi bi-record-fill" style="color:#d32f2f ;"></i> Revisión Tecnomecánica vencida</p>
       </div>
->>>>>>> a7018a5 (apis y admin)
-    </div>
-  </div>
+    </div> -->
 
   <div class="sidebar">
     <?php include 'menu.html'; ?> 
@@ -45,19 +65,17 @@
       <div class="card"><h3>Multas Activas</h3><p>12</p></div>
       <div class="card"><h3>Próximos Mantenimientos</h3><p>4</p></div>
     </div>
-<<<<<<< HEAD
+
     <div class="perfil">
         <div class="info-usuario">
             <span> <?php echo""?></span>
             <br>
         </div>
-=======
 
     <!-- Gráfico: Distribución de Vehículos -->
     <div class="chart">
       <h3>Distribución por Estado</h3>
       <canvas id="estadoChart"></canvas>
->>>>>>> a7018a5 (apis y admin)
     </div>
 
     <!-- Gráfico: Historial de Gastos -->

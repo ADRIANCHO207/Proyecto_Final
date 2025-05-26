@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sobre Nosotros</title>
-    <link rel="shortcut icon" href="css/img/logo_sinfondo.png">
+    <link rel="shortcut icon" href="css/img/Imagen_de_WhatsApp_2025-05-21_a_las_07.17-Photoroom__1_-removebg-preview.png">
     <link rel="stylesheet" href="css/stylos_generales.css">
 </head>
 <body>

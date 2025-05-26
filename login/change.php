@@ -26,13 +26,6 @@ if (!$user) {
 $id_usuario = $user['documento'];
 $email = $user['email'];
 
-<<<<<<< HEAD
-if (isset($_POST['submit'])) {
-    $password1 = $_POST['password1'];
-    $password2 = $_POST['password2'];
-
-    if (strlen($password1) < 6) {
-=======
 if (isset($_POST['enviar'])) {
     $password1 = $_POST['password1'];
     $password2 = $_POST['password2'];
@@ -41,24 +34,16 @@ if (isset($_POST['enviar'])) {
     if (password_verify($password1, $user['password'])) {
         echo '<script>alert("La nueva contraseña no puede ser igual a la anterior.");</script>';
     } elseif (strlen($password1) < 6) {
->>>>>>> a7018a5 (apis y admin)
         echo '<script>alert("La contraseña debe tener al menos 6 caracteres.");</script>';
     } elseif ($password1 !== $password2) {
         echo '<script>alert("Las contraseñas no coinciden.");</script>';
     } else {
         $hashedPassword = password_hash($password2, PASSWORD_DEFAULT, array("cost" => 12));
 
-<<<<<<< HEAD
-        $update = $con->prepare("UPDATE usuarios SET contraseña = ?, reset_token = NULL, reset_expira = NULL WHERE documento = ?");
-        $update->execute([$hashedPassword, $id_usuario]);
-
-        if ($update) {
-=======
         $update = $con->prepare("UPDATE usuarios SET password = ?, reset_token = NULL, reset_expira = NULL WHERE documento = ?");
         $update->execute([$hashedPassword, $id_usuario]);
 
         if ($update->rowCount() > 0) {
->>>>>>> a7018a5 (apis y admin)
             echo '<script>alert("Contraseña actualizada exitosamente.");</script>';
             echo '<script>window.location = "login.php";</script>';
         } else {
@@ -77,38 +62,6 @@ if (isset($_POST['enviar'])) {
     <link rel="shortcut icon" href="../css/img/logo_sinfondo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<<<<<<< HEAD
-    <link rel="stylesheet" href="../css/stylelog.css">
-
-</head>
-<body>
-<div class = "contenido">
-            <div class="re">
-                <a href="login.php" class="regresar">
-                    <i class="bi bi-house-door-fill"></i>
-                </a>
-            </div>
-    <div class="conten_form">
-        <div class="form-infor">
-        <a href="index.php"><img src="../css/img/logo_sinfondo.png" alt="logo" class="logo"></a>
-        <h2>Cambiar Contraseña</h2>
-        <p>Por favor, ingresa tu nueva contraseña.</p>
-
-            <form action="" method="POST" autocomplete="off">
-            
-                <div class="input-field">
-                    <input type="password" id="password1" name="password1" required>
-                    <label for="password1">Nueva Contraseña</label>
-                    <i class='bi bi-envelope-fill' id="showpass1" onclick="showpass1()"></i>
-                </div>
-                <div class="input-field">
-                    <input type="password" id="password2" name="password2" required>
-                    <label for="password2">Confirmar Contraseña</label>
-                    <i class='bi bi-envelope-fill' id="showpass2" onclick="showpass2()"></i>
-                </div>
-                <div class="btn-field">
-                    <button type="submit" class="primary-btn" name="submit">Cambiar Contraseña</button>
-=======
     <link rel="stylesheet" href="../css/stylelog_re.css">
 
 </head>
@@ -157,25 +110,12 @@ if (isset($_POST['enviar'])) {
                         <button type="submit" name = "enviar" id="enviar" value = "Guardar" class="btn btn-primary">Cambiar contraseña</button>
                     </div>
                     <p class="formulario_exito" id="formulario_exito">Cambio de contraseña exitoso...</p>
->>>>>>> a7018a5 (apis y admin)
                 </div>
             </form>
         </div>
     </div>
 
     <script>
-<<<<<<< HEAD
-        function showpass1() {
-            const passw = document.getElementById("password1");
-            const iconshow = document.getElementById("showpass1");
-            
-            if (passw.type === "password") {
-                passw.type = "text";
-                iconshow.classList.replace("bx-show", "bx-hide");
-            } else {
-                passw.type = "password";
-                iconshow.classList.replace("bx-hide", "bx-show");
-=======
         const formulario = document.getElementById('form_con');
         const inputs = document.querySelectorAll('#form_con input')
 
@@ -262,24 +202,11 @@ if (isset($_POST['enviar'])) {
                 passw.type = "password";
                 icon.classList.remove("bi-eye");
                 icon.classList.add("bi-eye-slash");
->>>>>>> a7018a5 (apis y admin)
             }
         }
 
         function showpass2() {
             const passw = document.getElementById("password2");
-<<<<<<< HEAD
-            const iconshow = document.getElementById("showpass2");
-            
-            if (passw.type === "password") {
-                passw.type = "text";
-                iconshow.classList.replace("bx-show", "bx-hide");
-            } else {
-                passw.type = "password";
-                iconshow.classList.replace("bx-hide", "bx-show");
-            }
-        }
-=======
             const icon = document.getElementById("showpass2");
 
             if (passw.type === "password") {
@@ -295,7 +222,6 @@ if (isset($_POST['enviar'])) {
 
 
 
->>>>>>> a7018a5 (apis y admin)
     </script>
 </body>
 </html>

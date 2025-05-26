@@ -12,20 +12,9 @@ $estado = 1 ;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>login</title>
-    <link rel="shortcut icon" href="../css/img/logo_sinfondo.png">
+    <link rel="shortcut icon" href="../css/img/Imagen_de_WhatsApp_2025-05-21_a_las_07.17-Photoroom__1_-removebg-preview.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<<<<<<< HEAD
-    <link rel="stylesheet" href="../css/stylelog.css">
-</head>
-<body>  
-    
-        <div class = "contenido">
-            <div class="re">
-                <a href="../index.php" class="regresar">
-                    <i class="bi bi-house-door-fill"></i>
-                </a>
-=======
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="../css/stylelog_re.css">
@@ -36,40 +25,13 @@ $estado = 1 ;
             <div class="regresar"><a href="../index.php" class="re">
                 <i class="bi bi-house-door-fill"></i>
             </a>
->>>>>>> a7018a5 (apis y admin)
             </div>
 
             <div class = "conten_form">
                 <div class = "form-info">
                     
                     <div class = "form-infor">
-<<<<<<< HEAD
-                        <a href="../index.php"><img src="../css/img/logo_sinfondo.png" alt="logo" class="logo"></a>
-                        <h1 class = "titu">Login</h1>
-                    
-                        <form action="../includes/inicio.php" method= "POST" enctype = "multipart/form-data">
-
-                            <div class = "input-gruop">
-                                <div class = "input_field">
-                                    <label for="doc" class = "input_label"></label>
-                                    <i class="bi bi-person-vcard"></i>
-                                    <input type="number" name = "doc" id="doc" placeholder = "Documento">
-                                </div>
-
-                                <div class = "input_field">
-                                    <label for="nom"></label>
-                                    <i class="bi bi-card-heading"></i>
-                                    <input type="text" name = "nom" id = "nom" placeholder = "Nombre completo">
-                                </div>
-
-                                <div class = "input_field">
-                                    <label for="passw"></label>
-                                    <i class="bi bi-lock-fill"></i>
-                                    <input type="password" name = "passw" id = "passw" placeholder = "Contraseña">
-                                </div>
-
-=======
-                        <img src="../css/img/logo_sinfondo.png" alt="logo" class="logo">
+                        <img src="../css/img/Imagen_de_WhatsApp_2025-05-21_a_las_07.17-Photoroom__1_-removebg-preview.png" alt="logo" class="logo">
                         <h1 class = "titu">Login</h1>
                     
                         <form action="../includes/inicio.php" method= "POST"  id="formulario" enctype = "multipart/form-data" autocomplete="off">
@@ -101,7 +63,7 @@ $estado = 1 ;
                                 <div>
                                     <div class = "input_field_passw" id="grupo_passw">
                                         <label for="passw"></label>
-                                        <i class="bi bi-lock-fill"></i>
+                                        <i class="bi bi-eye-slash" id="showpass1" onclick="showpass1()"></i>
                                         <input type="password" name = "passw" id = "passw" placeholder = "Contraseña">
                                     </div>
                                     <div class="formulario_error_passw" id=" formulario_correcto_passw">
@@ -111,27 +73,18 @@ $estado = 1 ;
                             </div>
                             <div>
                                 <p class="formulario_error" id="formulario_error"><b>Error:</b> Por favor rellena el formulario correctamente.</p>
->>>>>>> a7018a5 (apis y admin)
                             </div>
                             <div class = "btn-field">
                                 <button type="submit" name = "log" id="log" value = "Log" class="btn btn-primary">Log in</button>
                             </div>
-<<<<<<< HEAD
-                            <p>¿Olvidaste tu <a href="recovery.php" class="signUpBtn-link">contraseña?</a></p>
-=======
                             <p class="formulario_exito" id="formulario_exito">Iniciando sesion...</p>
                             <a href="recovery.php"><label>Olvidaste tu contraseña?</label></a> 
->>>>>>> a7018a5 (apis y admin)
                             <a href="register.php"><label class="col">No tienes cuenta, Registrate</label></a> 
                         </form>
                     </div>
                 </div>
             </div>
        </div>
-<<<<<<< HEAD
-</body>
-</html>
-=======
     <script>
         $(document).ready(function () {
             $('#formulario').submit(function (e) {
@@ -162,10 +115,23 @@ $estado = 1 ;
                 });
             });
         });
+        function showpass1() {
+            const passw = document.getElementById("passw");
+            const icon = document.getElementById("showpass1");
+
+            if (passw.type === "password") {
+                passw.type = "text";
+                icon.classList.remove("bi-eye-slash");
+                icon.classList.add("bi-eye");
+            } else {
+                passw.type = "password";
+                icon.classList.remove("bi-eye");
+                icon.classList.add("bi-eye-slash");
+            }
+        }
     </script>
 </body>
 
 <script src="../js/scriptlogin.js"></script>
 </html>
                             
->>>>>>> a7018a5 (apis y admin)

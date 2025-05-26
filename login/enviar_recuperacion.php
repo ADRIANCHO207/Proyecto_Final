@@ -57,11 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $mail->Subject = 'Recuperación de contraseña - Flota Vehicular';
 
         // Enlace de recuperación
-<<<<<<< HEAD
-        $reset_link = "http://localhost/Proyecto_Final/login/change.php?token=" . urlencode($token);
-=======
         $reset_link = "http://localhost/Proyecto/login/change.php?token=" . urlencode($token);
->>>>>>> a7018a5 (apis y admin)
 
         // Contenido del correo.php
         $mail->isHTML(true);
@@ -75,11 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Enviar correo
         $mail->send();
         echo '<script>alert("Revisa tu correo para restablecer la contraseña.");</script>';
-<<<<<<< HEAD
-        echo '<script>window.location = "change.php";</script>';
-=======
         echo '<script>window.location = "login.php";</script>';
->>>>>>> a7018a5 (apis y admin)
     } catch (Exception $e) {
         echo '<script>alert("Error al enviar el correo: ' . $mail->ErrorInfo . '");</script>';
     }

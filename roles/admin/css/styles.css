@@ -78,7 +78,7 @@ body {
   position: fixed;
   top: 70px;
   left: 0;
-  width: 220px;
+  width: 80px;
   height: calc(100vh - 70px);
   background-color: #fff;
   padding-top: 20px;
@@ -97,7 +97,7 @@ body {
 
 .sidebar a {
     display: block;
-    padding: 15px 30px;
+    padding: 20px 35px;
     color: #333;
     text-decoration: none;
     font-weight: 600;
@@ -146,16 +146,16 @@ body {
 
 /* CHARTS */
 .chart {
-    width: 100%; /* Ajusta el ancho al 100% del contenedor */
-    height: auto; /* Mantén la proporción */
+    width: 18%; /* Reducido el ancho para que se vea más pequeño */
+    height: auto;
     background-color: #fff;
-    padding: 20px;
-    border-radius: 12px;
+    padding: 8px; /* Menos padding */
+    border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-    text-align: center; /* Alineación similar a las tarjetas */
-    margin: 0 auto; /* Centra el chart */
-    margin-bottom: 20px; /* Igual que las tarjetas */
-  }
+    text-align: center; /* Mejor alineación */
+    margin: 0 auto;
+    margin-bottom: 10px;
+}
 
 .chart h3 {
   margin-bottom: 15px;
