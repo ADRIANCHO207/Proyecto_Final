@@ -73,43 +73,6 @@ body {
   border-bottom: none;
 }
 
-/* SIDEBAR */
-.sidebar {
-  position: fixed;
-  top: 70px;
-  left: 0;
-  width: 80px;
-  height: calc(100vh - 70px);
-  background-color: #fff;
-  padding-top: 20px;
-  border-right: 1px solid #e0e0e0;
-  box-shadow: 2px 0 5px rgba(0,0,0,0.05);
-  overflow-y: auto;
-}
-.sidebar img {
-    display: block;
-    margin: 0 auto 20px;
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-    border-radius: 50%;
-}
-
-.sidebar a {
-    display: block;
-    padding: 20px 35px;
-    color: #333;
-    text-decoration: none;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    border-left: 5px solid transparent;
-}
-
-.sidebar a:hover {
-    background-color: #f1f1f1;
-    border-left: 5px solid #d32f2f;
-    color: #d32f2f;
-}
 
 /* CONTENIDO PRINCIPAL */
 .content {
@@ -146,7 +109,7 @@ body {
 
 /* CHARTS */
 .chart {
-    width: 18%; /* Reducido el ancho para que se vea más pequeño */
+    width: auto; /* Reducido el ancho para que se vea más pequeño */
     height: auto;
     background-color: #fff;
     padding: 8px; /* Menos padding */

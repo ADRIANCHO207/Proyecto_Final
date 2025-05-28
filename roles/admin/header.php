@@ -21,7 +21,6 @@
             <button class="close" onclick="closeModal()">Cerrar</button>
             <h2>Información del Usuario</h2>
             <?php
-            // Usar la misma lógica que en el header: simplemente mostrar la imagen con cache-busting
             $imagePath = htmlspecialchars($foto_perfil) . '?v=' . time();
             ?>
             <img src="<?php echo $imagePath; ?>" alt="Foto de Perfil" class="usu_imagen" style="max-width: 100px; height: 100px;">

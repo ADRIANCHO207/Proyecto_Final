@@ -54,21 +54,16 @@ if (!$nombre_completo || !$foto_perfil) {
  
 </head>
 <body>
-  
- 
+  <?php include 'menu.html'; ?> <!-- Sidebar fuera del contenido principal -->
 
-  <div class="sidebar">
-    <?php include 'menu.html'; ?> 
-  </div>
-
-  <div class="buscador mb-3">
-    <input type="text" id="buscar" class="form-control" placeholder="Buscar por nombre, documento o correo" onkeyup="filtrarTabla()">
-</div>
-
-
-  <div class="table-responsive">
-  <table class="table table-striped table-bordered" id="tablaUsuarios">
-  <thead class="text-center">
+  <div class="content">
+    <div class="buscador mb-3">
+      <input type="text" id="buscar" class="form-control" placeholder="Buscar por nombre, documento o correo" onkeyup="filtrarTabla()">
+    </div>
+    <div class="table-responsive">
+      <table class="table table-striped table-bordered" id="tablaUsuarios">
+        <thead class="text-center">
+    
                 <tr>
                     <th>#</th>
                     <th>Placa</th>
@@ -129,15 +124,14 @@ if (!$nombre_completo || !$foto_perfil) {
         <nav>
       <ul class="pagination justify-content-center" id="paginacion"></ul>
     </nav>
-
-    </div>
-    
-    
-    <div class="boton-agregar">
+  <div class="boton-agregar">
         <a href="agregar_usuario.php" class="boton">
             <i class="bi bi-plus-circle"></i> <i class="bi bi-search"></i>Agregar Usuario
         </a>
     </div>
+    </div>
+  </div>
+  
 <script>
 
         function filtrarTabla() {

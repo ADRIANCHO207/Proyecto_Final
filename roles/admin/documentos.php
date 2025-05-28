@@ -2,6 +2,7 @@
 session_start();
 require_once('../../conecct/conex.php');
 include '../../includes/validarsession.php';
+
 $db = new Database();
 $con = $db->conectar();
 $code = $_SESSION['documento'];
@@ -14,15 +15,12 @@ $sql->bindParam(':code', $code);
 $sql->execute();
 $fila = $sql->fetch();
 
-
-// Check for documento in session
 $documento = $_SESSION['documento'] ?? null;
 if (!$documento) {
     header('Location: ../../login.php');
     exit;
 }
 
-// Fetch nombre_completo and foto_perfil if not in session
 $nombre_completo = $_SESSION['nombre_completo'] ?? null;
 $foto_perfil = $_SESSION['foto_perfil'] ?? null;
 if (!$nombre_completo || !$foto_perfil) {
@@ -35,172 +33,137 @@ if (!$nombre_completo || !$foto_perfil) {
     $_SESSION['nombre_completo'] = $nombre_completo;
     $_SESSION['foto_perfil'] = $foto_perfil;
 }
-
-
-
 ?>
-
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Panel de Administrador</title>
-  <link rel="stylesheet" href="css/stylesvehiculos.css" />
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
- 
-</head>
-<body>
-  
- 
-
-  <div class="sidebar">
-    <?php include 'menu.html'; ?> 
-  </div>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Control de Documentos - Flota Vehicular</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    .status-vigente { background-color: #d4edda; }
-    .status-proximo { background-color: #fff3cd; }
-    .status-vencido { background-color: #f8d7da; }
-    .documento-link { text-decoration: underline; color: #0d6efd; cursor: pointer; }
-  </style>
+  <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/stylesvehiculos.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
 </head>
 <body>
-  <div class="container py-4">
-    <h2 class="mb-4">🗂️ Control de Documentos</h2>
 
-    <div class="mb-3">
-      <button class="btn btn-success">➕ Nuevo Documento</button>
+  <?php include 'menu.html'; ?> <!-- Sidebar SIEMPRE fuera del contenido principal -->
+
+  <div class="content">
+    <div class="navbar">
+      <h1>Flota Vehicular</h1>
+      <div class="notification">
+        <i class="bi bi-bell"></i>
+        <span class="badge">3</span>
+      </div>
     </div>
 
-    <div class="table-responsive">
-      <table class="table table-bordered table-hover align-middle">
-        <thead class="table-dark">
-          <tr>
-            <th>Placa</th>
-            <th>SOAT</th>
-            <th>TecnoMecánica</th>
-            <th>Licencia Conductor</th>
-            <th>Tarjeta de Propiedad</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Ejemplo vehículo 1 -->
-          <tr>
-            <td>ABC123</td>
-            <td class="status-vigente">Vigente (vence: 12/08/2025)</td>
-            <td class="status-vencido">Vencido (vence: 01/04/2024)</td>
-            <td class="status-vigente">Vigente</td>
-            <td><span class="documento-link">Ver PDF</span></td>
-            <td>
-              <button class="btn btn-primary btn-sm">Editar</button>
-              <button class="btn btn-danger btn-sm">Eliminar</button>
-            </td>
-          </tr>
+    <div class="container py-4">
+      <h2 class="mb-4">🗂️ Control de Documentos</h2>
 
-          <!-- Ejemplo vehículo 2 -->
-          <tr>
-            <td>XYZ789</td>
-            <td class="status-proximo">Por vencer (15/06/2025)</td>
-            <td class="status-vigente">Vigente</td>
-            <td class="status-vigente">Vigente</td>
-            <td><span class="documento-link">Ver PDF</span></td>
-            <td>
-              <button class="btn btn-primary btn-sm">Editar</button>
-              <button class="btn btn-danger btn-sm">Eliminar</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="buscador">
+        <input type="text" id="buscar" placeholder="Buscar por placa u otro dato..." onkeyup="filtrarTabla()">
+      </div>
+
+      <div class="boton-agregar text-end">
+        <button class="btn btn-success">➕ Nuevo Documento</button>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-striped" id="tablaUsuarios">
+          <thead>
+            <tr>
+              <th>Placa</th>
+              <th>SOAT</th>
+              <th>TecnoMecánica</th>
+              <th>Licencia Conductor</th>
+              <th>Tarjeta de Propiedad</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>ABC123</td>
+              <td class="status-vigente">Vigente (vence: 12/08/2025)</td>
+              <td class="status-vencido">Vencido (vence: 01/04/2024)</td>
+              <td class="status-vigente">Vigente</td>
+              <td><span class="documento-link">Ver PDF</span></td>
+              <td>
+
+                <div class="d-flex justify-content-center">
+                            <a href="#" onclick="window.open('actualizar.php?id=<?php echo $resu['documento']; ?>', '', 'width=600, height=500, toolbar=NO')" class="text-primary me-2">
+                                <i class="bi bi-pencil-square action-icon" title="Editar"></i>
+                            </a>
+                            <a href="#" onclick="confirmarEliminacion('<?php echo $resu['documento']; ?>')" class="text-danger">
+                                <i class="bi bi-trash action-icon" title="Eliminar"></i>
+                            </a>
+              </td>
+            </tr>
+            <tr>
+              <td>XYZ789</td>
+              <td class="status-proximo">Por vencer (15/06/2025)</td>
+              <td class="status-vigente">Vigente</td>
+              <td class="status-vigente">Vigente</td>
+              <td><span class="documento-link">Ver PDF</span></td>
+              <td>
+           <div class="d-flex justify-content-center">
+                            <a href="#" onclick="window.open('actualizar.php?id=<?php echo $resu['documento']; ?>', '', 'width=600, height=500, toolbar=NO')" class="text-primary me-2">
+                                <i class="bi bi-pencil-square action-icon" title="Editar"></i>
+                            </a>
+                            <a href="#" onclick="confirmarEliminacion('<?php echo $resu['documento']; ?>')" class="text-danger">
+                                <i class="bi bi-trash action-icon" title="Eliminar"></i>
+                            </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <ul class="pagination" id="paginacion"></ul>
     </div>
   </div>
-</body>
-</html>
 
 <script>
+function filtrarTabla() {
+  const input = document.getElementById('buscar').value.toLowerCase();
+  const rows = document.querySelectorAll("#tablaUsuarios tbody tr");
+  rows.forEach(row => {
+    const text = row.innerText.toLowerCase();
+    row.style.display = text.includes(input) ? '' : 'none';
+  });
+}
 
-        function filtrarTabla() {
-        const input = document.getElementById('buscar');
-        const filter = input.value.toLowerCase();
-        const table = document.getElementById('tablaUsuarios');
-        const rows = table.getElementsByTagName('tr');
+const filasPorPagina = 5;
+function configurarPaginacion() {
+  const filas = document.querySelectorAll('#tablaUsuarios tbody tr');
+  const totalPaginas = Math.ceil(filas.length / filasPorPagina);
+  const paginacion = document.getElementById('paginacion');
 
-        for (let i = 1; i < rows.length; i++) {
-            const cells = rows[i].getElementsByTagName('td');
-            let match = false;
-
-            for (let j = 0; j < cells.length; j++) {
-                if (cells[j]) {
-                    const text = cells[j].textContent || cells[j].innerText;
-                    if (text.toLowerCase().indexOf(filter) > -1) {
-                        match = true;
-                        break;
-                    }
-                }
-            }
-
-            rows[i].style.display = match ? '' : 'none';
-        }
-    }
-
-
-  const filasPorPagina = 5; // Cambia este valor si deseas más/menos filas por página
-
-  function configurarPaginacion() {
-    const tabla = document.getElementById('tablaUsuarios');
-    const filas = tabla.querySelectorAll('tbody tr');
-    const totalFilas = filas.length;
-    const totalPaginas = Math.ceil(totalFilas / filasPorPagina);
-    const paginacion = document.getElementById('paginacion');
-
-    function mostrarPagina(pagina) {
-      let inicio = (pagina - 1) * filasPorPagina;
-      let fin = inicio + filasPorPagina;
-
-      filas.forEach((fila, index) => {
-        fila.style.display = (index >= inicio && index < fin) ? '' : 'none';
-      });
-
-      // actualizar botones activos
-      const botones = paginacion.querySelectorAll('li');
-      botones.forEach(btn => btn.classList.remove('active'));
-      if (botones[pagina - 1]) botones[pagina - 1].classList.add('active');
-    }
-
-    function crearBotones() {
-      paginacion.innerHTML = '';
-      for (let i = 1; i <= totalPaginas; i++) {
-        const li = document.createElement('li');
-        li.className = 'page-item' + (i === 1 ? ' active' : '');
-        const a = document.createElement('a');
-        a.className = 'page-link';
-        a.href = '#';
-        a.textContent = i;
-        a.addEventListener('click', function (e) {
-          e.preventDefault();
-          mostrarPagina(i);
-        });
-        li.appendChild(a);
-        paginacion.appendChild(li);
-      }
-    }
-
-    crearBotones();
-    mostrarPagina(1);
+  function mostrarPagina(pagina) {
+    filas.forEach((fila, i) => {
+      fila.style.display = (i >= (pagina - 1) * filasPorPagina && i < pagina * filasPorPagina) ? '' : 'none';
+    });
+    document.querySelectorAll('#paginacion .page-item').forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`#paginacion .page-item:nth-child(${pagina})`)?.classList.add('active');
   }
 
-  window.addEventListener('DOMContentLoaded', configurarPaginacion);
+  paginacion.innerHTML = '';
+  for (let i = 1; i <= totalPaginas; i++) {
+    const li = document.createElement('li');
+    li.className = 'page-item' + (i === 1 ? ' active' : '');
+    li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+    li.querySelector('a').addEventListener('click', e => {
+      e.preventDefault();
+      mostrarPagina(i);
+    });
+    paginacion.appendChild(li);
+  }
 
-  </script>
+  mostrarPagina(1);
+}
+window.addEventListener('DOMContentLoaded', configurarPaginacion);
+</script>
+
 </body>
 </html>
