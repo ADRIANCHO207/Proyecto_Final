@@ -1,31 +1,38 @@
 <?php
+// Inicia una sesión de PHP
 session_start();
+
+// Incluye el archivo de conexión a la base de datos
 require_once '../../../../conecct/conex.php';
+
+// Incluye el archivo para validar la sesión del usuario
 include '../../../../includes/validarsession.php';
 
-// Enable error reporting for debugging
+// Habilita la visualización de errores para depuración
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Instantiate the Database class and get the PDO conection
+// Instancia la clase Database y obtiene la conexión PDO
 $database = new Database();
 $con = $database->conectar();
 
-// Check if the conection is successful
+// Verifica si la conexión fue exitosa
 if (!$con) {
     die("Error: No se pudo conectar a la base de datos.");
 }
 
-// Check for documento in session
+// Obtiene el documento desde la sesión, si no existe redirige al login
 $documento = $_SESSION['documento'] ?? null;
 if (!$documento) {
     header('Location: ../../login.php');
     exit;
 }
 
-// Fetch user's full name and foto_perfil for the profile section
+// Obtiene el nombre completo y foto de perfil desde la sesión si están disponibles
 $nombre_completo = $_SESSION['nombre_completo'] ?? null;
 $foto_perfil = $_SESSION['foto_perfil'] ?? null;
+
+// Si no están en la sesión, se consultan en la base de datos
 if (!$nombre_completo || !$foto_perfil) {
     $user_query = $con->prepare("SELECT nombre_completo, foto_perfil FROM usuarios WHERE documento = :documento");
     $user_query->bindParam(':documento', $documento, PDO::PARAM_STR);
@@ -33,26 +40,30 @@ if (!$nombre_completo || !$foto_perfil) {
     $user = $user_query->fetch(PDO::FETCH_ASSOC);
     $nombre_completo = $user['nombre_completo'] ?? 'Usuario';
     $foto_perfil = $user['foto_perfil'] ? $user['foto_perfil'] . '?v=' . time() : 'css/img/default.jpg';
+
+    // Guarda los datos en la sesión
     $_SESSION['nombre_completo'] = $nombre_completo;
     $_SESSION['foto_perfil'] = $foto_perfil;
 }
 
-// Check if a vehicle was selected
+// Obtiene la placa del vehículo desde GET
 $placa = $_GET['vehiculo'] ?? '';
+
+// Inicializa variables
 $vehicle_data = null;
 $error = '';
 $success_message = '';
 $upload_error = '';
 $reset_message = '';
 
-// Handle image update if form is submitted
+// Si se envió un formulario por POST con imagen nueva y hay una placa
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['new_foto_vehiculo']) && $placa) {
     $foto_vehiculo = null;
-    
-    // Log form submission
+
+    // Log para depuración
     error_log("Image update submitted for placa: $placa");
 
-    // Handle file upload
+    // Si se cargó una imagen
     if ($_FILES['new_foto_vehiculo']['error'] !== UPLOAD_ERR_NO_FILE) {
         $file_error = $_FILES['new_foto_vehiculo']['error'];
         $file_tmp = $_FILES['new_foto_vehiculo']['tmp_name'];
@@ -60,10 +71,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['new_foto_vehiculo'])
         $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
         $allowed_exts = ['jpg', 'jpeg', 'png', 'gif'];
 
-        // Log file upload details
+        // Log del intento de carga
         error_log("File upload attempt: name=$file_name, error=$file_error, tmp_name=$file_tmp");
 
-        // Check for upload errors
+        // Verifica errores de subida
         if ($file_error !== UPLOAD_ERR_OK) {
             $upload_errors = [
                 UPLOAD_ERR_INI_SIZE => "El archivo excede el tamaño máximo permitido por el servidor.",
@@ -76,14 +87,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['new_foto_vehiculo'])
             $upload_error = $upload_errors[$file_error] ?? "Error desconocido al subir el archivo.";
             error_log("Upload error: $upload_error");
         } else {
-            // Validate file extension
+            // Valida la extensión del archivo
             if (in_array($file_ext, $allowed_exts)) {
-                // Generate unique file name
                 $new_file_name = uniqid('vehiculo_') . '.' . $file_ext;
                 $upload_dir = '../../vehiculos/listar/guardar_foto_vehiculo/';
                 $upload_path = $upload_dir . $new_file_name;
 
-                // Ensure upload directory exists
+                // Verifica que exista el directorio
                 if (!is_dir($upload_dir)) {
                     if (!mkdir($upload_dir, 0755, true)) {
                         $upload_error = "No se pudo crear el directorio de subida.";
@@ -91,25 +101,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['new_foto_vehiculo'])
                     }
                 }
 
-                // Check directory permissions
+                // Verifica permisos de escritura
                 if (!$upload_error && !is_writable($upload_dir)) {
                     $upload_error = "El directorio de subida no tiene permisos de escritura.";
                     error_log("Directory not writable: $upload_dir");
                 }
 
-                // Move the uploaded file
+                // Mueve la imagen al servidor
                 if (!$upload_error && move_uploaded_file($file_tmp, $upload_path)) {
                     $foto_vehiculo = 'vehiculos/listar/guardar_foto_vehiculo/' . $new_file_name;
                     error_log("File successfully uploaded to: $upload_path");
 
-                    // Fetch the current image path to delete it
+                    // Obtiene la imagen actual
                     $current_image_query = $con->prepare("SELECT foto_vehiculo FROM vehiculos WHERE placa = :placa AND Documento = :documento");
                     $current_image_query->bindParam(':placa', $placa, PDO::PARAM_STR);
                     $current_image_query->bindParam(':documento', $documento, PDO::PARAM_STR);
                     $current_image_query->execute();
                     $current_image = $current_image_query->fetchColumn();
 
-                    // Delete the old image if it exists and is not the default
+                    // Elimina la imagen anterior si no es la predeterminada
                     if ($current_image && file_exists('../../' . $current_image) && $current_image !== 'vehiculos/listar/guardar_foto_vehiculo/sin_foto_carro.png') {
                         if (unlink('../../' . $current_image)) {
                             error_log("Old image deleted: ../../$current_image");
@@ -118,19 +128,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['new_foto_vehiculo'])
                         }
                     }
 
-                    // Update the database with the new image path
+                    // Actualiza la base de datos con la nueva imagen
                     $update_query = $con->prepare("UPDATE vehiculos SET foto_vehiculo = :foto_vehiculo WHERE placa = :placa AND Documento = :documento");
                     $update_query->bindParam(':foto_vehiculo', $foto_vehiculo, PDO::PARAM_STR);
                     $update_query->bindParam(':placa', $placa, PDO::PARAM_STR);
                     $update_query->bindParam(':documento', $documento, PDO::PARAM_STR);
 
+                    // Ejecuta la actualización
                     if ($update_query->execute()) {
                         $success_message = "Imagen del vehículo actualizada exitosamente.";
                         error_log("Database updated with new image: $foto_vehiculo");
                     } else {
                         $upload_error = "Error al actualizar la imagen en la base de datos.";
                         error_log("Database update failed: " . print_r($con->errorInfo(), true));
-                        unlink($upload_path); // Remove the uploaded file if DB update fails
+                        unlink($upload_path); // Elimina la nueva imagen si falla la actualización
                     }
                 } else {
                     $upload_error = "Error al mover la imagen al servidor.";
@@ -147,16 +158,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['new_foto_vehiculo'])
     }
 }
 
-// Handle image reset if form is submitted
+// Si se envió un formulario para restablecer imagen
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reset_image']) && $placa) {
-    // Fetch the current image path to delete it
+    // Obtiene la imagen actual
     $current_image_query = $con->prepare("SELECT foto_vehiculo FROM vehiculos WHERE placa = :placa AND Documento = :documento");
     $current_image_query->bindParam(':placa', $placa, PDO::PARAM_STR);
     $current_image_query->bindParam(':documento', $documento, PDO::PARAM_STR);
     $current_image_query->execute();
     $current_image = $current_image_query->fetchColumn();
 
-    // Delete the current image if it exists and is not the default
+    // Elimina la imagen actual si no es la predeterminada
     if ($current_image && file_exists('../../' . $current_image) && $current_image !== 'vehiculos/listar/guardar_foto_vehiculo/sin_foto_carro.png') {
         if (unlink('../../' . $current_image)) {
             error_log("Old image deleted: ../../$current_image");
@@ -165,15 +176,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reset_image']) && $pl
         }
     }
 
-    // Set the default image path
+    // Define la imagen por defecto
     $default_image = 'vehiculos/listar/guardar_foto_vehiculo/sin_foto_carro.png';
 
-    // Update the database with the default image path
+    // Actualiza la base de datos con la imagen por defecto
     $reset_query = $con->prepare("UPDATE vehiculos SET foto_vehiculo = :foto_vehiculo WHERE placa = :placa AND Documento = :documento");
     $reset_query->bindParam(':foto_vehiculo', $default_image, PDO::PARAM_STR);
     $reset_query->bindParam(':placa', $placa, PDO::PARAM_STR);
     $reset_query->bindParam(':documento', $documento, PDO::PARAM_STR);
 
+    // Ejecuta la actualización
     if ($reset_query->execute()) {
         $reset_message = "Imagen del vehículo restablecida a la predeterminada.";
         error_log("Database updated to: $default_image");
@@ -183,7 +195,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reset_image']) && $pl
     }
 }
 
-// Fetch vehicle details (refresh after update or reset)
+// Obtiene los detalles del vehículo (para mostrar después de actualizar o restablecer)
 if ($placa) {
     $query = "
         SELECT 
@@ -201,15 +213,16 @@ if ($placa) {
     $stmt->execute();
     $vehicle_data = $stmt->fetch(PDO::FETCH_ASSOC);
 
+    // Si no se encuentra el vehículo
     if (!$vehicle_data) {
         $error = "No se encontró el vehículo con la placa seleccionada.";
         error_log("Vehicle not found for placa: $placa, documento: $documento");
     }
 } else {
+    // No se seleccionó ningún vehículo
     $error = "Por favor, seleccione un vehículo.";
     error_log("No vehicle selected.");
 }
-
 ?>
 
 <!DOCTYPE html>

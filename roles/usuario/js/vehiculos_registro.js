@@ -101,10 +101,9 @@ const validarformulario = (e) => {
         case "modelo":
             const modeloInput = document.getElementById('modelo');
             const modeloValue = parseInt(modeloInput.value);
-            const yearNow = new Date().getFullYear();
 
             let modeloValido = false;
-            if (!isNaN(modeloValue) && modeloValue >= 2000 && modeloValue <= yearNow) {
+            if (!isNaN(modeloValue) && modeloValue >= 1900 && modeloValue <= 2026) {
                 document.getElementById('grupo_modelo').classList.remove(`grupo_modelo_incorrecto`);
                 document.getElementById('grupo_modelo').classList.add(`grupo_modelo_correcto`);
                 document.getElementById('validacion3').style.opacity = 0;

@@ -180,9 +180,7 @@ $result_estados = $stmt_estados->fetchAll(PDO::FETCH_ASSOC);
                         </div>
                     </div>
 
-                    <!-- Campo oculto -->
-                    <input type="hidden" name="documento" value="<?php echo htmlspecialchars($documento); ?>">
-
+                    
                 </div>
 
                 <!-- Mensaje general de error -->

@@ -84,6 +84,12 @@
     </script>
 </div>
 
+<div class="sidebar">
+    <a href="../../includes/salir.php" class="logout" title="Cerrar Sesión">
+        <i class="bi bi-box-arrow-right"></i>
+    </a>
+</div>
+
 <style>
     .header {
         display: flex;
@@ -384,5 +390,55 @@
     .dropdown:hover .boton {
       background-color:rgb(255, 255, 255);
     }
+
+    /* Sidebar */
+.sidebar {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 10;
+}
+
+.logout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #d32f2f, #b71c1c);
+    color: #fff;
+    border-radius: 50%;
+    text-decoration: none;
+    font-size: 24px;
+    box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+}
+
+.logout:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 15px rgba(211, 47, 47, 0.5);
+}
+
+.logout::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    right: 0;
+    background-color: #333;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.logout:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
     
 </style>
