@@ -62,13 +62,13 @@ include('header.php')
 <div class="alertas">
     <h1>Mis Alertas</h1>
     <div class="alertas-grid">
-        <a href="vehiculos/gestionar_documento.php?tipo=SOAT" class="boton">
+        <a href="vehiculos/registrar_soat.php" class="boton">
             <i class="bi bi-shield-check"></i> SOAT
         </a>
-        <a href="vehiculos/gestionar_documento.php?tipo=Tecnomecanica" class="boton">
+        <a href="vehiculos/registrar_tecnomecanica.php" class="boton">
             <i class="bi bi-tools"></i> Tecnomecánica
         </a>
-        <a href="vehiculos/gestionar_documento.php?tipo=Licencia_Conduccion" class="boton">
+        <a href="vehiculos/registrar_licencia.php" class="boton">
             <i class="bi bi-card-heading"></i> Licencia de Conducción
         </a>
         <a href="vehiculos/gestionar_pico_placa.php" class="boton">

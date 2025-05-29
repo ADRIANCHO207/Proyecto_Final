@@ -1,3 +1,13 @@
+<?php
+session_start();
+require_once('../../conecct/conex.php');
+include '../../includes/validarsession.php';
+$db = new Database();
+$con = $db->conectar();
+
+
+
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -5,27 +15,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Panel de Administrador</title>
   <link rel="stylesheet" href="css/styles.css" />
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
- 
 </head>
 <body>
-
-<div class="header">
-    <div class="logo">
-
-        <img src="../../css/img/logo_sinfondo.png" alt="Loo">
-        <span class="empresa">Flotax AGC</span>
-    </div>
-  </div>
-
-  <div class="sidebar">
+  
     <?php include 'menu.html'; ?> 
-  </div>
 
   <div class="content">
-    <!-- Tarjetas resumen -->
+  
     <div class="cards">
       <div class="card"><h3>Total Vehículos Registrados</h3><p>35</p></div>
       <div class="card"><h3>Vehículos al Día</h3><p>28</p></div>
@@ -33,21 +32,20 @@
       <div class="card"><h3>Multas Activas</h3><p>12</p></div>
       <div class="card"><h3>Próximos Mantenimientos</h3><p>4</p></div>
     </div>
-    <div class="perfil">
-        <div class="info-usuario">
-            <span> <?php echo""?></span>
-            <br>
-        </div>
-    </div>
 
-    <!-- Gráfico: Historial de Gastos -->
-    <div class="chart">
-      <h3>Historial de Gastos por Mes</h3>
-      <canvas id="gastosChart"></canvas>
+    <div class="charts-container" style="display:flex; gap:20px; flex-wrap:wrap;">
+      <div class="chart">
+        <h3>Distribución por Estado</h3>
+        <canvas id="estadoChart"></canvas>
+      </div>
+      <div class="chart">
+        <h3>Historial de Gastos por Mes</h3>
+        <canvas id="gastosChart"></canvas>
+      </div>
     </div>
 
     <!-- Calendario Pequeño -->
-    <div class="calendar">
+    <div class="calendar" style="margin-top:30px;">
       <h3>Próximos Vencimientos</h3>
       <ul>
         <li>10 mayo - SOAT JSK13</li>
@@ -58,11 +56,6 @@
   </div>
 
   <script>
-    function toggleDropdown() {
-      const dropdown = document.getElementById('dropdown');
-      dropdown.classList.toggle('show');
-    }
-
     // Gráfico de estado de vehículos
     new Chart(document.getElementById('estadoChart'), {
       type: 'doughnut',

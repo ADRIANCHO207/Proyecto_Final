@@ -13,6 +13,31 @@ $sql = $con->prepare("SELECT * FROM vehiculos
 $sql->bindParam(':code', $code);
 $sql->execute();
 $fila = $sql->fetch();
+
+
+// Check for documento in session
+$documento = $_SESSION['documento'] ?? null;
+if (!$documento) {
+    header('Location: ../../login.php');
+    exit;
+}
+
+// Fetch nombre_completo and foto_perfil if not in session
+$nombre_completo = $_SESSION['nombre_completo'] ?? null;
+$foto_perfil = $_SESSION['foto_perfil'] ?? null;
+if (!$nombre_completo || !$foto_perfil) {
+    $user_query = $con->prepare("SELECT nombre_completo, foto_perfil FROM usuarios WHERE documento = :documento");
+    $user_query->bindParam(':documento', $documento, PDO::PARAM_STR);
+    $user_query->execute();
+    $user = $user_query->fetch(PDO::FETCH_ASSOC);
+    $nombre_completo = $user['nombre_completo'] ?? 'Usuario';
+    $foto_perfil = $user['foto_perfil'] ?: 'Proyecto_Final/roles/user/css/img/perfil.jpg';
+    $_SESSION['nombre_completo'] = $nombre_completo;
+    $_SESSION['foto_perfil'] = $foto_perfil;
+}
+
+
+
 ?>
 
 
@@ -29,30 +54,16 @@ $fila = $sql->fetch();
  
 </head>
 <body>
-  <!-- Navbar con notificaciones -->
-  <div class="navbar">
-    <h1>Panel de Administrador</h1>
-    <div class="notification" onclick="toggleDropdown()"><i class="bi bi-bell"></i> <span class="badge">3</span>
-      <div class="dropdown" id="dropdown">
-        <p><i class="bi bi-record-fill" style="color:#d32f2f ;"></i> SOAT de vehículo JSK13 vence en 3 días</p>
-        <p><i class="bi bi-record-fill" style="color:#d32f2f ;"></i> Multa sin pagar del vehículo ASDJ</p>
-        <p><i class="bi bi-record-fill" style="color:#d32f2f ;"></i> Revisión Tecnomecánica vencida</p>
-      </div>
+  <?php include 'menu.html'; ?> <!-- Sidebar fuera del contenido principal -->
+
+  <div class="content">
+    <div class="buscador mb-3">
+      <input type="text" id="buscar" class="form-control" placeholder="Buscar por nombre, documento o correo" onkeyup="filtrarTabla()">
     </div>
-  </div>
-
-  <div class="sidebar">
-    <?php include 'menu.html'; ?> 
-  </div>
-
-  <div class="buscador mb-3">
-    <input type="text" id="buscar" class="form-control" placeholder="Buscar por nombre, documento o correo" onkeyup="filtrarTabla()">
-</div>
-
-
-  <div class="table-responsive">
-  <table class="table table-striped table-bordered" id="tablaUsuarios">
-  <thead class="text-center">
+    <div class="table-responsive">
+      <table class="table table-striped table-bordered" id="tablaUsuarios">
+        <thead class="text-center">
+    
                 <tr>
                     <th>#</th>
                     <th>Placa</th>
@@ -113,15 +124,14 @@ $fila = $sql->fetch();
         <nav>
       <ul class="pagination justify-content-center" id="paginacion"></ul>
     </nav>
-
-    </div>
-    
-    
-    <div class="boton-agregar">
+  <div class="boton-agregar">
         <a href="agregar_usuario.php" class="boton">
             <i class="bi bi-plus-circle"></i> <i class="bi bi-search"></i>Agregar Usuario
         </a>
     </div>
+    </div>
+  </div>
+  
 <script>
 
         function filtrarTabla() {
