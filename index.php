@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="shortcut icon" href="css/img/logo_sinfondo.png">
+    <link rel="shortcut icon" href="css/img/Imagen de WhatsApp 2025-05-21 a las 07.17-Photoroom.jpg">
     <link rel="stylesheet" href="css/stylebody.css">
 </head>
 <body>
@@ -54,7 +54,7 @@
         </button>
     </div>
     <div class="contenido">
-        <img src="css/img/logo.png" alt="logo">
+        <img src="css/img/Imagen_de_WhatsApp_2025-05-21_a_las_07.17-Photoroom__1_-removebg-preview.png" alt="logo">
         <div class="parrafo">
             <h3>Bienvenido</h3>
             <p>Gestiona tu flota vehicular de manera eficiente y segura. Nuestro software te permite:

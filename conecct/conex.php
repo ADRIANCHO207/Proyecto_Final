@@ -1,10 +1,10 @@
 <?php
-
+// conexion base de datos por PDO
 
 class Database
 {
     private $hostname = "localhost";
-    private $database = "proyecto_flota";
+    private $database = "flota";
     private $username = "root";
     private $password = "";
     private $charset = "utf8";

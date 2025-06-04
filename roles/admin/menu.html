@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Inter', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f6f8;
+        color: #333;
+      }
+      img {
+        width: 100%;
+        height: auto;
+        display: block;
+
+      }
+      img.sidebar.expanded {
+        width: 80%;
+        height: auto;
+        display: block;
+      }
+
+
+      .sidebar {
+        position: fixed;
+        height: 100vh;
+        top: 0px  ;;
+        left: 0;
+        width: 85px;
+        background-color: #fff;
+        border-right: 1px solid #e0e0e0;
+        box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+        overflow-x: hidden;
+        transition: width 0.3s ease;
+        z-index: 100;
+      }
+
+      .sidebar.expanded {
+        width: 270px;
+      }
+
+      .sidebar a {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px 20px;
+        color: #333;
+        text-decoration: none;
+        font-weight: 600;
+        transition: background 0.3s ease;
+      }
+
+      .sidebar a i {
+        font-size: 20px;
+        min-width: 24px;
+      }
+
+      .sidebar a span {
+        transition: opacity 0.2s ease;
+        opacity: 0;
+        white-space: nowrap;
+      }
+
+      .sidebar.expanded a span {
+        opacity: 1;
+      }
+
+      .sidebar a:hover {
+        background-color: #f1f1f1;
+        color: #d32f2f;
+      }
+
+      .content {
+        margin-left: 60px;
+        padding: 30px;
+        transition: margin-left 0.3s ease;
+      }
+
+      .sidebar.expanded ~ .content {
+        margin-left: 350px;
+      }
+    </style>
+</head>
+<body>
+
+  <div class="sidebar" id="sidebar">
+    <center><img src="../../css/img/logoagc-Photoroom.png" alt=""></center>
+    <a href="index.php"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
+    <a href="Vehiculos.php"><i class="bi bi-truck"></i><span>Gestión de Vehículos</span></a>
+    <a href="documentos.php"><i class="bi bi-folder"></i><span>Control de Documentos</span></a>
+    <a href="mantenimiento.php"><i class="bi bi-tools"></i><span>Mantenimientos</span></a>
+    <a href="alertas.php"><i class="bi bi-bell"></i><span>Alertas</span></a>
+    <a href="#"><i class="bi bi-people"></i><span>Usuarios</span></a>
+    <a href="#"><i class="bi bi-clock-history"></i><span>Historial</span></a>
+    <a href="#"><i class="bi bi-bell-fill"></i><span>Notificaciones</span></a>
+    <a href="#"><i class="bi bi-person-circle"></i><span>Perfil</span></a>
+    <a href="#"><i class="bi bi-gear"></i><span>Configuración</span></a>
+    <a href="../../includes/salir.php"><i class="bi bi-box-arrow-right"></i><span>Cerrar Sesión</span></a>
+  </div>
+
+
+  <script>
+    const sidebar = document.getElementById("sidebar");
+
+    sidebar.addEventListener("mouseenter", () => {
+      sidebar.classList.add("expanded");
+    });
+
+    sidebar.addEventListener("mouseleave", () => {
+      sidebar.classList.remove("expanded");
+    });
+  </script>
+</body>
+</html>
