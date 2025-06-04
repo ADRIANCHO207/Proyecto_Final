@@ -157,7 +157,7 @@ formulario.addEventListener('submit', (e) => {
       
         $.ajax({
             type: "POST",
-            url: "../AJAX/guardar_vehiculo.php",
+            url: "/proyecto/roles/usuario/AJAX/registro_vehiculo.php",
             data: formData,
             contentType: false,
             processData: false,

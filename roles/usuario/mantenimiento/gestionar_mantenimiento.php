@@ -37,110 +37,6 @@ $trabajos = $trabajos_query->fetchAll(PDO::FETCH_ASSOC);
 
 // Convertimos los trabajos a JSON para usarlos en JavaScript
 $trabajos_json = json_encode($trabajos);
-
-// Fetch mantenimientos
-$mantenimientos_query = $con->prepare("
-    SELECT m.*, v.placa, tm.descripcion AS tipo_mantenimiento,
-           GROUP_CONCAT(c.Trabajo, ': $', d.subtotal) AS detalles_trabajos
-    FROM mantenimiento m
-    JOIN vehiculos v ON m.placa = v.placa
-    JOIN tipo_mantenimiento tm ON m.id_tipo_mantenimiento = tm.id_tipo_mantenimiento
-    LEFT JOIN detalles_mantenimiento_clasificacion d ON m.id_mantenimiento = d.id_mantenimiento
-    LEFT JOIN clasificacion_trabajo c ON d.id_trabajo = c.id
-    WHERE v.Documento = :documento
-    GROUP BY m.id_mantenimiento
-");
-$mantenimientos_query->bindParam(':documento', $documento, PDO::PARAM_STR);
-$mantenimientos_query->execute();
-$mantenimientos = $mantenimientos_query->fetchAll(PDO::FETCH_ASSOC);
-
-// Procesar formulario
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $placa = trim($_POST['placa'] ?? '');
-    $id_tipo_mantenimiento = trim($_POST['id_tipo_mantenimiento'] ?? '');
-    $fecha_programada = trim($_POST['fecha_programada'] ?? '');
-    $fecha_realizada = trim($_POST['fecha_realizada'] ?? '');
-    $kilometraje_actual = trim($_POST['kilometraje_actual'] ?? '');
-    $proximo_cambio_km = trim($_POST['proximo_cambio_km'] ?? '');
-    $proximo_cambio_fecha = trim($_POST['proximo_cambio_fecha'] ?? '');
-    $observaciones = trim($_POST['observaciones'] ?? '');
-    $trabajos_seleccionados = $_POST['trabajos'] ?? [];
-    $cantidades = $_POST['cantidades'] ?? [];
-
-    $errors = [];
-
-    // Validaciones
-    if (empty($placa)) $errors[] = "El vehículo es obligatorio.";
-    if (empty($id_tipo_mantenimiento)) $errors[] = "El tipo de mantenimiento es obligatorio.";
-    if (empty($fecha_programada)) $errors[] = "La fecha programada es obligatoria.";
-    if (!empty($fecha_realizada)) {
-        $date = new DateTime($fecha_realizada);
-        if ($date > new DateTime()) $errors[] = "La fecha realizada no puede ser futura.";
-    }
-    if (!empty($kilometraje_actual) && (!is_numeric($kilometraje_actual) || $kilometraje_actual < 0)) {
-        $errors[] = "El kilometraje actual debe ser un número positivo.";
-    }
-    if (!empty($proximo_cambio_km) && (!is_numeric($proximo_cambio_km) || $proximo_cambio_km < 0)) {
-        $errors[] = "El próximo cambio (km) debe ser un número positivo.";
-    }
-    if (!empty($proximo_cambio_fecha)) {
-        $date = new DateTime($proximo_cambio_fecha);
-        if ($date < new DateTime()) $errors[] = "La fecha de próximo cambio no puede ser pasada.";
-    }
-    if (!empty($observaciones) && (strlen($observaciones) > 500 || !preg_match('/^[a-zA-Z0-9\s.,!?\'-]+$/', $observaciones))) {
-        $errors[] = "Las observaciones deben tener máximo 500 caracteres y solo letras, números y puntuación básica.";
-    }
-    if (empty($trabajos_seleccionados)) $errors[] = "Debe seleccionar al menos un trabajo.";
-
-    if (empty($errors)) {
-        // Insertar mantenimiento
-        $insert_mantenimiento = $con->prepare("
-            INSERT INTO mantenimiento (placa, id_tipo_mantenimiento, fecha_programada, fecha_realizada, kilometraje_actual, proximo_cambio_km, proximo_cambio_fecha, observaciones, documento_usuario)
-            VALUES (:placa, :id_tipo_mantenimiento, :fecha_programada, :fecha_realizada, :kilometraje_actual, :proximo_cambio_km, :proximo_cambio_fecha, :observaciones, :documento)
-        ");
-        $insert_mantenimiento->execute([
-            ':placa' => $placa,
-            ':id_tipo_mantenimiento' => $id_tipo_mantenimiento,
-            ':fecha_programada' => $fecha_programada,
-            ':fecha_realizada' => $fecha_realizada ?: null,
-            ':kilometraje_actual' => $kilometraje_actual ?: null,
-            ':proximo_cambio_km' => $proximo_cambio_km ?: null,
-            ':proximo_cambio_fecha' => $proximo_cambio_fecha ?: null,
-            ':observaciones' => $observaciones,
-            ':documento' => $documento
-        ]);
-
-        $id_mantenimiento = $con->lastInsertId();
-
-        // Insertar detalles de trabajos
-        foreach ($trabajos_seleccionados as $index => $id_trabajo) {
-            $cantidad = $cantidades[$index] ?? 1;
-            $trabajo_query = $con->prepare("SELECT Precio FROM clasificacion_trabajo WHERE id = :id_trabajo");
-            $trabajo_query->execute([':id_trabajo' => $id_trabajo]);
-            $trabajo = $trabajo_query->fetch(PDO::FETCH_ASSOC);
-            $subtotal = $trabajo['Precio'] * $cantidad;
-
-            $insert_detalle = $con->prepare("
-                INSERT INTO detalles_mantenimiento_clasificacion (id_mantenimiento, id_trabajo, cantidad, subtotal)
-                VALUES (:id_mantenimiento, :id_trabajo, :cantidad, :subtotal)
-            ");
-            $insert_detalle->execute([
-                ':id_mantenimiento' => $id_mantenimiento,
-                ':id_trabajo' => $id_trabajo,
-                ':cantidad' => $cantidad,
-                ':subtotal' => $subtotal
-            ]);
-        }
-
-        $_SESSION['success'] = 'Mantenimiento registrado exitosamente.';
-        header('Location: gestionar_mantenimiento.php');
-        exit;
-    } else {
-        $_SESSION['errors'] = $errors;
-        header('Location: gestionar_mantenimiento.php');
-        exit;
-    }
-}
 ?>
 
 <!DOCTYPE html>
@@ -159,18 +55,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <?php include('../header.php'); ?>
 
 <div class="container">
-    <form action="gestionar_mantenimiento.php" method="post" class="form-llantas" id="formulario">
+    <form action="guardar_mantenimiento.php" method="post" class="form-llantas" id="formulario">
         <h1>Gestión de Mantenimientos</h1>
         <p class="instructions">Selecciona el vehículo y completa los detalles del mantenimiento, incluyendo fechas, kilometraje y trabajos realizados. Luego, presiona "Registrar Mantenimiento" para guardar la información.</p>
         
         <?php
-        if (isset($_SESSION['errors'])) {
-            echo '<div class="formulario_error" id="formulario_error"><b>Error:</b> ' . implode('<br>', $_SESSION['errors']) . '</div>';
-            unset($_SESSION['errors']);
+        if (isset($_SESSION['form_errors'])) {
+            echo '<div class="formulario_error" id="formulario_error"><b>Error:</b> ' . implode('<br>', $_SESSION['form_errors']) . '</div>';
+            unset($_SESSION['form_errors']);
         }
-        if (isset($_SESSION['success'])) {
-            echo '<div class="formulario_exito" id="formulario_exito">' . $_SESSION['success'] . '</div>';
-            unset($_SESSION['success']);
+        if (isset($_GET['success']) && $_GET['success'] == 1) {
+            echo '<div class="formulario_exito" id="formulario_exito">Mantenimiento registrado correctamente.</div>';
         }
         ?>
 
@@ -198,12 +93,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
 
                 <div class="input-box">
-                    <label for="id_tipo_mantenimiento">Tipo de Mantenimiento:</label>
+                    <label for="tipo_mantenimiento">Tipo de Mantenimiento:</label>
                     <div class="input_field_id_tipo_mantenimiento" id="grupo_id_tipo_mantenimiento">
-                        <select name="id_tipo_mantenimiento" id="id_tipo_mantenimiento" required>
+                        <select name="tipo_mantenimiento" id="tipo_mantenimiento" required>
                             <option value="">Seleccionar Tipo</option>
                             <?php foreach ($tipos_mantenimiento as $tipo): ?>
-                                <option value="<?php echo htmlspecialchars($tipo['id_tipo_mantenimiento']); ?>" <?php echo (isset($_POST['id_tipo_mantenimiento']) && $_POST['id_tipo_mantenimiento'] === $tipo['id_tipo_mantenimiento']) ? 'selected' : ''; ?>>
+                                <option value="<?php echo htmlspecialchars($tipo['id_tipo_mantenimiento']); ?>" <?php echo (isset($_POST['tipo_mantenimiento']) && $_POST['tipo_mantenimiento'] === $tipo['id_tipo_mantenimiento']) ? 'selected' : ''; ?>>
                                     <?php echo htmlspecialchars($tipo['descripcion']); ?>
                                 </option>
                             <?php endforeach; ?>
@@ -270,10 +165,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <textarea name="observaciones" id="observaciones" rows="4"><?php echo htmlspecialchars($_POST['observaciones'] ?? ''); ?></textarea>
                         <i class="bi bi-pencil"></i>
                     </div>
-                    <p class="validacion_observaciones" id="validacion_observaciones">Máximo 500 caracteres, solo letras, números y puntuación básica.</p>
+                    <p class="validacion_observaciones" id="validacion_observaciones">Máximo de 500 caracteres, solo letras, números y puntuación básica.</p>
                 </div>
             </div>
-        
+
+           
         </div>
 
         <div class="btn-field">

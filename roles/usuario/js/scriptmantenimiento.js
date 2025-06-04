@@ -1,297 +1,167 @@
-const formulario = document.getElementById('formulario');
-const inputs = document.querySelectorAll('#formulario input');
-const selects = document.querySelectorAll('#formulario select');
-const textarea = document.querySelector('#observaciones');
+$(document).ready(function() {
+    const formulario = $('#formulario');
+    const inputs = $('#formulario input, #formulario select, #formulario textarea');
 
-// Expresiones regulares para validaciones
-const expresiones = {
-    placa: /^[A-Z0-9]{3,8}$/, // Letras y números, entre 3 y 8 caracteres
-    kilometraje: /^\d{1,7}$/, // Solo números, máximo 7 dígitos
-    observaciones: /^[a-zA-Z0-9\s.,!?'-]{1,500}$/, // Letras, números y puntuación básica, máximo 500 caracteres
-};
+    // Expresiones regulares
+    const expresiones = {
+        placa: /.+/, // Cualquier valor no vacío
+        tipo_mantenimiento: /.+/, // Cualquier valor no vacío
+        fecha: /^\d{4}-\d{2}-\d{2}$/, // Formato YYYY-MM-DD
+        kilometraje: /^[0-9]+$/, // Solo números positivos
+        observaciones: /^[a-zA-Z0-9\s.,!?'-]{0,500}$/, // Máximo 500 caracteres
+    };
 
-// Objeto para rastrear el estado de los campos (inicializamos todos como no válidos)
-const campos = {
-    placa: false,
-    id_tipo_mantenimiento: false,
-    fecha_programada: false,
-    fecha_realizada: false, // Opcional, pero inicia como no válido
-    kilometraje_actual: false, // Opcional, pero inicia como no válido
-    proximo_cambio_km: false, // Opcional, pero inicia como no válido
-    proximo_cambio_fecha: false, // Opcional, pero inicia como no válido
-    observaciones: false, // Opcional, pero inicia como no válido
-    trabajos: false
-};
+    // Validar campos
+    const validarCampo = (expresion, input, grupo, mensaje) => {
+        const grupoElemento = $(`#${grupo}`);
+        const validacionMensaje = $(`#validacion_${grupo.replace('grupo_', '')}`);
 
-// Función para validar el formulario
-const validarFormulario = (e) => {
-    switch (e.target.name) {
-        case "placa":
-            validarSelect(e.target, 'placa', 'Seleccione un vehículo.');
-            break;
-        case "id_tipo_mantenimiento":
-            validarSelect(e.target, 'id_tipo_mantenimiento', 'Seleccione un tipo de mantenimiento.');
-            break;
-        case "fecha_programada":
-            validarFecha(e.target, 'fecha_programada', 'Seleccione una fecha válida.', false);
-            break;
-        case "fecha_realizada":
-            validarFecha(e.target, 'fecha_realizada', 'Fecha no puede ser futura.', true);
-            break;
-        case "kilometraje_actual":
-            validarCampo(expresiones.kilometraje, e.target, 'kilometraje_actual', 'Ingrese un número positivo.', true);
-            break;
-        case "proximo_cambio_km":
-            validarCampo(expresiones.kilometraje, e.target, 'proximo_cambio_km', 'Ingrese un número positivo.', true);
-            break;
-        case "proximo_cambio_fecha":
-            validarFechaFutura(e.target, 'proximo_cambio_fecha', 'Fecha no puede ser pasada.', true);
-            break;
-        case "observaciones":
-            validarCampo(expresiones.observaciones, e.target, 'observaciones', 'Máximo 500 caracteres, solo letras, números y puntuación básica.', true);
-            break;
-    }
-};
-
-// Validar campos de texto o número
-const validarCampo = (expresion, input, campo, mensaje, opcional = false) => {
-    const grupo = document.getElementById(`grupo_${campo}`);
-    const validacion = document.getElementById(`validacion_${campo}`);
-
-    if (input.value.trim() === '') {
-        if (opcional) {
-            // Si es opcional y está vacío, se considera válido para el envío, pero visualmente se muestra como incorrecto
-            grupo.classList.remove(`input_field_${campo}_correcto`);
-            grupo.classList.add(`input_field_${campo}_incorrecto`);
-            validacion.textContent = mensaje;
-            validacion.style.opacity = '1';
-            campos[campo] = true; // Válido para el envío, pero visualmente incorrecto
-        } else {
-            // Si no es opcional y está vacío, es inválido
-            grupo.classList.remove(`input_field_${campo}_correcto`);
-            grupo.classList.add(`input_field_${campo}_incorrecto`);
-            validacion.textContent = mensaje;
-            validacion.style.opacity = '1';
-            campos[campo] = false;
+        if (!grupoElemento.length || !validacionMensaje.length) {
+            console.error(`Elementos ${grupo} o validacion_${grupo.replace('grupo_', '')} no encontrados`);
+            return false;
         }
-    } else if (expresion.test(input.value.trim())) {
-        grupo.classList.remove(`input_field_${campo}_incorrecto`);
-        grupo.classList.add(`input_field_${campo}_correcto`);
-        validacion.style.opacity = '0';
-        campos[campo] = true;
-    } else {
-        grupo.classList.remove(`input_field_${campo}_correcto`);
-        grupo.classList.add(`input_field_${campo}_incorrecto`);
-        validacion.textContent = mensaje;
-        validacion.style.opacity = '1';
-        campos[campo] = false;
-    }
-};
 
-// Validar selects
-const validarSelect = (select, campo, mensaje) => {
-    const grupo = document.getElementById(`grupo_${campo}`);
-    const validacion = document.getElementById(`validacion_${campo}`);
-
-    if (select.value === '') {
-        grupo.classList.remove(`input_field_${campo}_correcto`);
-        grupo.classList.add(`input_field_${campo}_incorrecto`);
-        validacion.textContent = mensaje;
-        validacion.style.opacity = '1';
-        campos[campo] = false;
-    } else {
-        grupo.classList.remove(`input_field_${campo}_incorrecto`);
-        grupo.classList.add(`input_field_${campo}_correcto`);
-        validacion.style.opacity = '0';
-        campos[campo] = true;
-    }
-};
-
-// Validar fechas (no futuras para fecha_realizada)
-const validarFecha = (input, campo, mensaje, opcional = false) => {
-    const grupo = document.getElementById(`grupo_${campo}`);
-    const validacion = document.getElementById(`validacion_${campo}`);
-    const fecha = new Date(input.value);
-    const hoy = new Date();
-
-    if (input.value.trim() === '') {
-        if (opcional) {
-            grupo.classList.remove(`input_field_${campo}_correcto`);
-            grupo.classList.add(`input_field_${campo}_incorrecto`);
-            validacion.textContent = mensaje;
-            validacion.style.opacity = '1';
-            campos[campo] = true; // Válido para el envío, pero visualmente incorrecto
+        const valor = input.val().trim();
+        if (expresion.test(valor)) {
+            grupoElemento.removeClass(`input_field_${grupo.replace('grupo_', '')}_incorrecto`).addClass(`input_field_${grupo.replace('grupo_', '')}_correcto`);
+            validacionMensaje.text(mensaje).css('opacity', '0');
+            return true;
         } else {
-            grupo.classList.remove(`input_field_${campo}_correcto`);
-            grupo.classList.add(`input_field_${campo}_incorrecto`);
-            validacion.textContent = mensaje;
-            validacion.style.opacity = '1';
-            campos[campo] = false;
+            grupoElemento.removeClass(`input_field_${grupo.replace('grupo_', '')}_correcto`).addClass(`input_field_${grupo.replace('grupo_', '')}_incorrecto`);
+            validacionMensaje.text(mensaje).css('opacity', '1');
+            return false;
         }
-    } else if (campo === 'fecha_realizada' && fecha > hoy) {
-        grupo.classList.remove(`input_field_${campo}_correcto`);
-        grupo.classList.add(`input_field_${campo}_incorrecto`);
-        validacion.textContent = mensaje;
-        validacion.style.opacity = '1';
-        campos[campo] = false;
-    } else {
-        grupo.classList.remove(`input_field_${campo}_incorrecto`);
-        grupo.classList.add(`input_field_${campo}_correcto`);
-        validacion.style.opacity = '0';
-        campos[campo] = true;
-    }
-};
+    };
 
-// Validar fechas futuras (para proximo_cambio_fecha)
-const validarFechaFutura = (input, campo, mensaje, opcional = false) => {
-    const grupo = document.getElementById(`grupo_${campo}`);
-    const validacion = document.getElementById(`validacion_${campo}`);
-    const fecha = new Date(input.value);
-    const hoy = new Date();
+    // Validar fechas
+    const validarFecha = (input, grupo, mensaje, opcional = false, futura = false) => {
+        const grupoElemento = $(`#${grupo}`);
+        const validacionMensaje = $(`#validacion_${grupo.replace('grupo_', '')}`);
+        const inputVal = input.val().trim();
+        const inputDate = new Date(inputVal);
+        const today = new Date();
 
-    if (input.value.trim() === '') {
-        if (opcional) {
-            grupo.classList.remove(`input_field_${campo}_correcto`);
-            grupo.classList.add(`input_field_${campo}_incorrecto`);
-            validacion.textContent = mensaje;
-            validacion.style.opacity = '1';
-            campos[campo] = true; // Válido para el envío, pero visualmente incorrecto
+        if (!grupoElemento.length || !validacionMensaje.length) {
+            console.error(`Elementos ${grupo} o validacion_${grupo.replace('grupo_', '')} no encontrados`);
+            return false;
+        }
+
+        if (!inputVal) {
+            if (opcional) {
+                grupoElemento.removeClass(`input_field_${grupo.replace('grupo_', '')}_correcto input_field_${grupo.replace('grupo_', '')}_incorrecto`);
+                validacionMensaje.text('').css('opacity', '0');
+                return true;
+            } else {
+                grupoElemento.removeClass(`input_field_${grupo.replace('grupo_', '')}_correcto`).addClass(`input_field_${grupo.replace('grupo_', '')}_incorrecto`);
+                validacionMensaje.text(mensaje).css('opacity', '1');
+                return false;
+            }
+        } else if (!expresiones.fecha.test(inputVal)) {
+            grupoElemento.removeClass(`input_field_${grupo.replace('grupo_', '')}_correcto`).addClass(`input_field_${grupo.replace('grupo_', '')}_incorrecto`);
+            validacionMensaje.text('Formato de fecha inválido (YYYY-MM-DD).').css('opacity', '1');
+            return false;
+        } else if (grupo === 'grupo_fecha_realizada' && inputDate > today) {
+            grupoElemento.removeClass(`input_field_${grupo.replace('grupo_', '')}_correcto`).addClass(`input_field_${grupo.replace('grupo_', '')}_incorrecto`);
+            validacionMensaje.text('La fecha no puede ser futura.').css('opacity', '1');
+            return false;
+        } else if (futura && inputDate < today) {
+            grupoElemento.removeClass(`input_field_${grupo.replace('grupo_', '')}_correcto`).addClass(`input_field_${grupo.replace('grupo_', '')}_incorrecto`);
+            validacionMensaje.text('La fecha no puede ser pasada.').css('opacity', '1');
+            return false;
         } else {
-            grupo.classList.remove(`input_field_${campo}_correcto`);
-            grupo.classList.add(`input_field_${campo}_incorrecto`);
-            validacion.textContent = mensaje;
-            validacion.style.opacity = '1';
-            campos[campo] = false;
+            grupoElemento.removeClass(`input_field_${grupo.replace('grupo_', '')}_incorrecto`).addClass(`input_field_${grupo.replace('grupo_', '')}_correcto`);
+            validacionMensaje.text('').css('opacity', '0');
+            return true;
         }
-    } else if (fecha < hoy) {
-        grupo.classList.remove(`input_field_${campo}_correcto`);
-        grupo.classList.add(`input_field_${campo}_incorrecto`);
-        validacion.textContent = mensaje;
-        validacion.style.opacity = '1';
-        campos[campo] = false;
-    } else {
-        grupo.classList.remove(`input_field_${campo}_incorrecto`);
-        grupo.classList.add(`input_field_${campo}_correcto`);
-        validacion.style.opacity = '0';
-        campos[campo] = true;
-    }
-};
+    };
 
-// Validar trabajos dinámicos
-const validarTrabajos = () => {
-    const trabajosContainer = document.getElementById('trabajos-container');
-    const trabajos = trabajosContainer.querySelectorAll('.trabajo-item');
-    const grupo = document.getElementById('grupo_trabajos');
-    const validacion = document.getElementById('validacion_trabajos');
+    // Validaciones específicas
+    const validarFormulario = (e) => {
+        const target = $(e.target);
+        switch (target.attr('id')) {
+            case 'placa':
+                validarCampo(expresiones.placa, target, 'grupo_placa', 'Seleccione un vehículo.');
+                break;
+            case 'tipo_mantenimiento':
+                validarCampo(expresiones.tipo_mantenimiento, target, 'grupo_id_tipo_mantenimiento', 'Seleccione un tipo de mantenimiento.');
+                break;
+            case 'fecha_programada':
+                validarFecha(target, 'grupo_fecha_programada', 'Seleccione una fecha válida.', false);
+                break;
+            case 'fecha_realizada':
+                validarFecha(target, 'grupo_fecha_realizada', 'Fecha no puede ser futura.', true);
+                break;
+            case 'kilometraje_actual':
+                validarCampo(expresiones.kilometraje, target, 'grupo_kilometraje_actual', 'Ingrese un número positivo.', true);
+                break;
+            case 'proximo_cambio_km':
+                validarCampo(expresiones.kilometraje, target, 'grupo_proximo_cambio_km', 'Ingrese un número positivo.', true);
+                break;
+            case 'proximo_cambio_fecha':
+                validarFecha(target, 'grupo_proximo_cambio_fecha', 'Fecha no puede ser pasada.', true, true);
+                break;
+            case 'observaciones':
+                validarCampo(expresiones.observaciones, target, 'grupo_observaciones', 'Máximo 500 caracteres, solo letras, números y puntuación básica.', true);
+                break;
+        }
+    };
 
-    if (trabajos.length === 0 || Array.from(trabajos).some(trabajo => trabajo.querySelector('select').value === '')) {
-        grupo.classList.remove('input_field_trabajos_correcto');
-        grupo.classList.add('input_field_trabajos_incorrecto');
-        validacion.textContent = 'Debe seleccionar al menos un trabajo.';
-        validacion.style.opacity = '1';
-        campos.trabajos = false;
-    } else {
-        grupo.classList.remove('input_field_trabajos_incorrecto');
-        grupo.classList.add('input_field_trabajos_correcto');
-        validacion.style.opacity = '0';
-        campos.trabajos = true;
-    }
-};
+    // Event listeners
+    inputs.on('keyup change blur', validarFormulario);
 
-// Añadir eventos a los inputs
-inputs.forEach((input) => {
-    input.addEventListener('blur', validarFormulario);
-    input.addEventListener('input', validarFormulario);
-});
+    // Validación al enviar
+    formulario.on('submit', function(e) {
+        e.preventDefault();
 
-selects.forEach((select) => {
-    select.addEventListener('blur', validarFormulario);
-    select.addEventListener('change', validarFormulario);
-});
+        const isPlacaValid = validarCampo(expresiones.placa, $('#placa'), 'grupo_placa', 'Seleccione un vehículo.');
+        const isTipoMantenimientoValid = validarCampo(expresiones.tipo_mantenimiento, $('#tipo_mantenimiento'), 'grupo_id_tipo_mantenimiento', 'Seleccione un tipo de mantenimiento.');
+        const isFechaProgramadaValid = validarFecha($('#fecha_programada'), 'grupo_fecha_programada', 'Seleccione una fecha válida.', false);
+        const isFechaRealizadaValid = validarFecha($('#fecha_realizada'), 'grupo_fecha_realizada', 'Fecha no puede ser futura.', true);
+        const isKilometrajeActualValid = validarCampo(expresiones.kilometraje, $('#kilometraje_actual'), 'grupo_kilometraje_actual', 'Ingrese un número positivo.', true);
+        const isProximoKmValid = validarCampo(expresiones.kilometraje, $('#proximo_cambio_km'), 'grupo_proximo_cambio_km', 'Ingrese un número positivo.', true);
+        const isProximoFechaValid = validarFecha($('#proximo_cambio_fecha'), 'grupo_proximo_cambio_fecha', 'Fecha no puede ser pasada.', true, true);
+        const isObservacionesValid = validarCampo(expresiones.observaciones, $('#observaciones'), 'grupo_observaciones', 'Máximo 500 caracteres, solo letras, números y puntuación básica.', true);
 
-textarea.addEventListener('blur', validarFormulario);
-textarea.addEventListener('input', validarFormulario);
+        const formularioError = $('#formulario_error');
+        const formularioExito = $('#formulario_exito');
 
-// Validar al enviar el formulario
-formulario.addEventListener('submit', (e) => {
-    e.preventDefault();
-    validarTrabajos();
-
-    const formularioError = document.getElementById('formulario_error');
-    const formularioExito = document.getElementById('formulario_exito');
-
-    // Validar todos los campos al enviar
-    validarSelect(document.getElementById('placa'), 'placa', 'Seleccione un vehículo.');
-    validarSelect(document.getElementById('id_tipo_mantenimiento'), 'id_tipo_mantenimiento', 'Seleccione un tipo de mantenimiento.');
-    validarFecha(document.getElementById('fecha_programada'), 'fecha_programada', 'Seleccione una fecha válida.', false);
-    validarFecha(document.getElementById('fecha_realizada'), 'fecha_realizada', 'Fecha no puede ser futura.', true);
-    validarCampo(expresiones.kilometraje, document.getElementById('kilometraje_actual'), 'kilometraje_actual', 'Ingrese un número positivo.', true);
-    validarCampo(expresiones.kilometraje, document.getElementById('proximo_cambio_km'), 'proximo_cambio_km', 'Ingrese un número positivo.', true);
-    validarFechaFutura(document.getElementById('proximo_cambio_fecha'), 'proximo_cambio_fecha', 'Fecha no puede ser pasada.', true);
-    validarCampo(expresiones.observaciones, document.getElementById('observaciones'), 'observaciones', 'Máximo 500 caracteres, solo letras, números y puntuación básica.', true);
-
-    // Solo los campos obligatorios (placa, id_tipo_mantenimiento, fecha_programada, trabajos) deben ser true para enviar
-    if (campos.placa && campos.id_tipo_mantenimiento && campos.fecha_programada && campos.trabajos) {
-        formularioError.style.opacity = '0';
-        formularioExito.style.opacity = '1';
-        formulario.submit();
-    } else {
-        formularioError.textContent = 'Por favor, corrige los errores en el formulario.';
-        formularioError.style.opacity = '1';
-        formularioExito.style.opacity = '0';
-    }
-});
-
-// Funciones para trabajos dinámicos
-let trabajoCount = 0;
-
-function agregarTrabajo() {
-    const trabajosContainer = document.getElementById('trabajos-container');
-    const grupoTrabajos = document.getElementById('grupo_trabajos');
-    const trabajosData = JSON.parse(grupoTrabajos.getAttribute('data-trabajos'));
-
-    const div = document.createElement('div');
-    div.classList.add('trabajo-item');
-    div.id = `trabajo-${trabajoCount}`;
-    div.innerHTML = `
-        <select name="trabajos[]" required>
-            <option value="">Seleccionar Trabajo</option>
-            ${trabajosData.map(trabajo => `<option value="${trabajo.id}">${trabajo.Trabajo} - $${trabajo.Precio}</option>`).join('')}
-        </select>
-        <input type="number" name="cantidades[]" value="1" min="1" placeholder="Cantidad">
-        <button type="button" onclick="eliminarTrabajo(${trabajoCount})">Eliminar</button>
-    `;
-
-    trabajosContainer.appendChild(div);
-    trabajoCount++;
-
-    const select = div.querySelector('select');
-    select.addEventListener('change', validarTrabajos);
-    const inputCantidad = div.querySelector('input');
-    inputCantidad.addEventListener('input', validarTrabajos);
-
-    validarTrabajos();
-}
-
-function eliminarTrabajo(id) {
-    const trabajo = document.getElementById(`trabajo-${id}`);
-    if (trabajo) {
-        trabajo.remove();
-        validarTrabajos();
-    }
-}
-
-// Validar trabajos al cargar la página
-document.addEventListener('DOMContentLoaded', () => {
-    validarTrabajos();
-
-    // Validar todos los campos al cargar para que se muestren en rojo si están vacíos
-    validarSelect(document.getElementById('placa'), 'placa', 'Seleccione un vehículo.');
-    validarSelect(document.getElementById('id_tipo_mantenimiento'), 'id_tipo_mantenimiento', 'Seleccione un tipo de mantenimiento.');
-    validarFecha(document.getElementById('fecha_programada'), 'fecha_programada', 'Seleccione una fecha válida.', false);
-    validarFecha(document.getElementById('fecha_realizada'), 'fecha_realizada', 'Fecha no puede ser futura.', true);
-    validarCampo(expresiones.kilometraje, document.getElementById('kilometraje_actual'), 'kilometraje_actual', 'Ingrese un número positivo.', true);
-    validarCampo(expresiones.kilometraje, document.getElementById('proximo_cambio_km'), 'proximo_cambio_km', 'Ingrese un número positivo.', true);
-    validarFechaFutura(document.getElementById('proximo_cambio_fecha'), 'proximo_cambio_fecha', 'Fecha no puede ser pasada.', true);
-    validarCampo(expresiones.observaciones, document.getElementById('observaciones'), 'observaciones', 'Máximo 500 caracteres, solo letras, números y puntuación básica.', true);
+        if (isPlacaValid && isTipoMantenimientoValid && isFechaProgramadaValid && isFechaRealizadaValid &&
+            isKilometrajeActualValid && isProximoKmValid && isProximoFechaValid && isObservacionesValid) {
+            formularioError.css('opacity', '0');
+            formularioExito.css('opacity', '1').css('color', '#158000');
+            $.ajax({
+                type: 'POST',
+                url: 'guardar_mantenimiento.php',
+                data: formulario.serialize(),
+                success: function(response) {
+                    if (response.includes('Guardado exitosamente')) {
+                        formularioExito.text('Guardado exitosamente');
+                        setTimeout(() => formularioExito.css('opacity', '0'), 3000);
+                        formulario[0].reset();
+                    } else {
+                        formularioError.text(response || 'Error al guardar. Inténtelo de nuevo.').css('opacity', '1').css('color', '#d32f2f');
+                        setTimeout(() => formularioError.css('opacity', '0'), 5000);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error AJAX:', status, error);
+                    console.error('Respuesta del servidor:', xhr.responseText);
+                    formularioError.text('Error al guardar. Inténtelo de nuevo.').css('opacity', '1').css('color', '#d32f2f');
+                    setTimeout(() => formularioError.css('opacity', '0'), 5000);
+                    $('#placa').focus();
+                }
+            });
+        } else {
+            formularioError.text('Por favor, corrige los errores en el formulario.').css('opacity', '1').css('color', '#d32f2f');
+            setTimeout(() => formularioError.css('opacity', '0'), 5000);
+            if (!isPlacaValid) $('#placa').focus();
+            else if (!isTipoMantenimientoValid) $('#tipo_mantenimiento').focus();
+            else if (!isFechaProgramadaValid) $('#fecha_programada').focus();
+            else if (!isFechaRealizadaValid) $('#fecha_realizada').focus();
+            else if (!isKilometrajeActualValid) $('#kilometraje_actual').focus();
+            else if (!isProximoKmValid) $('#proximo_cambio_km').focus();
+            else if (!isProximoFechaValid) $('#proximo_cambio_fecha').focus();
+            else if (!isObservacionesValid) $('#observaciones').focus();
+        }
+    });
 });
