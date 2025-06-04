@@ -2,7 +2,7 @@ const formulario = document.getElementById('formulario');
 const inputs = document.querySelectorAll('#formulario input');
 
 const expresiones = {
-    validadocumento: /^\d{10}$/,
+    validadocumento: /^\d{6,10}$/,
     validanombre: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{2,50}$/,
     validacorreo: /^[a-zA-Z0-9._%+-]+@gmail\.com$/,
     validapassword: /^.{4,12}$/

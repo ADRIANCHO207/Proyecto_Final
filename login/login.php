@@ -44,7 +44,7 @@ $estado = 1 ;
                                         <input type="number" name = "doc" id="doc" placeholder = "Documento">
                                     </div>
                                     <div class="formulario_error_doc" id="formulario_correcto_doc">
-                                        <p class="validacion" id="validacion">El documento solo debe contener numeros y el maximo son 10 dígitos.</p>
+                                        <p class="validacion" id="validacion">El documento solo debe contener numeros y el minimo son 6 digitos y el maximo son 10 dígitos.</p>
                                     </div>
                                 </div>
                                 

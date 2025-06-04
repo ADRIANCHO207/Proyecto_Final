@@ -77,6 +77,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+    * {
+        margin: 0;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+        background: #f4f6f9;
+    }
+
+    .container {
+        margin-top: 40px;
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #fff;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+
+    table thead {
+        background-color: #0d6efd;
+        color: white;
+    }
+
+    table th, table td {
+        padding: 12px;
+        text-align: center;
+        vertical-align: middle;
+        border: 1px solid #dee2e6;
+    }
+
+    tr.alerta {
+        background-color: #fff3cd; /* Amarillo claro para advertencias */
+    }
+
+    tr:hover {
+        background-color: #f1f1f1;
+    }
+</style>
+
 </head>
 <body>
     <?php include('../header.php'); ?>

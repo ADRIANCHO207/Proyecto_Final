@@ -48,8 +48,7 @@ if (!$nombre_completo || !$foto_perfil) {
 </head>
 <body>
 
-  <?php include 'menu.html'; ?> <!-- Sidebar SIEMPRE fuera del contenido principal -->
-
+  <?php include 'menu.html'; ?> 
   <div class="content">
     <div class="navbar">
       <h1>Flota Vehicular</h1>
@@ -60,7 +59,7 @@ if (!$nombre_completo || !$foto_perfil) {
     </div>
 
     <div class="container py-4">
-      <h2 class="mb-4">🗂️ Control de Documentos</h2>
+      <h2 class="mb-4">Control de Documentos</h2>
 
       <div class="buscador">
         <input type="text" id="buscar" placeholder="Buscar por placa u otro dato..." onkeyup="filtrarTabla()">
