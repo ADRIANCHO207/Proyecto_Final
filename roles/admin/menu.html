@@ -4,121 +4,112 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-
-      * {
-        box-sizing: border-box;
-      }
-
-      body {
-        font-family: 'Inter', sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f4f6f8;
-        color: #333;
-      }
-      img {
-        width: 100%;
-        height: auto;
-        display: block;
-
-      }
-      img.sidebar.expanded {
-        width: 80%;
-        height: auto;
-        display: block;
-      }
-
-
-      .sidebar {
-        position: fixed;
-        height: 100vh;
-        top: 0px  ;;
-        left: 0;
-        width: 85px;
-        background-color: #fff;
-        border-right: 1px solid #e0e0e0;
-        box-shadow: 2px 0 5px rgba(0,0,0,0.05);
-        overflow-x: hidden;
-        transition: width 0.3s ease;
-        z-index: 100;
-      }
-
-      .sidebar.expanded {
-        width: 270px;
-      }
-
-      .sidebar a {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        padding: 15px 20px;
-        color: #333;
-        text-decoration: none;
-        font-weight: 600;
-        transition: background 0.3s ease;
-      }
-
-      .sidebar a i {
-        font-size: 20px;
-        min-width: 24px;
-      }
-
-      .sidebar a span {
-        transition: opacity 0.2s ease;
-        opacity: 0;
-        white-space: nowrap;
-      }
-
-      .sidebar.expanded a span {
-        opacity: 1;
-      }
-
-      .sidebar a:hover {
-        background-color: #f1f1f1;
-        color: #d32f2f;
-      }
-
-      .content {
-        margin-left: 60px;
-        padding: 30px;
-        transition: margin-left 0.3s ease;
-      }
-
-      .sidebar.expanded ~ .content {
-        margin-left: 350px;
-      }
-    </style>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/sidebar.css">
 </head>
 <body>
 
   <div class="sidebar" id="sidebar">
-    <center><img src="../../css/img/logoagc-Photoroom.png" alt=""></center>
-    <a href="index.php"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
-    <a href="Vehiculos.php"><i class="bi bi-truck"></i><span>Gestión de Vehículos</span></a>
-    <a href="documentos.php"><i class="bi bi-folder"></i><span>Control de Documentos</span></a>
-    <a href="mantenimiento.php"><i class="bi bi-tools"></i><span>Mantenimientos</span></a>
-    <a href="alertas.php"><i class="bi bi-bell"></i><span>Alertas</span></a>
-    <a href="#"><i class="bi bi-people"></i><span>Usuarios</span></a>
-    <a href="#"><i class="bi bi-clock-history"></i><span>Historial</span></a>
-    <a href="#"><i class="bi bi-bell-fill"></i><span>Notificaciones</span></a>
-    <a href="#"><i class="bi bi-person-circle"></i><span>Perfil</span></a>
-    <a href="#"><i class="bi bi-gear"></i><span>Configuración</span></a>
-    <a href="../../includes/salir.php"><i class="bi bi-box-arrow-right"></i><span>Cerrar Sesión</span></a>
+    <!-- Header del sidebar -->
+    <div class="sidebar-header">
+      <div class="logo-container">
+        <img src="../../css/img/logoagc-Photoroom-removebg-preview.png" alt="Logo" class="logo">
+        <div class="brand-text">
+          <h1 class="brand-title">FLOTAX</h1>
+          <span class="brand-subtitle">AGC</span>
+        </div>
+      </div>
+      <button class="toggle-btn" id="toggleBtn">
+        <i class="bi bi-list"></i>
+      </button>
+    </div>
+
+    <!-- Navegación principal -->
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <span class="section-title">Principal</span>
+        <a href="index.php" class="nav-link active">
+          <i class="bi bi-speedometer2"></i>
+          <span>Dashboard</span>
+          <div class="nav-indicator"></div>
+        </a>
+        <a href="Vehiculos.php" class="nav-link">
+          <i class="bi bi-truck"></i>
+          <span>Gestión de Vehículos</span>
+          <div class="nav-indicator"></div>
+        </a>
+        <a href="documentos.php" class="nav-link">
+          <i class="bi bi-folder"></i>
+          <span>Control de Documentos</span>
+          <div class="nav-indicator"></div>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <span class="section-title">Operaciones</span>
+        <a href="mantenimiento.php" class="nav-link">
+          <i class="bi bi-tools"></i>
+          <span>Mantenimientos</span>
+          <div class="nav-indicator"></div>
+        </a>
+        <a href="alertas.php" class="nav-link">
+          <i class="bi bi-bell"></i>
+          <span>Alertas</span>
+          <div class="nav-badge">3</div>
+          <div class="nav-indicator"></div>
+        </a>
+        <a href="usuarios.php" class="nav-link">
+          <i class="bi bi-people"></i>
+          <span>Usuarios</span>
+          <div class="nav-indicator"></div>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <span class="section-title">Historial</span>
+        <a href="#" class="nav-link">
+          <i class="bi bi-clock-history"></i>
+          <span>Historial</span>
+          <div class="nav-indicator"></div>
+        </a>
+        <a href="#" class="nav-link">
+          <i class="bi bi-bell-fill"></i>
+          <span>Notificaciones</span>
+          <div class="nav-badge">12</div>
+          <div class="nav-indicator"></div>
+        </a>
+      </div>
+    </nav>
+
+    <!-- Footer del sidebar -->
+    <div class="sidebar-footer">
+      <a href="perfil.php" class="nav-link profile-link">
+        <div class="profile-avatar">
+          <img src="../../css/img/perfil.jpg" alt="Perfil" class="avatar-img">
+        </div>
+        <div class="profile-info">
+          <span class="profile-name">Usuario Admin</span>
+          <span class="profile-role">Administrador</span>
+        </div>
+        <i class="bi bi-chevron-right profile-arrow"></i>
+      </a>
+      
+      <div class="footer-actions">
+        <a href="#" class="action-btn" title="Configuración">
+          <i class="bi bi-gear"></i>
+          <span>Configuración</span>
+        </a>
+        <a href="../../includes/salir.php" class="action-btn logout-btn" title="Cerrar Sesión">
+          <i class="bi bi-box-arrow-right"></i>
+          <span>Cerrar Sesión</span>
+        </a>
+      </div>
+    </div>
   </div>
 
+  <!-- Overlay para móvil -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-  <script>
-    const sidebar = document.getElementById("sidebar");
-
-    sidebar.addEventListener("mouseenter", () => {
-      sidebar.classList.add("expanded");
-    });
-
-    sidebar.addEventListener("mouseleave", () => {
-      sidebar.classList.remove("expanded");
-    });
-  </script>
+  <script src="js/sidebar.js"></script>
 </body>
 </html>

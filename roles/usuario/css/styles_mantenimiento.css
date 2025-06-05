@@ -1,0 +1,311 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: #f9f9f9;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Form Styles */
+.container {
+    width: 100%;
+    max-width: 900px; /* Ajustado para filas de 3 */
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 120px auto 20px auto; /* Adjusted for fixed header */
+}
+
+.form-llantas {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-llantas h1 {
+    font-size: 30px;
+    margin-bottom: 10px;
+    font-weight: 700;
+    text-align: center;
+    color: #d32f2f;
+}
+
+.form-llantas .instructions {
+    font-size: 16px;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #666;
+    margin-top: 20px;
+}
+
+.input-gruop {
+    margin-bottom: 20px;
+}
+
+.input-subgroup {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.input-subgroup > div {
+    flex: 1 1 30%; /* Asegura que cada campo ocupe 1/3 del ancho */
+    display: flex;
+    flex-direction: column;
+}
+
+.input-box {
+    display: flex;
+    flex-direction: column;
+}
+
+.input_field_placa, .input_field_id_tipo_mantenimiento, .input_field_fecha_programada,
+.input_field_fecha_realizada, .input_field_kilometraje_actual,
+.input_field_proximo_cambio_km, .input_field_proximo_cambio_fecha,
+.input_field_observaciones, .input_field_trabajos {
+    background-color: #c2c2c2;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+}
+
+.input_field_placa label, .input_field_id_tipo_mantenimiento label, .input_field_fecha_programada label,
+.input_field_fecha_realizada label, .input_field_kilometraje_actual label,
+.input_field_proximo_cambio_km label, .input_field_proximo_cambio_fecha label,
+.input_field_observaciones label, .input_field_trabajos label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+    display: block; /* Para que ocupe todo el ancho y se coloque arriba */
+}
+
+input, select, textarea {
+    width: 90%; /* Ajustado para que ocupe casi todo el ancho, dejando espacio para el ícono */
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 10px;
+    color: #000;
+    font-family: 'Poppins', sans-serif;
+}
+
+input::placeholder, select::placeholder, textarea::placeholder {
+    color: #666;
+}
+
+.input_field_placa i, .input_field_id_tipo_mantenimiento i, .input_field_fecha_programada i,
+.input_field_fecha_realizada i, .input_field_kilometraje_actual i,
+.input_field_proximo_cambio_km i, .input_field_proximo_cambio_fecha i,
+.input_field_observaciones i, .input_field_trabajos i {
+    margin-left: 10px;
+    color: #fff;
+    width: 10%; /* Asegura que el ícono tenga un espacio definido */
+}
+
+.btn-field {
+    padding: 20px 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.btn-field button {
+    border: solid 3px #d32f2f;
+    padding: 10px 30px;
+    background: #d32f2f;
+    font-weight: 600;
+    color: #fff;
+    transition: 0.3s;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.btn-field button:hover {
+    border: solid 3px #d32f2f;
+    background-color: transparent;
+    color: #d32f2f;
+}
+
+.validacion_placa, .validacion_id_tipo_mantenimiento, .validacion_fecha_programada,
+.validacion_fecha_realizada, .validacion_kilometraje_actual,
+.validacion_proximo_cambio_km, .validacion_proximo_cambio_fecha,
+.validacion_observaciones, .validacion_trabajos {
+    font-weight: 600;
+    font-size: 10px;
+    opacity: 0;
+    padding: 5px 0;
+    color: #c50000;
+    display: block; /* Asegura que el mensaje ocupe todo el ancho debajo del campo */
+}
+
+.formulario_error {
+    font-weight: 600;
+    font-size: 13px;
+    text-align: center;
+    color: #c50000;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.formulario_exito {
+    font-weight: 600;
+    font-size: 13px;
+    text-align: center;
+    color: #158000;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.formulario_error_placa, .formulario_error_id_tipo_mantenimiento, .formulario_error_fecha_programada,
+.formulario_error_fecha_realizada, .formulario_error_kilometraje_actual,
+.formulario_error_proximo_cambio_km, .formulario_error_proximo_cambio_fecha,
+.formulario_error_observaciones, .formulario_error_trabajos {
+    color: #c50000;
+}
+
+.input_field_placa_correcto, .input_field_id_tipo_mantenimiento_correcto, .input_field_fecha_programada_correcto,
+.input_field_fecha_realizada_correcto, .input_field_kilometraje_actual_correcto,
+.input_field_proximo_cambio_km_correcto, .input_field_proximo_cambio_fecha_correcto,
+.input_field_observaciones_correcto, .input_field_trabajos_correcto {
+    background-color: #c2c2c2;
+    border: solid 3px #158000;
+    color: #158000;
+}
+
+.input_field_placa_correcto i, .input_field_id_tipo_mantenimiento_correcto i, .input_field_fecha_programada_correcto i,
+.input_field_fecha_realizada_correcto i, .input_field_kilometraje_actual_correcto i,
+.input_field_proximo_cambio_km_correcto i, .input_field_proximo_cambio_fecha_correcto i,
+.input_field_observaciones_correcto i, .input_field_trabajos_correcto i {
+    color: #158000;
+}
+
+.input_field_placa_incorrecto, .input_field_id_tipo_mantenimiento_incorrecto, .input_field_fecha_programada_incorrecto,
+.input_field_fecha_realizada_incorrecto, .input_field_kilometraje_actual_incorrecto,
+.input_field_proximo_cambio_km_incorrecto, .input_field_proximo_cambio_fecha_incorrecto,
+.input_field_observaciones_incorrecto, .input_field_trabajos_incorrecto {
+    background-color: #c2c2c2;
+    border: solid 3px #c50000;
+    color: #c50000;
+}
+
+.input_field_placa_incorrecto i, .input_field_id_tipo_mantenimiento_incorrecto i, .input_field_fecha_programada_incorrecto i,
+.input_field_fecha_realizada_incorrecto i, .input_field_kilometraje_actual_incorrecto i,
+.input_field_proximo_cambio_km_incorrecto i, .input_field_proximo_cambio_fecha_incorrecto i,
+.input_field_observaciones_incorrecto i, .input_field_trabajos_incorrecto i {
+    color: #c50000;
+}
+
+/* Estilos para Trabajos Dinámicos */
+.input_field_trabajos {
+    background: none;
+    padding: 0;
+}
+
+.trabajo-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    background: #c2c2c2;
+    padding: 5px;
+    border-radius: 10px;
+}
+
+.trabajo-item select,
+.trabajo-item input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 10px;
+    color: #000;
+    font-family: 'Poppins', sans-serif;
+}
+
+.trabajo-item button {
+    background: #d32f2f;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.trabajo-item button:hover {
+    background: #c50000;
+}
+
+.btn-add-trabajo {
+    background: #d32f2f;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin: 10px auto;
+    transition: background 0.3s ease;
+}
+
+.btn-add-trabajo:hover {
+    background: #c50000;
+}
+
+@media screen and (max-width: 768px) {
+    .input-subgroup > div {
+        flex: 1 1 100%; /* En pantallas pequeñas, los campos ocupan todo el ancho */
+    }
+
+    .container {
+        padding: 10px;
+        margin-top: 200px; /* Adjusted for header on smaller screens */
+    }
+
+    .form-llantas h1 {
+        font-size: 24px;
+    }
+
+    .input_field_placa label, .input_field_id_tipo_mantenimiento label, .input_field_fecha_programada label,
+    .input_field_fecha_realizada label, .input_field_kilometraje_actual label,
+    .input_field_proximo_cambio_km label, .input_field_proximo_cambio_fecha label,
+    .input_field_observaciones label, .input_field_trabajos label {
+        font-size: 14px;
+    }
+
+    input, select, textarea {
+        width: 85%;
+        padding: 8px;
+    }
+
+    .btn-field button {
+        width: 100%;
+        padding: 8px 20px;
+    }
+
+    .trabajo-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .trabajo-item select,
+    .trabajo-item input {
+        width: 100%;
+        padding: 8px;
+    }
+}
