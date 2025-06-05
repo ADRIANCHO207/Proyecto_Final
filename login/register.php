@@ -78,7 +78,11 @@ $rol = 2;
             </div>
         <div class = "conten_form">
             <div class="form_infor">
+<<<<<<< HEAD
                 <img src="../css/img/logo_sinfondo.png" alt="logo" class="logo">
+=======
+                <img src="../css/img/logoagc-Photoroom.png" alt="logo" class="logo">
+>>>>>>> 3919379551deb4b47f9332d7afefd7d09b4a114f
                 
                 <h1 class= "titulo" >Registro</h1>
                 <form action = "" method = "post" id="formulario" enctype = "multipart/form-data" autocomplete="off">

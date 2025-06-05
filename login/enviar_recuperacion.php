@@ -57,6 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $mail->Subject = 'Recuperación de contraseña - Flota Vehicular';
 
         // Enlace de recuperación
+<<<<<<< HEAD
         $reset_link = "http://localhost/Proyecto/login/change.php?token=" . urlencode($token);
 
         // Contenido del correo.php
@@ -65,6 +66,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                        <p>Hola, has solicitado recuperar tu contraseña.</p>
                        <p>Haz clic en el siguiente enlace para restablecerla:</p>
                        <p><a href='$reset_link' style='background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>Restablecer contraseña</a></p>
+=======
+        $reset_link = "http://localhost/Proyecto_Final/login/change.php?token=" . urlencode($token);
+
+        // Contenido del correo.php
+        $mail->isHTML(true);
+        $mail->Body = "<h2>Recuperación de contrasena</h2>
+                       <p>Hola, has solicitado recuperar tu contraseña.</p>
+                       <p>Haz clic en el siguiente enlace para restablecerla:</p>
+                       <p><a href='$reset_link' style='background-color: #d32f2f; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>Restablecer contrasena</a></p>
+>>>>>>> 3919379551deb4b47f9332d7afefd7d09b4a114f
                        <p>Si no solicitaste este cambio, ignora este mensaje.</p>
                        <p>Este enlace expira en 1 hora.</p>";
 

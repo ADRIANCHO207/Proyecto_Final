@@ -531,8 +531,13 @@ option {
     }
 
     .conten_form img {
+<<<<<<< HEAD
         width: 100px;
         height: 100px;
+=======
+        width: 220px;
+        height: 220px;
+>>>>>>> 3919379551deb4b47f9332d7afefd7d09b4a114f
     }
 
     .btn-field {

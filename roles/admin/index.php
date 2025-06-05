@@ -5,6 +5,7 @@ include '../../includes/validarsession.php';
 $db = new Database();
 $con = $db->conectar();
 
+<<<<<<< HEAD
 // Consulta para contar el total de vehículos registrados
 $stmt = $con->prepare("SELECT COUNT(*) AS total FROM vehiculos");
 $stmt->execute();
@@ -46,12 +47,17 @@ $meses_es = [
 ];
 $dia_semana_es = $dias_es[$dia_semana];
 $fecha_es = date("d") . " " . $meses_es[date("M")] . " " . date("Y");
+=======
+
+
+>>>>>>> 3919379551deb4b47f9332d7afefd7d09b4a114f
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<<<<<<< HEAD
   <title>Panel de Administrador - Flotax AGC</title>
   <link rel="shortcut icon" href="../../css/img/logo_sinfondo.png">
   <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
@@ -155,10 +161,40 @@ $fecha_es = date("d") . " " . $meses_es[date("M")] . " " . date("Y");
       </div>
       <div class="chart">
         <h3><i class="bi bi-bar-chart"></i> Historial de Gastos por Mes</h3>
+=======
+  <title>Panel de Administrador</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  
+    <?php include 'menu.html'; ?> 
+
+  <div class="content">
+  
+    <div class="cards">
+      <div class="card"><h3>Total Vehículos Registrados</h3><p>35</p></div>
+      <div class="card"><h3>Vehículos al Día</h3><p>28</p></div>
+      <div class="card"><h3>SOAT Vencido o por Vencer</h3><p>7</p></div>
+      <div class="card"><h3>Multas Activas</h3><p>12</p></div>
+      <div class="card"><h3>Próximos Mantenimientos</h3><p>4</p></div>
+    </div>
+
+    <div class="charts-container" style="display:flex; gap:20px; flex-wrap:wrap;">
+      <div class="chart">
+        <h3>Distribución por Estado</h3>
+        <canvas id="estadoChart"></canvas>
+      </div>
+      <div class="chart">
+        <h3>Historial de Gastos por Mes</h3>
+>>>>>>> 3919379551deb4b47f9332d7afefd7d09b4a114f
         <canvas id="gastosChart"></canvas>
       </div>
     </div>
 
+<<<<<<< HEAD
     <!-- Calendario de Vencimientos -->
     <div class="calendar">
       <h3><i class="bi bi-calendar-event"></i> Próximos Vencimientos</h3>
@@ -235,10 +271,21 @@ $fecha_es = date("d") . " " . $meses_es[date("M")] . " " . date("Y");
           <div class="activity-time">Hace 1 día</div>
         </div>
       </div>
+=======
+    <!-- Calendario Pequeño -->
+    <div class="calendar" style="margin-top:30px;">
+      <h3>Próximos Vencimientos</h3>
+      <ul>
+        <li>10 mayo - SOAT JSK13</li>
+        <li>12 mayo - Revisión Técnica ABC123</li>
+        <li>20 mayo - Cambio de aceite DEF456</li>
+      </ul>
+>>>>>>> 3919379551deb4b47f9332d7afefd7d09b4a114f
     </div>
   </div>
 
   <script>
+<<<<<<< HEAD
     // Configuración de colores para gráficos
     const chartColors = {
       primary: '#667eea',
@@ -252,6 +299,8 @@ $fecha_es = date("d") . " " . $meses_es[date("M")] . " " . date("Y");
       orange: '#e67e22'
     };
     
+=======
+>>>>>>> 3919379551deb4b47f9332d7afefd7d09b4a114f
     // Gráfico de estado de vehículos
     new Chart(document.getElementById('estadoChart'), {
       type: 'doughnut',
@@ -260,6 +309,7 @@ $fecha_es = date("d") . " " . $meses_es[date("M")] . " " . date("Y");
         datasets: [{
           label: 'Vehículos',
           data: [20, 10, 5],
+<<<<<<< HEAD
           backgroundColor: [chartColors.success, chartColors.warning, chartColors.danger],
           borderColor: 'white',
           borderWidth: 2,
@@ -281,6 +331,10 @@ $fecha_es = date("d") . " " . $meses_es[date("M")] . " " . date("Y");
             }
           }
         }
+=======
+          backgroundColor: ['#2ecc71', '#f1c40f', '#e74c3c']
+        }]
+>>>>>>> 3919379551deb4b47f9332d7afefd7d09b4a114f
       }
     });
 
@@ -293,25 +347,38 @@ $fecha_es = date("d") . " " . $meses_es[date("M")] . " " . date("Y");
           {
             label: 'Combustibles',
             data: [3000000, 3200000, 2800000, 3100000],
+<<<<<<< HEAD
             backgroundColor: chartColors.info,
             borderRadius: 4
+=======
+            backgroundColor: '#3498db'
+>>>>>>> 3919379551deb4b47f9332d7afefd7d09b4a114f
           },
           {
             label: 'Multas',
             data: [500000, 300000, 1000000, 700000],
+<<<<<<< HEAD
             backgroundColor: chartColors.orange,
             borderRadius: 4
+=======
+            backgroundColor: '#e67e22'
+>>>>>>> 3919379551deb4b47f9332d7afefd7d09b4a114f
           },
           {
             label: 'Mantenimiento',
             data: [1500000, 1800000, 1300000, 2000000],
+<<<<<<< HEAD
             backgroundColor: chartColors.purple,
             borderRadius: 4
+=======
+            backgroundColor: '#9b59b6'
+>>>>>>> 3919379551deb4b47f9332d7afefd7d09b4a114f
           }
         ]
       },
       options: {
         responsive: true,
+<<<<<<< HEAD
         maintainAspectRatio: false,
         scales: {
           y: { 
@@ -339,6 +406,10 @@ $fecha_es = date("d") . " " . $meses_es[date("M")] . " " . date("Y");
               }
             }
           }
+=======
+        scales: {
+          y: { beginAtZero: true }
+>>>>>>> 3919379551deb4b47f9332d7afefd7d09b4a114f
         }
       }
     });

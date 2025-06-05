@@ -1,0 +1,290 @@
+/* Fuente moderna */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+/* GLOBAL */
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #f4f6f8;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+/* NAVBAR */
+.navbar {
+  background-color: #fff;
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #e0e0e0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.navbar h1 {
+  margin: 0;
+  font-size: 22px;
+  color: #d32f2f;
+}
+
+/* Notificaciones */
+.notification {
+  position: relative;
+  cursor: pointer;
+}
+
+.notification i {
+  font-size: 20px;
+}
+
+.badge {
+  background-color: #d32f2f;
+  color: white;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 50%;
+  position: absolute;
+  top: -10px;
+  right: -10px;
+}
+
+/* Buscador */
+.buscador {
+  max-width: 400px;
+  margin: 20px auto;
+  padding: 10px;
+}
+
+.buscador input[type="text"] {
+  width: 100%;
+  padding: 10px 15px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: border-color 0.3s ease;
+}
+
+.buscador input[type="text"]:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0,123,255,0.5);
+}
+
+/* Dropdown */
+.dropdown {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 30px;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  padding: 10px;
+  width: 250px;
+}
+
+.dropdown.show {
+  display: block;
+}
+
+.dropdown p {
+  margin: 0;
+  font-size: 14px;
+  padding: 5px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.dropdown p:last-child {
+  border-bottom: none;
+}
+
+
+/* CONTENIDO PRINCIPAL */
+.table-responsive {
+  margin-left: 0;
+  padding: 1px;
+  overflow-x: auto;
+  transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .table-responsive {
+    padding: 1px;
+  }
+}
+
+/* TABLAS */
+.table {
+  width: 100%;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+}
+
+.table th,
+.table td {
+  padding: 16px 20px;
+  text-align: left;
+  border: none;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.table th {
+  background-color: #f8f9fa;
+  color: #333;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.table td {
+  color: #444;
+  font-size: 0.95rem;
+  vertical-align: middle;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Acciones */
+.table .action-icon {
+  font-size: 18px;
+  cursor: pointer;
+  color: #666;
+  transition: all 0.2s ease;
+  padding: 8px;
+  border-radius: 50%;
+}
+
+.table .action-icon:hover {
+  color: #d32f2f;
+  background-color: rgba(211, 47, 47, 0.08);
+  transform: scale(1.1);
+}
+
+/* Helpers */
+.table .d-flex {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+}
+
+.table .d-flex a {
+  margin: 0 5px;
+  text-decoration: none;
+}
+
+.table .text-center {
+  text-align: center;
+}
+
+/* Estilos adicionales de la tabla */
+.table-striped tbody tr:nth-child(odd) {
+  background-color: #fafafa;
+}
+
+.table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.table tbody tr:hover {
+  background-color: #f0f7ff !important;
+}
+
+.table .status-cell {
+  font-weight: 500;
+}
+
+.table .status-active {
+  color: #2e7d32;
+}
+
+.table .status-inactive {
+  color: #d32f2f;
+}
+
+/* Botones en tabla */
+.table button,
+.table .btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.table .btn-primary {
+  background-color: #1976d2;
+  color: white;
+}
+
+.table .btn-primary:hover {
+  background-color: #1565c0;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3);
+}
+
+.table .btn-danger {
+  background-color: #d32f2f;
+  color: white;
+}
+
+.table .btn-danger:hover {
+  background-color: #c62828;
+  box-shadow: 0 2px 8px rgba(211, 47, 47, 0.3);
+}
+
+/* BOTÓN AGREGAR */
+.boton-agregar {
+  margin-top: 20px;
+  text-align: right;
+}
+
+/* PAGINACIÓN */
+.pagination {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.page-item {
+  display: inline-block;
+}
+
+.page-item .page-link {
+  color: #007bff;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  padding: 8px 12px;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.page-item .page-link:hover {
+  background-color: #007bff;
+  color: #fff;
+  border-color: #007bff;
+}
+
+.page-item.active .page-link {
+  background-color: #007bff;
+  color: #fff;
+  border-color: #007bff;
+  font-weight: bold;
+}
