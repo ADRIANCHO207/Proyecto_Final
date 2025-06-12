@@ -2,6 +2,7 @@
 session_start();
 require_once '../../../conecct/conex.php';
 include '../../../includes/validarsession.php';
+include('../../../includes/auto_logout_modal.php');
 $database = new Database();
 $con = $database->conectar();
 
@@ -39,15 +40,6 @@ $sql_estado = $con->prepare("SELECT id_stado, soat_est FROM estado_soat");
 $sql_estado->execute();
 $estado = $sql_estado->fetchAll(PDO::FETCH_ASSOC);
 
-
-
-
-// Check if form was just submitted (for success message)
-$success = false;
-if (isset($_GET['success']) && $_GET['success'] == 'true') {
-    $success = true;
-}
-
 // Fetch nombre_completo and foto_perfil if not in session
 $nombre_completo = $_SESSION['nombre_completo'] ?? null;
 $foto_perfil = $_SESSION['foto_perfil'] ?? null;
@@ -76,7 +68,7 @@ if (!$nombre_completo || !$foto_perfil) {
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link rel="stylesheet" href="../css/styles_soat.css">
+    <link rel="stylesheet" href="../css/styles_soatytecno.css">
 </head>
 <body onload="formsoat.placa.focus()">
   <?php

@@ -1,43 +1,17 @@
 <?php
 session_start();
 require_once('../../../conecct/conex.php');
+require_once('../../../includes/validarsession.php');
+include('../../../includes/auto_logout_modal.php');
 $db = new Database();
 $con = $db->conectar();
-include '../../../includes/validarsession.php';
-include('../../../includes/auto_logout_modal.php');
 
 $documento = $_SESSION['documento'] ?? null;
-
-$filtro_placa = $_GET['placa'] ?? '';
-
-// Consulta dinámica
-if (!empty($filtro_placa)) {
-    $sql = $con->prepare("
-        SELECT s.id_soat, v.placa, s.fecha_expedicion, s.fecha_vencimiento,
-               a.nombre, e.soat_est
-        FROM soat s
-        INNER JOIN vehiculos v ON s.id_placa = v.placa
-        INNER JOIN aseguradoras_soat a ON s.id_aseguradora = a.id_asegura
-        INNER JOIN estado_soat e ON s.id_estado = e.id_stado
-        WHERE v.placa LIKE :placa
-        ORDER BY s.fecha_expedicion DESC
-    ");
-    $sql->execute(['placa' => "%$filtro_placa%"]);
-} else {
-    $sql = $con->prepare("
-        SELECT s.id_soat, v.placa, s.fecha_expedicion, s.fecha_vencimiento,
-               a.nombre, e.soat_est
-        FROM soat s
-        INNER JOIN vehiculos v ON s.id_placa = v.placa
-        INNER JOIN aseguradoras_soat a ON s.id_aseguradora = a.id_asegura
-        INNER JOIN estado_soat e ON s.id_estado = e.id_stado
-        ORDER BY s.fecha_expedicion DESC
-    ");
-    $sql->execute();
+if (!$documento) {
+    header('Location: ../../../login/login.php');
+    exit;
 }
-$soats = $sql->fetchAll(PDO::FETCH_ASSOC);
 
-// Datos de perfil
 $nombre_completo = $_SESSION['nombre_completo'] ?? null;
 $foto_perfil = $_SESSION['foto_perfil'] ?? null;
 if (!$nombre_completo || !$foto_perfil) {
@@ -46,21 +20,41 @@ if (!$nombre_completo || !$foto_perfil) {
     $user_query->execute();
     $user = $user_query->fetch(PDO::FETCH_ASSOC);
     $nombre_completo = $user['nombre_completo'] ?? 'Usuario';
-    $foto_perfil = $user['foto_perfil'] ?? '/proyecto/roles/usuario/css/img/perfil.jpg';
+    $foto_perfil = $user['foto_perfil'] ?: '/proyecto/roles/usuario/css/img/perfil.jpg';
     $_SESSION['nombre_completo'] = $nombre_completo;
     $_SESSION['foto_perfil'] = $foto_perfil;
 }
-?>
 
+$filtro_placa = $_GET['placa'] ?? '';
+
+// Consulta de llantas filtrada
+if (!empty($filtro_placa)) {
+    $llantas_query = $con->prepare("
+        SELECT l.*, v.placa 
+        FROM llantas l 
+        JOIN vehiculos v ON l.placa = v.placa 
+        WHERE v.placa LIKE :placa
+    ");
+    $llantas_query->execute(['placa' => "%$filtro_placa%"]);
+} else {
+    $llantas_query = $con->prepare("
+        SELECT l.*, v.placa 
+        FROM llantas l 
+        JOIN vehiculos v ON l.placa = v.placa 
+    ");
+    $llantas_query->execute();
+}
+$llantas = $llantas_query->fetchAll(PDO::FETCH_ASSOC);
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Ver SOAT</title>
+    <title>Historial de Llantas</title>
     <link rel="shortcut icon" href="../../../css/img/logo_sinfondo.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <style>
         * { font-family: 'Poppins', sans-serif; }
@@ -95,15 +89,20 @@ if (!$nombre_completo || !$foto_perfil) {
             vertical-align: middle;
         }
 
-        .badge {
-            font-size: 0.9rem;
-            padding: 6px 10px;
-            border-radius: 12px;
+        .estado-vigente {
+            background-color:rgb(100, 253, 184);
+            color: #0f5132;
         }
 
-        .estado-vigente { background-color: rgb(100, 253, 184); color: #0f5132; }
-        .estado-vencido { background-color: rgb(248, 102, 114); color: rgb(123, 0, 0); }
-        .estado-pendiente { background-color: rgb(255, 204, 0); color: rgb(102, 60, 0); }
+        .estado-vencido {
+            background-color:rgb(248, 102, 114);
+            color:rgb(123, 0, 0);
+        }
+
+        .estado-pendiente {
+            background-color:rgb(255, 219, 100);
+            color: #664d03;
+        }
 
         @media screen and (max-width: 768px) {
             .container { padding: 15px; }
@@ -117,9 +116,9 @@ if (!$nombre_completo || !$foto_perfil) {
 <?php include('../header.php'); ?>
 
 <div class="container">
-    <h2><i class="fas fa-file-shield me-2"></i>Listado de SOAT Registrados</h2>
+    <h2><i class="fas fa-car me-2"></i>Historial de Revisiones de Llantas</h2>
 
-    <!-- Campo de búsqueda -->
+    <!-- Búsqueda por placa -->
     <div class="mb-4 d-flex justify-content-center">
         <input type="text" id="filtroPlaca" class="form-control w-50 text-uppercase" placeholder="Buscar por placa" value="<?= htmlspecialchars($filtro_placa) ?>" style="text-transform: uppercase;">
     </div>
@@ -129,36 +128,49 @@ if (!$nombre_completo || !$foto_perfil) {
             <thead>
                 <tr>
                     <th>Placa</th>
-                    <th>Fecha Expedición</th>
-                    <th>Fecha Vencimiento</th>
-                    <th>Aseguradora</th>
                     <th>Estado</th>
+                    <th>Último Cambio</th>
+                    <th>Presión (PSI)</th>
+                    <th>Kilometraje Actual</th>
+                    <th>Próximo Cambio (km)</th>
+                    <th>Próximo Cambio (Fecha)</th>
+                    <th>Notas</th>
                 </tr>
             </thead>
             <tbody>
-                <?php if (count($soats) > 0): ?>
-                    <?php foreach ($soats as $row): ?>
-                        <tr>
-                            <td><?= htmlspecialchars($row['placa']) ?></td>
-                            <td><?= htmlspecialchars($row['fecha_expedicion']) ?></td>
-                            <td><?= htmlspecialchars($row['fecha_vencimiento']) ?></td>
-                            <td><?= htmlspecialchars($row['nombre']) ?></td>
+                <?php if(count($llantas) > 0): ?>
+                    <?php foreach ($llantas as $llanta): ?>
+                        <tr <?php
+                            $hoy = new DateTime();
+                            $proximo = new DateTime($llanta['proximo_cambio_fecha']);
+                            $diferencia_dias = $hoy->diff($proximo)->days;
+                            if ($proximo >= $hoy && $diferencia_dias <= 30) {
+                                echo 'class="estado-pendiente"';
+                            }
+                        ?>>
+                            <td><?= htmlspecialchars($llanta['placa']) ?></td>
                             <td>
                                 <?php
-                                    $estado = strtolower($row['soat_est']);
+                                    $estado = strtolower($llanta['estado']);
                                     $clase = match ($estado) {
-                                        'vigente' => 'estado-vigente',
-                                        'vencido' => 'estado-vencido',
-                                        'pendiente' => 'estado-pendiente',
+                                        'bueno' => 'estado-vigente',
+                                        'malo' => 'estado-vencido',
+                                        'regular' => 'estado-pendiente',
                                         default => 'bg-secondary text-white'
                                     };
                                 ?>
                                 <span class="badge <?= $clase ?>"><?= ucfirst($estado) ?></span>
                             </td>
+                            <td><?= htmlspecialchars($llanta['ultimo_cambio']) ?></td>
+                            <td><?= htmlspecialchars($llanta['presion_llantas']) ?></td>
+                            <td><?= htmlspecialchars($llanta['kilometraje_actual']) ?></td>
+                            <td><?= htmlspecialchars($llanta['proximo_cambio_km']) ?></td>
+                            <td><?= htmlspecialchars($llanta['proximo_cambio_fecha']) ?></td>
+                            <td><?= htmlspecialchars($llanta['notas']) ?></td>
                         </tr>
                     <?php endforeach; ?>
                 <?php else: ?>
-                    <tr><td colspan="5" class="text-center">No hay registros de SOAT.</td></tr>
+                    <tr><td colspan="8" class="text-center">No hay registros de llantas.</td></tr>
                 <?php endif; ?>
             </tbody>
         </table>
@@ -181,10 +193,9 @@ if (!$nombre_completo || !$foto_perfil) {
                 params.delete('placa');
             }
             window.location.href = window.location.pathname + '?' + params.toString();
-        }, 500); // espera 500ms después de dejar de escribir
+        }, 500);
     });
 </script>
-
 
 </body>
 </html>

@@ -12,14 +12,10 @@
       <a href="#" class="boton">Historiales ▾</a>
       <div class="dropdown-content">
         <a href="/proyecto/roles/usuario/historiales/ver_soat.php">Historial de SOAT</a>
-        <a href="/proyecto/roles/usuario/historiales/documentos.php">Historial de Tecnomecánica</a>
-        <a href="/proyecto/roles/usuario/historiales/licencia_conduccion.php">Historial de Licencia de Conducción</a>
-        <a href="/proyecto/roles/usuario/historiales/pico_placa.php">Historial de Pico y Placa</a>
-        <a href="/proyecto/roles/usuario/historiales/llantas.php">Historial de Llantas</a>
-        <a href="/proyecto/roles/usuario/historiales/mantenimiento.php">Historial de Mantenimiento</a>
-
-
-
+        <a href="/proyecto/roles/usuario/historiales/ver_tecnomecanica.php">Historial de Tecnomecánica</a>
+        <a href="/proyecto/roles/usuario/historiales/ver_licencia.php">Historial de Licencia de Conducción</a>
+        <a href="/proyecto/roles/usuario/historiales/ver_llantas.php">Historial de Llantas</a>
+        <a href="/proyecto/roles/usuario/historiales/ver_mantenimiento.php">Historial de Mantenimiento</a>
       </div>
     </div> 
     

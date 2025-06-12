@@ -2,6 +2,7 @@
   session_start();
   require_once '../../../conecct/conex.php';
   include '../../../includes/validarsession.php';
+  include('../../../includes/auto_logout_modal.php');
   $database = new Database();
   $con = $database->conectar();
 
@@ -40,6 +41,11 @@
   $sql_estado->execute();
   $estado = $sql_estado->fetchAll(PDO::FETCH_ASSOC);
 
+  // fetch centros
+  $sql_centro = $con->prepare("SELECT id_centro, centro_revision  FROM centro_rtm");
+  $sql_centro->execute();
+  $centro = $sql_centro->fetchAll(PDO::FETCH_ASSOC);
+
 
 ?>
 
@@ -47,11 +53,15 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Registro de Técnico-Mecánica</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="../css/styles_tecno.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <meta charset="UTF-8">
+    <title>Registro de Técnico-Mecánica</title>
+    <link rel="shortcut icon" href="../../../css/img/logo_sinfondo.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="../css/styles_soatytecno.css">
 </head>
 <body onload="formtecnico.placa.focus()">
   <?php 
@@ -79,18 +89,27 @@
               </select>
           </div>
           <div class="formulario_error_placa" id="formulario_correcto_placa">
-              <p class="validacion">Seleccione una placa válida.</p>
+              <p class="validacion" id="validacion">Seleccione una placa válida.</p>
           </div>
 
           <!-- Centro de Revisión -->
-          <div class="input_field_centro" id="grupo_centro">
-              <label for="centro">Centro de Revisión:*</label>
+            <div class="input_field_centro" id="grupo_centro">
+              <label for="placa">Centro de Revisión:*</label>
               <i class="bi bi-buildings-fill"></i>
-              <input type="text" id="centro" name="centro" required>
+              <select id="centro" name="centro" required>
+                  <option value="">Seleccione un centro</option>
+                  <?php foreach ($centro as $row) { ?>
+                      <option value="<?php echo htmlspecialchars($row['id_centro']); ?>">
+                          <?php echo htmlspecialchars($row['centro_revision']); ?>
+                      </option>
+                  <?php } ?>
+              </select>
           </div>
           <div class="formulario_error_centro" id="formulario_correcto_centro">
-              <p class="validacion">Ingrese un centro válido.</p>
+              <p class="validacion" id="validacion3">Ingrese un centro válido.</p>
           </div>
+
+
 
           <!-- Fecha de Expedición -->
           <div class="input_field_expedicion" id="grupo_expedicion">
@@ -109,7 +128,7 @@
               <input type="date" id="fechaVencimiento" name="fechaVencimiento" required>
           </div>
           <div class="formulario_error_vencimiento" id="formulario_correcto_vencimiento">
-              <p class="validacion">Seleccione una fecha válida.</p>
+              <p class="validacion" id="validacion2">Seleccione una fecha válida.</p>
           </div>
 
           <!-- estado tecno -->
@@ -148,12 +167,12 @@
       <div class="comprar">
           <p class="info">¿Necesitas agendar tu revisión? Hazlo aquí</p>
           <div class="cont_com">
-              <a href="https://redamarilla.co/agenda-tecnomecanica/" class="link" target="_blank">Agendar revisión</a>
+              <a href="https://www.cdaceditrans.com/contactenos/" class="link" target="_blank">Agendar revisión</a>
           </div>
       </div>
   </div>
 
-  <script src="../js/registrar_tecnomecanica.js"></script>
+  <script src="../js/registrar_tecno.js"></script>
 </body>
 
 </html>

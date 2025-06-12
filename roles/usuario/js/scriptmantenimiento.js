@@ -176,28 +176,6 @@ const validarFechaFutura = (input, campo, mensaje, opcional = false) => {
         campos[campo] = true;
     }
 };
-
-// Validar trabajos dinámicos
-const validarTrabajos = () => {
-    const trabajosContainer = document.getElementById('trabajos-container');
-    const trabajos = trabajosContainer.querySelectorAll('.trabajo-item');
-    const grupo = document.getElementById('grupo_trabajos');
-    const validacion = document.getElementById('validacion_trabajos');
-
-    if (trabajos.length === 0 || Array.from(trabajos).some(trabajo => trabajo.querySelector('select').value === '')) {
-        grupo.classList.remove('input_field_trabajos_correcto');
-        grupo.classList.add('input_field_trabajos_incorrecto');
-        validacion.textContent = 'Debe seleccionar al menos un trabajo.';
-        validacion.style.opacity = '1';
-        campos.trabajos = false;
-    } else {
-        grupo.classList.remove('input_field_trabajos_incorrecto');
-        grupo.classList.add('input_field_trabajos_correcto');
-        validacion.style.opacity = '0';
-        campos.trabajos = true;
-    }
-};
-
 // Añadir eventos a los inputs
 inputs.forEach((input) => {
     input.addEventListener('blur', validarFormulario);
@@ -213,85 +191,64 @@ textarea.addEventListener('blur', validarFormulario);
 textarea.addEventListener('input', validarFormulario);
 
 // Validar al enviar el formulario
-formulario.addEventListener('submit', (e) => {
-    e.preventDefault();
-    validarTrabajos();
+formulario.addEventListener('submit', function (e) {
+    e.preventDefault(); // Prevenir envío por defecto
 
-    const formularioError = document.getElementById('formulario_error');
-    const formularioExito = document.getElementById('formulario_exito');
+    // Verificar si todos los campos requeridos están validados
+    if (campos.placa && campos.id_tipo_mantenimiento && campos.fecha_programada) {
+        const formdatos = new FormData(formulario);
 
-    // Validar todos los campos al enviar
-    validarSelect(document.getElementById('placa'), 'placa', 'Seleccione un vehículo.');
-    validarSelect(document.getElementById('id_tipo_mantenimiento'), 'id_tipo_mantenimiento', 'Seleccione un tipo de mantenimiento.');
-    validarFecha(document.getElementById('fecha_programada'), 'fecha_programada', 'Seleccione una fecha válida.', false);
-    validarFecha(document.getElementById('fecha_realizada'), 'fecha_realizada', 'Fecha no puede ser futura.', true);
-    validarCampo(expresiones.kilometraje, document.getElementById('kilometraje_actual'), 'kilometraje_actual', 'Ingrese un número positivo.', true);
-    validarCampo(expresiones.kilometraje, document.getElementById('proximo_cambio_km'), 'proximo_cambio_km', 'Ingrese un número positivo.', true);
-    validarFechaFutura(document.getElementById('proximo_cambio_fecha'), 'proximo_cambio_fecha', 'Fecha no puede ser pasada.', true);
-    validarCampo(expresiones.observaciones, document.getElementById('observaciones'), 'observaciones', 'Máximo 500 caracteres, solo letras, números y puntuación básica.', true);
-
-    // Solo los campos obligatorios (placa, id_tipo_mantenimiento, fecha_programada, trabajos) deben ser true para enviar
-    if (campos.placa && campos.id_tipo_mantenimiento && campos.fecha_programada && campos.trabajos) {
-        formularioError.style.opacity = '0';
-        formularioExito.style.opacity = '1';
-        formulario.submit();
+        $.ajax({
+            type: "POST",
+            url: "../AJAX/guardar_mantenimiento.php",
+            data: formdatos,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                console.log("Respuesta del servidor:", response);
+                
+                if (response.status === "success") {
+                    document.getElementById('formulario_exito').style.opacity = 1;
+                    document.getElementById('formulario_exito').style.color = "#158000";
+                    // Limpiar el formulario antes de redirigir
+                    formulario.reset();
+                    // Eliminar clases de validación visual
+                    Object.keys(campos).forEach(campo => {
+                        const grupo = document.getElementById(`grupo_${campo}`);
+                        if (grupo) {
+                            grupo.classList.remove(`input_field_${campo}_correcto`);
+                            grupo.classList.remove(`input_field_${campo}_incorrecto`);
+                        }
+                        campos[campo] = false;
+                    });
+                    setTimeout(() => {
+                        window.location.href = '../historiales/ver_mantenimiento.php';
+                    }, 3000);
+                } else {
+                    document.getElementById('formulario_error').style.opacity = 1;
+                    document.getElementById('formulario_error').textContent = "Error: " + response.message;
+                    document.getElementById('formulario_error').style.color = "#d32f2f";
+                    setTimeout(() => {
+                        document.getElementById('formulario_error').style.opacity = 0;
+                    }, 3000);
+                }
+            },
+            error: function () {
+                document.getElementById('formulario_error').style.opacity = 1;
+                document.getElementById('formulario_error').textContent = "Error en la conexión con el servidor.";
+                document.getElementById('formulario_error').style.color = "#d32f2f";
+                setTimeout(() => {
+                    document.getElementById('formulario_error').style.opacity = 0;
+                }, 3000);
+            }
+        });
     } else {
-        formularioError.textContent = 'Por favor, corrige los errores en el formulario.';
-        formularioError.style.opacity = '1';
-        formularioExito.style.opacity = '0';
+        document.getElementById('formulario_error').style.opacity = 1;
+        document.getElementById('formulario_error').style.color = "#d32f2f";
+        document.getElementById('formulario_error').textContent = "Debe completar correctamente todos los campos obligatorios.";
+
+        setTimeout(() => {
+            document.getElementById('formulario_error').style.opacity = 0;
+        }, 3000);
     }
-});
-
-// Funciones para trabajos dinámicos
-let trabajoCount = 0;
-
-function agregarTrabajo() {
-    const trabajosContainer = document.getElementById('trabajos-container');
-    const grupoTrabajos = document.getElementById('grupo_trabajos');
-    const trabajosData = JSON.parse(grupoTrabajos.getAttribute('data-trabajos'));
-
-    const div = document.createElement('div');
-    div.classList.add('trabajo-item');
-    div.id = `trabajo-${trabajoCount}`;
-    div.innerHTML = `
-        <select name="trabajos[]" required>
-            <option value="">Seleccionar Trabajo</option>
-            ${trabajosData.map(trabajo => `<option value="${trabajo.id}">${trabajo.Trabajo} - $${trabajo.Precio}</option>`).join('')}
-        </select>
-        <input type="number" name="cantidades[]" value="1" min="1" placeholder="Cantidad">
-        <button type="button" onclick="eliminarTrabajo(${trabajoCount})">Eliminar</button>
-    `;
-
-    trabajosContainer.appendChild(div);
-    trabajoCount++;
-
-    const select = div.querySelector('select');
-    select.addEventListener('change', validarTrabajos);
-    const inputCantidad = div.querySelector('input');
-    inputCantidad.addEventListener('input', validarTrabajos);
-
-    validarTrabajos();
-}
-
-function eliminarTrabajo(id) {
-    const trabajo = document.getElementById(`trabajo-${id}`);
-    if (trabajo) {
-        trabajo.remove();
-        validarTrabajos();
-    }
-}
-
-// Validar trabajos al cargar la página
-document.addEventListener('DOMContentLoaded', () => {
-    validarTrabajos();
-
-    // Validar todos los campos al cargar para que se muestren en rojo si están vacíos
-    validarSelect(document.getElementById('placa'), 'placa', 'Seleccione un vehículo.');
-    validarSelect(document.getElementById('id_tipo_mantenimiento'), 'id_tipo_mantenimiento', 'Seleccione un tipo de mantenimiento.');
-    validarFecha(document.getElementById('fecha_programada'), 'fecha_programada', 'Seleccione una fecha válida.', false);
-    validarFecha(document.getElementById('fecha_realizada'), 'fecha_realizada', 'Fecha no puede ser futura.', true);
-    validarCampo(expresiones.kilometraje, document.getElementById('kilometraje_actual'), 'kilometraje_actual', 'Ingrese un número positivo.', true);
-    validarCampo(expresiones.kilometraje, document.getElementById('proximo_cambio_km'), 'proximo_cambio_km', 'Ingrese un número positivo.', true);
-    validarFechaFutura(document.getElementById('proximo_cambio_fecha'), 'proximo_cambio_fecha', 'Fecha no puede ser pasada.', true);
-    validarCampo(expresiones.observaciones, document.getElementById('observaciones'), 'observaciones', 'Máximo 500 caracteres, solo letras, números y puntuación básica.', true);
 });

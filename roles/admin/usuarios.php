@@ -1,24 +1,27 @@
-_<?php
+<?php
 session_start();
 require_once('../../conecct/conex.php');
 include '../../includes/validarsession.php';
 $db = new Database();
 $con = $db->conectar();
 $code = $_SESSION['documento'];
-$sql = $con->prepare("SELECT * FROM usuarios
-INNER JOIN roles ON usuarios.id_rol = roles.id_rol
+$sql = $con->prepare("SELECT*FROM usuarios
+    INNER JOIN roles ON usuarios.id_rol = roles.id_rol 
+    INNER JOIN estado_usuario ON usuarios.id_estado_usuario = estado_usuario.id_estado
     WHERE documento= :code");
 $sql->bindParam(':code', $code);
 $sql->execute();
 $fila = $sql->fetch();
 
 
+// Check for documento in session
 $documento = $_SESSION['documento'] ?? null;
 if (!$documento) {
     header('Location: ../../login.php');
     exit;
 }
 
+// Fetch nombre_completo and foto_perfil if not in session
 $nombre_completo = $_SESSION['nombre_completo'] ?? null;
 $foto_perfil = $_SESSION['foto_perfil'] ?? null;
 if (!$nombre_completo || !$foto_perfil) {
@@ -36,21 +39,20 @@ if (!$nombre_completo || !$foto_perfil) {
 
 ?>
 
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Panel de Administrador</title>
-  <link rel="stylesheet" href="css/stylesvehiculos.css" />
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/vehiculos.css" />
+  <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
- 
+
 </head>
 <body>
-  <?php include 'menu.html'; ?> 
+  <?php include 'menu.html'; ?> <!-- Sidebar fuera del contenido principal -->
 
   <div class="content">
     <div class="buscador mb-3">
@@ -66,14 +68,18 @@ if (!$nombre_completo || !$foto_perfil) {
                     <th>Nombre Completo</th>
                     <th>Email</th>
                     <th>Telefono</th>
+                    <th>Estado</th>
                     <th>Rol</th>
-                 
+                    <th>Accion</th>
+             
+
                 </tr>
             </thead>
             <tbody>
                 <?php
-                $sql = $con->prepare("SELECT * FROM usuarios
-                                        INNER JOIN roles ON usuarios.id_rol = roles.id_rol");
+                $sql = $con->prepare("SELECT*FROM usuarios
+                                        INNER JOIN roles ON usuarios.id_rol = roles.id_rol 
+                                        INNER JOIN estado_usuario ON usuarios.id_estado_usuario = estado_usuario.id_estado");
                 $sql->execute();
                 $fila = $sql->fetchAll(PDO::FETCH_ASSOC);
                 $count = 1;
@@ -85,6 +91,7 @@ if (!$nombre_completo || !$foto_perfil) {
                     <td><?php echo htmlspecialchars($resu['nombre_completo']); ?></td>
                     <td><?php echo htmlspecialchars($resu['email']); ?></td>
                     <td><?php echo htmlspecialchars($resu['telefono']); ?></td>
+                    <td><?php echo htmlspecialchars($resu['tipo_stade']); ?></td>
                     <td><?php echo htmlspecialchars($resu['tip_rol']); ?></td>
                     <td>
                         <div class="d-flex justify-content-center">
@@ -190,3 +197,4 @@ if (!$nombre_completo || !$foto_perfil) {
   </script>
 </body>
 </html>
+b

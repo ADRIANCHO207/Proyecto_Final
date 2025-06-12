@@ -15,12 +15,12 @@ body {
 /* Form Styles */
 .container {
     width: 100%;
-    max-width: 900px;
+    max-width: 800px;
     padding: 20px;
     background-color: #fff;
     border-radius: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin: 120px auto 20px auto;
+    margin: 35px auto 20px auto;
 }
 
 .form-llantas {
@@ -44,10 +44,6 @@ body {
     text-align: center;
     color: #666;
     margin-top: 20px;
-}
-
-.input-gruop {
-    margin-bottom: 20px;
 }
 
 .input-subgroup {
@@ -76,7 +72,8 @@ body {
     flex-direction: column;
 }
 
-.input_field_numero_licencia, .input_field_tipo_licencia, .input_field_fecha_vencimiento,
+.input_field_categoria, .input_field_fecha_expedicion,
+.input_field_fecha_vencimiento, .input_field_tipo_servicio,
 .input_field_observaciones, .input_field_documento_usuario {
     background-color: #c2c2c2;
     border-radius: 10px;
@@ -90,13 +87,20 @@ body {
     opacity: 0.8;
 }
 
-.input_field_numero_licencia label, .input_field_tipo_licencia label,
-.input_field_fecha_vencimiento label, .input_field_observaciones label,
+.input_field_categoria label,
+.input_field_fecha_vencimiento label, .input_field_fecha_expedicion label,
+.input_field_tipo_servicio label,
+.input_field_observaciones label,
 .input_field_documento_usuario label {
     font-weight: 600;
     color: #333;
     margin-bottom: 5px;
     display: block;
+}
+
+.input_field_categoria select,
+.input_field_tipo_servicio select {
+    cursor: pointer;
 }
 
 input, select, textarea {
@@ -118,8 +122,9 @@ input::placeholder, select::placeholder, textarea::placeholder {
     color: #666;
 }
 
-.input_field_numero_licencia i, .input_field_tipo_licencia i,
-.input_field_fecha_vencimiento i, .input_field_observaciones i,
+.input_field_categoria i, .input_field_tipo_servicio i,
+.input_field_fecha_vencimiento i, .input_field_fecha_expedicion i, 
+.input_field_observaciones i,
 .input_field_documento_usuario i {
     margin-left: 10px;
     color: #fff;
@@ -150,8 +155,8 @@ input::placeholder, select::placeholder, textarea::placeholder {
     color: #d32f2f;
 }
 
-.validacion_numero_licencia, .validacion_tipo_licencia,
-.validacion_fecha_vencimiento, .validacion_observaciones {
+.validacion_categoria, .validacion_tipo_servicio,
+.validacion_fecha_vencimiento, .validacion_fecha_expedicion, .validacion_observaciones {
     font-weight: 600;
     font-size: 10px;
     opacity: 0;
@@ -178,27 +183,30 @@ input::placeholder, select::placeholder, textarea::placeholder {
     transition: opacity 0.5s ease;
 }
 
-.input_field_numero_licencia_correcto, .input_field_tipo_licencia_correcto,
-.input_field_fecha_vencimiento_correcto, .input_field_observaciones_correcto {
+.input_field_categoria_correcto, .input_field_tipo_servicio_correcto,
+.input_field_fecha_vencimiento_correcto, .input_field_fecha_expedicion_correcto, .input_field_observaciones_correcto {
     background-color: #c2c2c2;
     border: solid 3px #158000;
     color: #158000;
 }
 
-.input_field_numero_licencia_correcto i, .input_field_tipo_licencia_correcto i,
-.input_field_fecha_vencimiento_correcto i, .input_field_observaciones_correcto i {
+.input_field_categoria_correcto i, .input_field_tipo_servicio_correcto i,
+.input_field_fecha_vencimiento_correcto i, .input_field_observaciones_correcto i, 
+.input_field_fecha_expedicion_correcto i {
     color: #158000;
 }
 
-.input_field_numero_licencia_incorrecto, .input_field_tipo_licencia_incorrecto,
-.input_field_fecha_vencimiento_incorrecto, .input_field_observaciones_incorrecto {
+.input_field_categoria_incorrecto, .input_field_tipo_servicio_incorrecto,
+.input_field_fecha_vencimiento_incorrecto, .input_field_observaciones_incorrecto, 
+.input_field_fecha_expedicion_incorrecto {
     background-color: #c2c2c2;
     border: solid 3px #c50000;
     color: #c50000;
 }
 
-.input_field_numero_licencia_incorrecto i, .input_field_tipo_licencia_incorrecto i,
-.input_field_fecha_vencimiento_incorrecto i, .input_field_observaciones_incorrecto i {
+.input_field_categoria_incorrecto i, .input_field_tipo_servicio_incorrecto i,
+.input_field_fecha_vencimiento_incorrecto i, .input_field_observaciones_incorrecto i,
+.input_field_fecha_expedicion_incorrecto i {
     color: #c50000;
 }
 
@@ -216,8 +224,9 @@ input::placeholder, select::placeholder, textarea::placeholder {
         font-size: 24px;
     }
 
-    .input_field_numero_licencia label, .input_field_tipo_licencia label,
-    .input_field_fecha_vencimiento label, .input_field_observaciones label,
+    .input_field_categoria label, .input_field_tipo_servicio label,
+    .input_field_fecha_vencimiento label, .input_field_fecha_expedicion label, 
+    .input_field_observaciones label,
     .input_field_documento_usuario label {
         font-size: 14px;
     }
