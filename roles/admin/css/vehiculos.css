@@ -223,8 +223,8 @@ body {
 
 /* Estilos específicos para columnas */
 .placa-cell {
-  font-weight: 700;
-  color: var(--primary-color);
+  font-weight: 500;
+  color: black;
   background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.05));
   border-radius: 6px;
   padding: 6px 12px;
@@ -233,33 +233,32 @@ body {
 }
 
 .documento-cell {
-  font-family: "Courier New", monospace;
-  font-weight: 600;
-  color: var(--secondary-color);
+  font-weight: 500;
+  color: black;
 }
 
 .propietario-cell {
-  font-weight: 600;
-  color: var(--text-color);
+  font-weight: 500;
+  color: black;
 }
 
 .marca-cell {
-  color: var(--info-color);
+  color: black;
   font-weight: 500;
 }
 
 .modelo-cell {
   background: rgba(52, 152, 219, 0.1);
-  color: var(--info-color);
+  color: black;
   padding: 4px 8px;
   border-radius: 4px;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .estado-cell {
   padding: 6px 12px;
   border-radius: 20px;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -281,7 +280,7 @@ body {
 }
 
 .kilometraje-cell {
-  font-weight: 600;
+  font-weight: 500;
   color: var(--warning-color);
 }
 
@@ -292,7 +291,8 @@ body {
 }
 
 .fecha-cell {
-  color: var(--text-light);
+  color: black;
+    font-weight: 500;
   font-size: 13px;
 }
 

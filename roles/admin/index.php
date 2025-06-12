@@ -73,10 +73,13 @@ $fecha_es = date("d") . " " . $meses_es[date("M")] . " " . date("Y");
         <p class="dashboard-subtitle"><?php echo $dia_semana_es . ', ' . $fecha_es; ?></p>
       </div>
       <div class="dashboard-actions">
-        <button class="dashboard-btn">
+        <button class="dashboard-btn"><a href="generar_reporte.php">Exportar Reporte
+</a>
           <i class="bi bi-file-earmark-pdf"></i>
-          Exportar Reporte
+        
         </button>
+
+        
         <button class="dashboard-btn">
           <i class="bi bi-plus-circle"></i>
           Nuevo Vehículo
