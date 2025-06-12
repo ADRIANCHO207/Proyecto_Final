@@ -168,7 +168,7 @@ formulario.addEventListener('submit', (e) => {
                     document.getElementById('formulario_exito').style.color = "#158000";
                     setTimeout(() => {
                         window.location.reload();
-                    }, 3000);
+                    });
                 } else {
                     document.getElementById('formulario_error').style.opacity = 1;
                     document.getElementById('formulario_error').textContent = "Error: " + response.message;

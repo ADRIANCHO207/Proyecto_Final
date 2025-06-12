@@ -44,7 +44,7 @@ if (!$nombre_completo || !$foto_perfil) {
 <body>
 
 <?php
-include('header.php')
+    include('header.php');
 ?>
 
 <?php if (isset($_SESSION['success']) || isset($_SESSION['error'])): ?>
@@ -65,23 +65,23 @@ include('header.php')
         <a href="vehiculos/registrar_soat.php" class="boton">
             <i class="bi bi-shield-check"></i> SOAT
         </a>
-        <a href="vehiculos/multas.php?tipo=SOAT" class="boton">
-            <i class="bi bi-shield-check"></i> Multas y Comparendos
-        </a>
         <a href="vehiculos/registrar_tecnomecanica.php" class="boton">
             <i class="bi bi-tools"></i> Tecnomecánica
         </a>
         <a href="vehiculos/registrar_licencia.php" class="boton">
             <i class="bi bi-card-heading"></i> Licencia de Conducción
         </a>
-        <a href="vehiculos/gestionar_pico_placa.php" class="boton">
+        <a href="vehiculos/pico_placa.php" class="boton">
             <i class="bi bi-sign-stop"></i> Pico y Placa
         </a>
         <a href="mantenimiento/gestionar_llantas.php" class="boton">
             <i class="bi bi-circle"></i> Llantas
         </a>
         <a href="mantenimiento/gestionar_mantenimiento.php" class="boton">
-            <i class="bi bi-oil"></i> Mantenimiento y Aceite
+            <i class="bi bi-gear"></i> Mantenimiento y Aceite
+        </a>
+        <a href="vehiculos/multas.php" class="boton">
+            <i class="bi bi-receipt-cutoff"></i> Multas
         </a>
     </div>
 </div>
@@ -114,6 +114,10 @@ include('header.php')
         <i class="bi bi-box-arrow-right"></i>
     </a>
 </div>
+
+<?php
+    include('../../includes/auto_logout_modal.php');
+?>
 
 
 </body>

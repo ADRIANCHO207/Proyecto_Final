@@ -1,43 +1,28 @@
 <?php
 session_start();
-require_once '../../../conecct/conex.php';
-include '../../../includes/validarsession.php';
-$database = new Database();
-$con = $database->conectar();
+require_once('../../../conecct/conex.php');
+require_once('../../../includes/validarsession.php');
+include('../../../includes/auto_logout_modal.php');
+$db = new Database();
+$con = $db->conectar();
 
-// Check if the connection is successful
-if (!$con) {
-    die("Error: No se pudo conectar a la base de datos. Verifique el archivo conex.php.");
-}
-
-// Check for documento in session
 $documento = $_SESSION['documento'] ?? null;
 if (!$documento) {
-    header('Location: ../../login.php');
+    header('Location: ../../login/login.php');
     exit;
 }
 
-// Fetch user's full name for the profile section
-$nombre_completo = $_SESSION['nombre_completo'] ?? 'Usuario';
+// fetch categorias
+$sql_categoria = $con->prepare("SELECT id_categoria, nombre_categoria FROM categoria_licencia;");
+$sql_categoria->execute();
+$categorias = $sql_categoria->fetchAll(PDO::FETCH_ASSOC);
 
-// Fetch vehicles for the user
-$query_vehiculos = "SELECT placa FROM vehiculos WHERE Documento = :documento";
-$stmt_vehiculos = $con->prepare($query_vehiculos);
-$stmt_vehiculos->bindParam(':documento', $documento);
-$stmt_vehiculos->execute();
-$vehiculos = $stmt_vehiculos->fetchAll(PDO::FETCH_ASSOC);
 
-// Fetch empresas tramite
-$query_empresas = "SELECT id, Empresa FROM empresa_tramite";
-$stmt_empresas = $con->prepare($query_empresas);
-$stmt_empresas->execute();
-$empresas = $stmt_empresas->fetchAll(PDO::FETCH_ASSOC);
+// fetch categorias
+$sql_servicio = $con->prepare("SELECT id_servicio, nombre_servicios FROM servicios_licencias");
+$sql_servicio->execute();
+$servicios = $sql_servicio->fetchAll(PDO::FETCH_ASSOC);
 
-// Check if form was just submitted (for success message)
-$success = false;
-if (isset($_GET['success']) && $_GET['success'] == 'true') {
-    $success = true;
-}
 
 // Fetch nombre_completo and foto_perfil if not in session
 $nombre_completo = $_SESSION['nombre_completo'] ?? null;
@@ -52,7 +37,6 @@ if (!$nombre_completo || !$foto_perfil) {
     $_SESSION['nombre_completo'] = $nombre_completo;
     $_SESSION['foto_perfil'] = $foto_perfil;
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -60,96 +44,113 @@ if (!$nombre_completo || !$foto_perfil) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestionar - Flotax AGC</title>
-    <link rel="stylesheet" href="../css/styles.css">
-    <link rel="stylesheet" href="../css/estilos_formulario_carro.css">
+    <title>Flotax AGC - Registrar Licencia</title>
+    <link rel="stylesheet" href="../css/styles_licencia.css">
+    <link rel="shortcut icon" href="../../../css/img/logo_sinfondo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <?php
-        include('../header.php')   
-    ?>
+    <?php include('../header.php'); ?>
 
+    <div class="container">
+        <form action="" method="post" class="form-llantas" id="formulario">
+            <h1>Registrar Licencia</h1>
+            <p class="instructions">Completa los detalles de la licencia para recibir alertas de vencimiento.</p>
+            
+            <div class="input-gruop">
+                <!-- Información del usuario -->
+                <div class="input-subgroup user-info">
+                    <div class="input-box">
+                        <label for="documento_usuario">Documento del Usuario:</label>
+                        <div class="input_field_documento_usuario" id="grupo_documento_usuario">
+                            <input type="text" name="documento_usuario" id="documento_usuario" value="<?php echo htmlspecialchars($documento); ?>" readonly>
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+                    </div>
+                </div>
 
+                <!-- Campos principales -->
 
-    <body class="bg-light">
+                <!-- Fecha y observaciones -->
+                <div class="input-subgroup">
+                    <div class="input-subgroup">
+                        <div class="input-box">
+                            <label for="categoria">Categoria*:</label>
+                            <div class="input_field_categoria" id="grupo_categoria">
+                                <select name="categoria" id="categoria" required>
+                                    <option value="">Seleccionar Categoria</option>
+                                    <?php foreach ($categorias as $row) { ?>
+                                        <option value="<?php echo htmlspecialchars($row['id_categoria']); ?>">
+                                            <?php echo htmlspecialchars($row['nombre_categoria']); ?>
+                                        </option>
+                                    <?php } ?>
+                                </select>
+                                <i class="bi bi-file-earmark-person"></i>
+                            </div>
+                            <p class="validacion_categoria" id="validacion_categoria">la categoria de licencia es obligatorio.</p>
+                        </div>
+                    </div>
+                    <div class="input-box">
+                        <label for="fecha_expedicion">Fecha de expedicion*:</label>
+                        <div class="input_field_fecha_expedicion" id="grupo_fecha_expedicion">
+                            <input type="date" name="fecha_expedicion" id="fecha_expedicion" required value="<?php echo htmlspecialchars($_POST['fecha_vencimiento'] ?? ''); ?>">
+                            <i class="bi bi-calendar-check"></i>
+                        </div>
+                        <p class="validacion_fecha_expedicion" id="validacion_fecha_expedicion">La fecha de expedicion es obligatoria y no puede ser futura.</p>
+                    </div>
+                    <div class="input-box">
+                        <label for="fecha_vencimiento">Fecha de Vencimiento*:</label>
+                        <div class="input_field_fecha_vencimiento" id="grupo_fecha_vencimiento">
+                            <input type="date" name="fecha_vencimiento" id="fecha_vencimiento" required value="<?php echo htmlspecialchars($_POST['fecha_vencimiento'] ?? ''); ?>">
+                            <i class="bi bi-calendar-check"></i>
+                        </div>
+                        <p class="validacion_fecha_vencimiento" id="validacion_fecha_vencimiento">La fecha de vencimiento es obligatoria y debe ser futura.</p>
+                    </div>
 
-    <div class="container mt-5">
-        <div class="card shadow-lg">
-        <div class="card-header bg-primary text-white">
-            <h4><i class="bi bi-person-vcard-fill"></i> Registro de Licencia de Conducción</h4>
-        </div>
-        <div class="card-body">
-            <form id="formLicencia" method="post" action="">
-            <div class="mb-3">
-                <label class="form-label">Número de Licencia</label>
-                <input type="text" class="form-control" id="numeroLicencia" name="numeroLicencia" required>
-                <div class="error" id="errorNumero"></div>
+                    <div class="input-box">
+                            <label for="tipo_servicio">Tipo de servicio*:</label>
+                            <div class="input_field_tipo_servicio" id="grupo_tipo_servicio">
+                                <select name="tipo_servicio" id="tipo_servicio" required>
+                                    <option value="">Seleccionar servicio</option>
+                                    <?php foreach ($servicios as $row) { ?>
+                                        <option value="<?php echo htmlspecialchars($row['id_servicio']); ?>">
+                                            <?php echo htmlspecialchars($row['nombre_servicios']); ?>
+                                        </option>
+                                    <?php } ?>
+                                </select>
+                                <i class="bi bi-gear-fill"></i>
+                            </div>
+                            <p class="validacion_tipo_servicio" id="validacion_tipo_servicio">Selecciona servicio de licencia.</p>
+                        </div>
+                    </div>
+
+                    <div class="input-box">
+                        <label for="observaciones">Restricciones del conductor (opcional):</label>
+                        <div class="input_field_observaciones" id="grupo_observaciones">
+                            <textarea name="observaciones" id="observaciones" rows="4"><?php echo htmlspecialchars($_POST['observaciones'] ?? ''); ?></textarea>
+                            <i class="bi bi-pencil"></i>
+                        </div>
+                        <p class="validacion_observaciones" id="validacion_observaciones">Máximo 500 caracteres, solo letras, números y puntuación básica.</p>
+                    </div>
+                
+                </div>
+            
+                <!-- Error general -->
+                <div>
+                    <p class="formulario_error" id="formulario_error"><b>Error:</b> Por favor complete todos los campos correctamente.</p>
+                </div>
+                <div class="btn-field">
+                    <button type="submit" class="btn btn-primary">Registrar Licencia</button>
+                </div>
+                <!-- Mensaje de éxito -->   
+                <p class="formulario_exito" id="formulario_exito">Licencia registrado correctamente.</p>
             </div>
-
-            <div class="mb-3">
-                <label class="form-label">Nombre Completo</label>
-                <input type="text" class="form-control" id="nombre" name="nombre" required>
-                <div class="error" id="errorNombre"></div>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Documento de Identidad</label>
-                <input type="text" class="form-control" id="documento" name="documento" required>
-                <div class="error" id="errorDocumento"></div>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Fecha de Expedición</label>
-                <input type="date" class="form-control" id="fechaExpedicion" name="fechaExpedicion" required>
-                <div class="error" id="errorExpedicion"></div>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Fecha de Vencimiento</label>
-                <input type="date" class="form-control" id="fechaVencimiento" name="fechaVencimiento" required>
-                <div class="error" id="errorVencimiento"></div>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Categoría</label>
-                <select class="form-select" id="categoria" name="categoria" required>
-                <option value="">Seleccione...</option>
-                <option value="A1">A1</option>
-                <option value="A2">A2</option>
-                <option value="B1">B1</option>
-                <option value="B2">B2</option>
-                <option value="C1">C1</option>
-                <option value="C2">C2</option>
-                </select>
-                <div class="error" id="errorCategoria"></div>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Estado</label>
-                <select class="form-select" id="estado" name="estado" required>
-                <option value="">Seleccione...</option>
-                <option value="activo">Activo</option>
-                <option value="vencido">Vencido</option>
-                <option value="suspendido">Suspendido</option>
-                </select>
-                <div class="error" id="errorEstado"></div>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">servicio</label>
-                <select class="form-select" id="estado" name="estado" required>
-                <option value="">Seleccione...</option>
-                <option>particular</option>
-                <option>publica</option>
-                </select>
-                <div class="error" id="errorEstado"></div>
-            </div>
-
-            <button type="submit" class="btn btn-success">
-                <i class="bi bi-save-fill"></i> Registrar Licencia
-            </button>
-            </form>
-        </div>
-        </div>
+        </form>
     </div>
+    <script src="../js/scriptlicencia.js"></script>
+
 </body>
+</html>

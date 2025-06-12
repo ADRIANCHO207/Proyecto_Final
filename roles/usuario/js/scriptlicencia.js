@@ -3,49 +3,34 @@ const inputs = document.querySelectorAll('#formulario input');
 const selects = document.querySelectorAll('#formulario select');
 const textarea = document.querySelector('#observaciones');
 
-// Expresiones regulares para validaciones
+// Expresiones regulares
 const expresiones = {
-    placa: /^[A-Z0-9]{3,8}$/, // Letras y números, entre 3 y 8 caracteres
-    kilometraje: /^\d{1,7}$/, // Solo números, máximo 7 dígitos
-    observaciones: /^[a-zA-Z0-9\s.,!?'-]{1,500}$/, // Letras, números y puntuación básica, máximo 500 caracteres
+    numero_licencia: /^[A-Z0-9]{5,15}$/,
+    observaciones: /^[a-zA-Z0-9\s.,!?'-]{0,500}$/
 };
 
-// Objeto para rastrear el estado de los campos (inicializamos todos como no válidos)
+// Campos validados
 const campos = {
-    placa: false,
-    id_tipo_mantenimiento: false,
-    fecha_programada: false,
-    fecha_realizada: false, // Opcional, pero inicia como no válido
-    kilometraje_actual: false, // Opcional, pero inicia como no válido
-    proximo_cambio_km: false, // Opcional, pero inicia como no válido
-    proximo_cambio_fecha: false, // Opcional, pero inicia como no válido
-    observaciones: false, // Opcional, pero inicia como no válido
-    trabajos: false
+    numero_licencia: null,
+    tipo_licencia: null,
+    fecha_vencimiento: null,
+    observaciones: null
 };
 
-// Función para validar el formulario
+// Validaciones dinámicas por campo
 const validarFormulario = (e) => {
     switch (e.target.name) {
-        case "placa":
-            validarSelect(e.target, 'placa', 'Seleccione un vehículo.');
+        case "categoria":
+            validarSelect(e.target, 'categoria', 'Seleccione una categoria valida.');
             break;
-        case "id_tipo_mantenimiento":
-            validarSelect(e.target, 'id_tipo_mantenimiento', 'Seleccione un tipo de mantenimiento.');
+        case "fecha_expedicion":
+            validarFechaExpedicion(e.target, 'fecha_expedicion', 'La fecha de expedicion no puede ser futura.');
             break;
-        case "fecha_programada":
-            validarFecha(e.target, 'fecha_programada', 'Seleccione una fecha válida.', false);
+        case "fecha_vencimiento":
+            validarFechaVencimiento(e.target, 'fecha_vencimiento', 'La fecha debe ser exactamente 10 años después de la expedición.');
             break;
-        case "fecha_realizada":
-            validarFecha(e.target, 'fecha_realizada', 'Fecha no puede ser futura.', true);
-            break;
-        case "kilometraje_actual":
-            validarCampo(expresiones.kilometraje, e.target, 'kilometraje_actual', 'Ingrese un número positivo.', true);
-            break;
-        case "proximo_cambio_km":
-            validarCampo(expresiones.kilometraje, e.target, 'proximo_cambio_km', 'Ingrese un número positivo.', true);
-            break;
-        case "proximo_cambio_fecha":
-            validarFechaFutura(e.target, 'proximo_cambio_fecha', 'Fecha no puede ser pasada.', true);
+        case "tipo_servicio":
+            validarSelect(e.target, 'tipo_servicio', 'Selecciona un servicio de licencia valido.');
             break;
         case "observaciones":
             validarCampo(expresiones.observaciones, e.target, 'observaciones', 'Máximo 500 caracteres, solo letras, números y puntuación básica.', true);
@@ -53,30 +38,27 @@ const validarFormulario = (e) => {
     }
 };
 
-// Validar campos de texto o número
+// Validar campos de texto
 const validarCampo = (expresion, input, campo, mensaje, opcional = false) => {
     const grupo = document.getElementById(`grupo_${campo}`);
     const validacion = document.getElementById(`validacion_${campo}`);
 
     if (input.value.trim() === '') {
         if (opcional) {
-            // Si es opcional y está vacío, se considera válido para el envío, pero visualmente se muestra como incorrecto
+            grupo.classList.remove(`input_field_${campo}_incorrecto`);
             grupo.classList.remove(`input_field_${campo}_correcto`);
-            grupo.classList.add(`input_field_${campo}_incorrecto`);
-            validacion.textContent = mensaje;
-            validacion.style.opacity = '1';
-            campos[campo] = true; // Válido para el envío, pero visualmente incorrecto
+            validacion.style.opacity = '0';
+            campos[campo] = true;
         } else {
-            // Si no es opcional y está vacío, es inválido
-            grupo.classList.remove(`input_field_${campo}_correcto`);
             grupo.classList.add(`input_field_${campo}_incorrecto`);
+            grupo.classList.remove(`input_field_${campo}_correcto`);
             validacion.textContent = mensaje;
             validacion.style.opacity = '1';
             campos[campo] = false;
         }
     } else if (expresion.test(input.value.trim())) {
-        grupo.classList.remove(`input_field_${campo}_incorrecto`);
         grupo.classList.add(`input_field_${campo}_correcto`);
+        grupo.classList.remove(`input_field_${campo}_incorrecto`);
         validacion.style.opacity = '0';
         campos[campo] = true;
     } else {
@@ -94,89 +76,94 @@ const validarSelect = (select, campo, mensaje) => {
     const validacion = document.getElementById(`validacion_${campo}`);
 
     if (select.value === '') {
-        grupo.classList.remove(`input_field_${campo}_correcto`);
         grupo.classList.add(`input_field_${campo}_incorrecto`);
+        grupo.classList.remove(`input_field_${campo}_correcto`);
         validacion.textContent = mensaje;
         validacion.style.opacity = '1';
         campos[campo] = false;
     } else {
-        grupo.classList.remove(`input_field_${campo}_incorrecto`);
         grupo.classList.add(`input_field_${campo}_correcto`);
+        grupo.classList.remove(`input_field_${campo}_incorrecto`);
         validacion.style.opacity = '0';
         campos[campo] = true;
     }
 };
 
-// Validar fechas (no futuras para fecha_realizada)
-const validarFecha = (input, campo, mensaje, opcional = false) => {
+// Validar fecha de expedición
+const validarFechaExpedicion = (input, campo, mensaje) => {
     const grupo = document.getElementById(`grupo_${campo}`);
     const validacion = document.getElementById(`validacion_${campo}`);
-    const fecha = new Date(input.value);
+    const fecha = new Date(input.value + 'T00:00:00'); // fuerza hora local
     const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
 
-    if (input.value.trim() === '') {
-        if (opcional) {
-            grupo.classList.remove(`input_field_${campo}_correcto`);
-            grupo.classList.add(`input_field_${campo}_incorrecto`);
-            validacion.textContent = mensaje;
-            validacion.style.opacity = '1';
-            campos[campo] = true; // Válido para el envío, pero visualmente incorrecto
-        } else {
-            grupo.classList.remove(`input_field_${campo}_correcto`);
-            grupo.classList.add(`input_field_${campo}_incorrecto`);
-            validacion.textContent = mensaje;
-            validacion.style.opacity = '1';
-            campos[campo] = false;
-        }
-    } else if (campo === 'fecha_realizada' && fecha > hoy) {
-        grupo.classList.remove(`input_field_${campo}_correcto`);
+    if (input.value.trim() === '' || fecha > hoy) {
         grupo.classList.add(`input_field_${campo}_incorrecto`);
+        grupo.classList.remove(`input_field_${campo}_correcto`);
         validacion.textContent = mensaje;
         validacion.style.opacity = '1';
         campos[campo] = false;
     } else {
-        grupo.classList.remove(`input_field_${campo}_incorrecto`);
         grupo.classList.add(`input_field_${campo}_correcto`);
+        grupo.classList.remove(`input_field_${campo}_incorrecto`);
         validacion.style.opacity = '0';
         campos[campo] = true;
+
+        // Calcular vencimiento
+        const vencimiento = new Date(fecha);
+        vencimiento.setFullYear(vencimiento.getFullYear() + 10);
+
+        const yyyy = vencimiento.getFullYear();
+        const mm = String(vencimiento.getMonth() + 1).padStart(2, '0');
+        const dd = String(vencimiento.getDate()).padStart(2, '0');
+
+        const vencimientoInput = document.getElementById("fecha_vencimiento");
+        vencimientoInput.value = `${yyyy}-${mm}-${dd}`;
+
+        // Validar vencimiento automáticamente
+        validarFechaVencimiento(vencimientoInput, 'fecha_vencimiento', 'La fecha debe ser exactamente 10 años después de la expedición.');
     }
 };
 
-// Validar fechas futuras (para proximo_cambio_fecha)
-const validarFechaFutura = (input, campo, mensaje, opcional = false) => {
+// Validar fecha de vencimiento
+const validarFechaVencimiento = (input, campo, mensaje) => {
     const grupo = document.getElementById(`grupo_${campo}`);
     const validacion = document.getElementById(`validacion_${campo}`);
-    const fecha = new Date(input.value);
-    const hoy = new Date();
+    const expedicionInput = document.getElementById("fecha_expedicion");
 
-    if (input.value.trim() === '') {
-        if (opcional) {
-            grupo.classList.remove(`input_field_${campo}_correcto`);
-            grupo.classList.add(`input_field_${campo}_incorrecto`);
-            validacion.textContent = mensaje;
-            validacion.style.opacity = '1';
-            campos[campo] = true; // Válido para el envío, pero visualmente incorrecto
-        } else {
-            grupo.classList.remove(`input_field_${campo}_correcto`);
-            grupo.classList.add(`input_field_${campo}_incorrecto`);
-            validacion.textContent = mensaje;
-            validacion.style.opacity = '1';
-            campos[campo] = false;
-        }
-    } else if (fecha < hoy) {
-        grupo.classList.remove(`input_field_${campo}_correcto`);
+    if (!expedicionInput || expedicionInput.value.trim() === '') {
         grupo.classList.add(`input_field_${campo}_incorrecto`);
+        grupo.classList.remove(`input_field_${campo}_correcto`);
+        validacion.textContent = "Primero debe ingresar la fecha de expedición.";
+        validacion.style.opacity = "1";
+        campos[campo] = false;
+        return;
+    }
+
+    const expedicion = new Date(expedicionInput.value);
+    const vencimiento = new Date(input.value);
+    expedicion.setHours(0, 0, 0, 0);
+    vencimiento.setHours(0, 0, 0, 0);
+
+    const esperado = new Date(expedicion);
+    esperado.setFullYear(expedicion.getFullYear() + 10);
+    esperado.setHours(0, 0, 0, 0);
+
+    if (vencimiento.getTime() !== esperado.getTime()) {
+        grupo.classList.add(`input_field_${campo}_incorrecto`);
+        grupo.classList.remove(`input_field_${campo}_correcto`);
         validacion.textContent = mensaje;
-        validacion.style.opacity = '1';
+        validacion.style.opacity = "1";
         campos[campo] = false;
     } else {
-        grupo.classList.remove(`input_field_${campo}_incorrecto`);
         grupo.classList.add(`input_field_${campo}_correcto`);
-        validacion.style.opacity = '0';
+        grupo.classList.remove(`input_field_${campo}_incorrecto`);
+        validacion.style.opacity = "0";
         campos[campo] = true;
     }
 };
-// Añadir eventos a los inputs
+
+// Eventos en inputs y selects
 inputs.forEach((input) => {
     input.addEventListener('blur', validarFormulario);
     input.addEventListener('input', validarFormulario);
@@ -190,17 +177,24 @@ selects.forEach((select) => {
 textarea.addEventListener('blur', validarFormulario);
 textarea.addEventListener('input', validarFormulario);
 
-// Validar al enviar el formulario
-formulario.addEventListener('submit', function (e) {
-    e.preventDefault(); // Prevenir envío por defecto
+// Submit del formulario
+formulario.addEventListener('submit', (e) => {
+    e.preventDefault();
 
-    // Verificar si todos los campos requeridos están validados
-    if (campos.placa && campos.id_tipo_mantenimiento && campos.fecha_programada) {
+    // Validar obligatorios
+    validarSelect(document.getElementById('categoria'), 'categoria', 'Seleccione una categoria de licencia.');
+    validarSelect(document.getElementById('tipo_servicio'), 'tipo_servicio', 'Seleccione un tipo de servicio valido.');
+    validarFechaExpedicion(document.getElementById('fecha_expedicion'), 'fecha_expedicion', 'La fecha de expedicon no debe ser futura.')
+    validarFechaVencimiento(document.getElementById('fecha_vencimiento'), 'fecha_vencimiento', 'La fecha debe ser exactamente 10 años después de la expedición.');
+    validarCampo(expresiones.observaciones, document.getElementById('observaciones'), 'observaciones', 'Máximo 500 caracteres, solo letras, números y puntuación básica.', true);
+
+
+    if (campos.categoria && campos.tipo_servicio && campos.fecha_vencimiento && campos.fecha_expedicion && campos.observaciones) {
         const formdatos = new FormData(formulario);
 
         $.ajax({
             type: "POST",
-            url: "../AJAX/guardar_mantenimiento.php",
+            url: "../AJAX/guardar_licencia.php",
             data: formdatos,
             contentType: false,
             processData: false,
@@ -222,7 +216,7 @@ formulario.addEventListener('submit', function (e) {
                         campos[campo] = false;
                     });
                     setTimeout(() => {
-                        window.location.href = '../historiales/ver_mantenimiento.php';
+                        window.location.href = '../historiales/ver_licencia.php';
                     }, 3000);
                 } else {
                     document.getElementById('formulario_error').style.opacity = 1;
@@ -252,3 +246,4 @@ formulario.addEventListener('submit', function (e) {
         }, 3000);
     }
 });
+
