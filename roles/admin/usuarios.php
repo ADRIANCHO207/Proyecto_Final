@@ -21,19 +21,6 @@ if (!$documento) {
     exit;
 }
 
-// Fetch nombre_completo and foto_perfil if not in session
-$nombre_completo = $_SESSION['nombre_completo'] ?? null;
-$foto_perfil = $_SESSION['foto_perfil'] ?? null;
-if (!$nombre_completo || !$foto_perfil) {
-    $user_query = $con->prepare("SELECT nombre_completo, foto_perfil FROM usuarios WHERE documento = :documento");
-    $user_query->bindParam(':documento', $documento, PDO::PARAM_STR);
-    $user_query->execute();
-    $user = $user_query->fetch(PDO::FETCH_ASSOC);
-    $nombre_completo = $user['nombre_completo'] ?? 'Usuario';
-    $foto_perfil = $user['foto_perfil'] ?: 'Proyecto_Final/roles/user/css/img/perfil.jpg';
-    $_SESSION['nombre_completo'] = $nombre_completo;
-    $_SESSION['foto_perfil'] = $foto_perfil;
-}
 
 
 
@@ -45,14 +32,17 @@ if (!$nombre_completo || !$foto_perfil) {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Panel de Administrador</title>
-  <link rel="stylesheet" href="css/vehiculos.css" />
-  <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <Style></Style>
+
+  
 
 </head>
 <body>
-  <?php include 'menu.html'; ?> <!-- Sidebar fuera del contenido principal -->
+  <?php include 'menu.php'; ?> <!-- Sidebar fuera del contenido principal -->
 
   <div class="content">
     <div class="buscador mb-3">
@@ -197,4 +187,3 @@ if (!$nombre_completo || !$foto_perfil) {
   </script>
 </body>
 </html>
-b

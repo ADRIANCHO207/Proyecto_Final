@@ -2,7 +2,6 @@
 session_start();
 require_once('../../../conecct/conex.php');
 require_once('../../../includes/validarsession.php');
-include('../../../includes/auto_logout_modal.php');
 
 $db = new Database();
 $con = $db->conectar();
@@ -182,5 +181,9 @@ $placas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             modalInfo.style.display = "none";
         }
     </script>
+
+    <?php
+      include('../../../includes/auto_logout_modal.php');
+    ?>
 </body>
 </html>

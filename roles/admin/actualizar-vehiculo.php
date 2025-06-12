@@ -5,10 +5,7 @@ include '../../includes/validarsession.php';
 $database = new Database();
 $con = $database->conectar();
 
-// Check if the connection is successful
-if (!$con) {
-    die("Error: No se pudo conectar a la base de datos. Verifique el archivo conex.php.");
-}
+
 
 // Check for documento in session
 $documento = $_SESSION['documento'] ?? null;
@@ -16,6 +13,51 @@ if (!$documento) {
     header('Location: ../../login.php');
     exit;
 }
+if (!isset($_GET['documento'])) {
+    die("Error: No se proporcionó el parámetro 'id'.");
+}
+$id = $_GET['documento'];
+
+$sql = $con->prepare("SELECT *
+                                 FROM vehiculos
+                                 INNER JOIN usuarios ON vehiculos.documento = usuarios.documento 
+                                 INNER JOIN marca ON vehiculos.id_marca = marca.id_marca
+                                 INNER JOIN estado_vehiculo ON vehiculos.id_estado = estado_vehiculo.id_estado
+                                 WHERE placa = ?");
+$sql->execute([$id]); // Pasar el parámetro directamente como un array
+$fila = $sql->fetch(PDO::FETCH_ASSOC);
+
+
+if (!$fila) {
+    die("Error: No se encontró un usuario con el ID proporcionado.");
+}
+
+if (isset($_POST['actualizar'])) {
+    $Telefono = $_POST['Telefono'];
+    $idRol = $_POST['idRol'];
+    $idEstadoRol = $_POST['idEstadoRol'];
+
+ if (!empty($Telefono)) {
+    
+    $update = $con->prepare("UPDATE vehiculos SET Telefono = ?, IdRol = ?, Estado = ? WHERE Documento = ?");
+    $update->execute([$Telefono, $idRol, $idEstadoRol, $id]);
+    echo '<script>alert("Usuario actualizado exitosamente."); window.location = "ver_usu.php";</script>';
+    exit;
+} 
+else {
+    echo '<script>alert("Error: El campo Teléfono no puede estar vacío.");</script>';
+      
+}}
+
+
+if (isset($_POST['Eliminar'])) {
+    $delete = $con->prepare("DELETE FROM usuarios WHERE Documento = ?");
+    $delete->execute([$id]);
+    echo '<script>alert("Usuario eliminado exitosamente."); window.location = "ver_usu.php";</script>';
+    exit;
+}
+?>
+
 
 // Fetch nombre_completo and foto_perfil if not in session
 $nombre_completo = $_SESSION['nombre_completo'] ?? null;
@@ -56,7 +98,7 @@ if (!$nombre_completo || !$foto_perfil) {
 </head>
 <body onload="form_vehiculo.tipo_vehiculo.focus()">
   
-<?php include 'menu.html'; ?> <!-- Sidebar fuera del contenido principal -->
+<?php include 'menu.php'; ?> <!-- Sidebar fuera del contenido principal -->
 
   <div class="content">
     <div class="buscador mb-3">

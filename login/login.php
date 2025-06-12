@@ -48,18 +48,6 @@ $estado = 1 ;
                                     </div>
                                 </div>
                                 
-                                
-                                <div>
-                                    <div class = "input_field_nom" id="grupo_nom">
-                                        <label for="nom"></label>
-                                        <i class="bi bi-card-heading"></i>
-                                        <input type="text" name = "nom" id = "nom" placeholder = "Nombre completo">
-                                    </div>
-                                    <div class="formulario_error_nom" id="formulario_correcto_nom">
-                                        <p class="validacion1" id="validacion1">Ingrese el nombre completo sin caracteres especiales</p>
-                                    </div>
-                                </div>
-                                
                                 <div>
                                     <div class = "input_field_passw" id="grupo_passw">
                                         <label for="passw"></label>
@@ -86,35 +74,6 @@ $estado = 1 ;
             </div>
        </div>
     <script>
-        $(document).ready(function () {
-            $('#formulario').submit(function (e) {
-                e.preventDefault();
-
-                $.ajax({
-                    url: '../includes/inicio.php',
-                    method: 'POST',
-                    data: {
-                        doc: $('#doc').val(),
-                        nom: $('#nom').val(),
-                        passw: $('#passw').val(),
-                        log: true
-                    },
-                    success: function (respuesta) {
-                        console.log(respuesta);
-                        if (respuesta === "OK_ADMIN") {
-                            window.location.href = "../roles/admin/index.php";
-                        } else if (respuesta === "OK_USUARIO") {
-                            window.location.href = "../roles/usuario/index.php";
-                        } else {
-                            alert(respuesta);
-                        }
-                    },
-                    error: function () {
-                        alert("Error al procesar la solicitud.");
-                    }
-                });
-            });
-        });
         function showpass1() {
             const passw = document.getElementById("passw");
             const icon = document.getElementById("showpass1");

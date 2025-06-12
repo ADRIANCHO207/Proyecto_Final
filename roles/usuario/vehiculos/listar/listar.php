@@ -303,5 +303,8 @@ if ($placa) {
             </div>
         <?php endif; ?>
     </div>
+    <?php
+      include('../../../../includes/auto_logout_modal.php');
+    ?>
 </body>
 </html>

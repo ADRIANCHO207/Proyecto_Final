@@ -7,6 +7,9 @@
     </div>
 </div>
 <style>
+    #modalInactividad{
+        display: none;
+    }
     .btn-grad {
         padding: 10px 20px;
         background:  #0072ff;
@@ -27,7 +30,7 @@
     }
 </style>
 <script>
-    let tiempoInactividad = 30000; // 5 minutos
+    let tiempoInactividad = 240000; // 4 minutos
     let advertenciaTiempo = 10000;  // Mostrar advertencia 10 segundos antes
     let temporizadorInactividad;
     let temporizadorAdvertencia;
@@ -35,6 +38,7 @@
     let cuentaRegresiva;
 
     function reiniciarTemporizador() {
+        document.getElementById("modalInactividad").style.display = "none";
         clearTimeout(temporizadorInactividad);
         clearTimeout(temporizadorAdvertencia);
         cerrarModal();

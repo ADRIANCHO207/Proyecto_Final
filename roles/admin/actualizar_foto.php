@@ -37,9 +37,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Subir una nueva imagen de perfil
     if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] === UPLOAD_ERR_OK) {
         $file = $_FILES['foto_perfil'];
-        // Use absolute path for reliability, save directly to css/img/
-        $upload_dir = __DIR__ . '/css/img/';
-        $relative_dir = '/css/img/';
+        // Guardar en la carpeta del usuario
+        $upload_dir = realpath(__DIR__ . '/../usuario/css/img/') . '/';
+        $relative_dir = '/proyecto/roles/usuario/css/img/';
 
         // Ensure directory exists and is writable
         if (!is_dir($upload_dir)) {
@@ -96,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         $filename = $documento . '_' . time() . '.' . $ext;
         $destination = $upload_dir . $filename;
-        $relative_path = '/proyecto/roles/usuario/css/img/' . $filename;
+        $relative_path = $relative_dir . $filename;
 
 
         // Move uploaded file

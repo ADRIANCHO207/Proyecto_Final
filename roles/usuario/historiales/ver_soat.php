@@ -4,7 +4,6 @@ require_once('../../../conecct/conex.php');
 $db = new Database();
 $con = $db->conectar();
 include '../../../includes/validarsession.php';
-include('../../../includes/auto_logout_modal.php');
 
 $documento = $_SESSION['documento'] ?? null;
 
@@ -184,6 +183,10 @@ if (!$nombre_completo || !$foto_perfil) {
         }, 500); // espera 500ms después de dejar de escribir
     });
 </script>
+
+    <?php
+      include('../../../includes/auto_logout_modal.php');
+    ?>
 
 
 </body>

@@ -15,7 +15,11 @@ $documento = $_SESSION['documento'] ?? null;
 if (!$documento) {
     header('Location: ../../login.php');
     exit;
+
+    
 }
+
+
 
 // Fetch nombre_completo and foto_perfil if not in session
 $nombre_completo = $_SESSION['nombre_completo'] ?? null;
@@ -31,15 +35,21 @@ if (!$nombre_completo || !$foto_perfil) {
     $_SESSION['foto_perfil'] = $foto_perfil;
 }
 
-// Aquí deberías incluir las consultas para obtener $result_tipos y $result_estados
-// Por ejemplo:
-// $query_tipos = $con->prepare("SELECT * FROM tipos_vehiculo");
-// $query_tipos->execute();
-// $result_tipos = $query_tipos->fetchAll(PDO::FETCH_ASSOC);
+// Fetch vehicle types from the tipo_vehiculo table using PDO
+$query_tipos = "SELECT * FROM tipo_vehiculo";
+$stmt_tipos = $con->prepare($query_tipos);
+$stmt_tipos->execute();
+$result_tipos = $stmt_tipos->fetchAll(PDO::FETCH_ASSOC);
 
-// $query_estados = $con->prepare("SELECT * FROM estados_vehiculo");
-// $query_estados->execute();
-// $result_estados = $query_estados->fetchAll(PDO::FETCH_ASSOC);
+// Fetch states from the estado_vehiculo table using PDO
+$query_estados = "SELECT * FROM estado_vehiculo";
+$stmt_estados = $con->prepare($query_estados);
+$stmt_estados->execute();
+$result_estados = $stmt_estados->fetchAll(PDO::FETCH_ASSOC);
+
+$query_m
+
+
 ?>
 
 <!DOCTYPE html>
@@ -56,13 +66,13 @@ if (!$nombre_completo || !$foto_perfil) {
 </head>
 <body onload="form_vehiculo.tipo_vehiculo.focus()">
   
-<?php include 'menu.html'; ?> <!-- Sidebar fuera del contenido principal -->
+<?php include 'menu.php'; ?> <!-- Sidebar fuera del contenido principal -->
 
   <div class="content">
-    <div class="buscador mb-3">
+    <!-- <div class="buscador mb-3">
       <input type="text" id="buscar" class="form-control" placeholder="🔍 Buscar por nombre, documento o correo" onkeyup="filtrarTabla()">
     </div>
-    
+     -->
     <div class="contenido">
       <form method="POST" action="" enctype="multipart/form-data" class="form" id="form_vehiculo" autocomplete="off">
         <h2><i class="bi bi-truck"></i> Registrar Vehículo</h2>
@@ -207,8 +217,42 @@ if (!$nombre_completo || !$foto_perfil) {
           Vehículo registrado correctamente.
         </p>
       </form>
+
     </div>
   </div>
+
+  <!-- Modal para Agregar Vehículo -->
+<div class="modal fade" id="modalAgregarVehiculo" tabindex="-1" aria-labelledby="modalAgregarVehiculoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalAgregarVehiculoLabel">
+          <i class="bi bi-truck"></i> Registrar Nuevo Vehículo
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="modalAgregarVehiculoBody">
+        <!-- Contenido dinámico se cargará aquí -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          <i class="bi bi-x-circle"></i> Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para Mostrar Imagen -->
+<div class="modal fade" id="modalImagen" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-body text-center">
+        <img id="imagenCompleta" src="" class="img-fluid" alt="Vehículo">
+      </div>
+    </div>
+  </div>
+</div>
 
   <script>
     // Establecer fecha actual
@@ -224,7 +268,7 @@ if (!$nombre_completo || !$foto_perfil) {
         marcas.disabled = true;
 
         const xhr = new XMLHttpRequest();
-        xhr.open('POST', '../AJAX/obtener_marcas.php', true);
+        xhr.open('POST', '../usuario/AJAX/obtener_marcas.php', true);
         xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         xhr.onload = function() {
           marcas.disabled = false;
@@ -251,6 +295,6 @@ if (!$nombre_completo || !$foto_perfil) {
     }
   </script>
 
-  <script src="../js/vehiculos_registro.js"></script>
+  <script src="../usuario/js/vehiculos_registro.js"></script>
 </body>
 </html>

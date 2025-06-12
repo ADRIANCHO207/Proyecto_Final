@@ -190,5 +190,8 @@
 
         <script src="../js/scriptmantenimiento.js"></script>
 
+         <?php
+            include('../../../includes/auto_logout_modal.php');
+        ?>
     </body>
     </html>

@@ -29,9 +29,6 @@ const validarformulario = (e) => {
         case "doc":
             validarCampo(expresiones.validadocumento, e.target, 'doc', 'validacion');
             break;
-        case "nom":
-            validarCampo(expresiones.validanombre, e.target, 'nom', 'validacion1');
-            break;
         case "passw":
             validarCampo(expresiones.validapassword, e.target, 'passw', 'validacion2');
             break;
@@ -49,30 +46,52 @@ formulario.addEventListener('submit', (e) => {
     e.preventDefault();
 
     const docvalido = expresiones.validadocumento.test($('#doc').val());
-    const nomvalido = expresiones.validanombre.test($('#nom').val());
     const passvalido = expresiones.validapassword.test($('#passw').val());
 
-    if (docvalido && nomvalido && passvalido) {
+    if (docvalido && passvalido) {
         $.ajax({
             type: "POST",
             url: "../includes/inicio.php",
             data: {
                 doc: $('#doc').val(),
-                nom: $('#nom').val(),
-                passw: $('#passw').val()
+                passw: $('#passw').val(),
+                log: true
             },
+            dataType: 'json', // <--- importante
             success: function(response) {
                 console.log("Respuesta del servidor:", response);
-                document.getElementById('formulario_exito').style.opacity = 1;
-                document.getElementById('formulario_exito').style.color = "#158000";
-                setTimeout(() => {
-                    document.getElementById('formulario_exito').style.opacity = 0;
-                }, 3000);
+
+                if (response.status === "success") {
+                    document.getElementById('formulario_exito').style.opacity = 1;
+                    document.getElementById('formulario_exito').style.color = "#158000";
+
+                    setTimeout(() => {
+                        document.getElementById('formulario_exito').style.opacity = 0;
+
+                        // Redirección dependiendo del rol
+                        if (response.rol === "admin") {
+                            location.href = "../roles/admin/index.php";
+                        } else if (response.rol === "usuario") {
+                            location.href = "../roles/usuario/index.php";
+                        }
+
+                    }, 2000);
+
+                } else {
+                    document.getElementById('formulario_error').style.opacity = 1;
+                    document.getElementById('formulario_error').style.color = "#d32f2f";
+                    document.getElementById('formulario_error').innerText = response.message; 
+                    $('#doc').focus();
+                    setTimeout(() => {
+                        document.getElementById('formulario_error').style.opacity = 0;
+                    }, 3000);
+                }
             },
             error: function(xhr, status, error) {
-                console.error("Error al enviar el formulario:", error);
+                console.error("Error al enviar el formulario:", xhr.responseText);
                 document.getElementById('formulario_error').style.opacity = 1;
-                $('#doc').focus();
+                document.getElementById('formulario_error').style.color = "#d32f2f";
+                document.getElementById('formulario_error').innerText = "Error de conexión con el servidor";
                 setTimeout(() => {
                     document.getElementById('formulario_error').style.opacity = 0;
                 }, 3000);
@@ -86,13 +105,10 @@ formulario.addEventListener('submit', (e) => {
             document.getElementById('formulario_error').style.opacity = 0;
         }, 3000);
         
-        if (!docValido) {
+        if (!docvalido) {
             $('#doc').focus();
             validarCampo(expresiones.validadocumento, document.getElementById('doc'), 'doc', 'validacion1');
-        } else if (!nomValido) {
-            $('#nom').focus();
-            validarCampo(expresiones.validanombre, document.getElementById('nom'), 'nom', 'validacion');
-        } else if (!passValido) {
+        } else if (!passvalido) {
             $('#passw').focus();
             validarCampo(expresiones.validapassword, document.getElementById('passw'), 'passw', 'validacion2');
         }

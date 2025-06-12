@@ -2,7 +2,6 @@
 session_start();
 require_once '../../../conecct/conex.php';
 include '../../../includes/validarsession.php';
-include('../../../includes/auto_logout_modal.php');
 $database = new Database();
 $con = $database->conectar();
 
@@ -229,6 +228,8 @@ $result_estados = $stmt_estados->fetchAll(PDO::FETCH_ASSOC);
     </script>
 
     <script src="../js/vehiculos_registro.js"></script>
-    
+    <?php
+      include('../../../includes/auto_logout_modal.php');
+    ?>
 </body>
 </html>

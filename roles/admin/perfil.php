@@ -48,7 +48,6 @@ $imagePath = htmlspecialchars($foto_perfil) . '?v=' . time();
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Perfil de Usuario</title>
   <link rel="shortcut icon" href="../../css/img/logo_sinfondo.png">
   <link rel="stylesheet" href="css/perfil.css" />
@@ -58,7 +57,7 @@ $imagePath = htmlspecialchars($foto_perfil) . '?v=' . time();
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <?php include 'menu.html'; ?> <!-- Sidebar fuera del contenido principal -->
+  <?php include 'menu.php'; ?> <!-- Sidebar fuera del contenido principal -->
 
   <div class="content">
     <div class="modal-content">
