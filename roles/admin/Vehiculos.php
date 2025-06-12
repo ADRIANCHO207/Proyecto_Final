@@ -70,7 +70,7 @@ function getEstadoClass($estado) {
   <link rel="stylesheet" href="css/vehiculos-modal.css">
 </head>
 <body>
-<?php include 'menu.html'; ?>
+<?php include 'menu.php'; ?>
 
 <div class="content">
   <!-- Header de la página -->

@@ -721,7 +721,7 @@ body {
 </head>
 <body>
 
-  <?php include 'menu.html'; ?>
+  <?php include 'menu.php'; ?>
 
   <div class="content">
     <div class="container-fluid">

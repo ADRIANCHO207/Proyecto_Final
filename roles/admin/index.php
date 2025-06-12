@@ -63,7 +63,7 @@ $fecha_es = date("d") . " " . $meses_es[date("M")] . " " . date("Y");
 </head>
 <body>
   
-  <?php include 'menu.html'; ?> 
+  <?php include 'menu.php'; ?> 
 
   <div class="content">
     <!-- Header del Dashboard -->

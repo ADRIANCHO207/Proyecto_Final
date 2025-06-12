@@ -68,6 +68,11 @@ select {
     background-color: #fff;
 }
 
+input[type="date"] {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
 input[type="file"] {
     padding-left: 35px;
 }

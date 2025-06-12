@@ -98,7 +98,7 @@ if (!$nombre_completo || !$foto_perfil) {
 </head>
 <body onload="form_vehiculo.tipo_vehiculo.focus()">
   
-<?php include 'menu.html'; ?> <!-- Sidebar fuera del contenido principal -->
+<?php include 'menu.php'; ?> <!-- Sidebar fuera del contenido principal -->
 
   <div class="content">
     <div class="buscador mb-3">

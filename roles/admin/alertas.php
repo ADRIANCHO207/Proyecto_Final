@@ -148,7 +148,7 @@ $tiempo_promedio_resolucion = 3; // días
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <?php include 'menu.html'; ?>
+  <?php include 'menu.php'; ?>
 
   <div class="content">
     <!-- Header de la página -->

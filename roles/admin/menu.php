@@ -1,3 +1,16 @@
+
+<?php 
+// Obtener información del usuario
+$user_query = $con->prepare("SELECT documento, nombre_completo, email, telefono FROM usuarios WHERE documento = :documento");
+$user_query->bindParam(':documento', $documento, PDO::PARAM_STR);
+$user_query->execute();
+$user = $user_query->fetch(PDO::FETCH_ASSOC);
+
+// Ruta de la imagen con timestamp para evitar caché
+$imagePath = htmlspecialchars($foto_perfil) . '?v=' . time();
+?>
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -85,11 +98,15 @@
     <div class="sidebar-footer">
       <a href="perfil.php" class="nav-link profile-link">
         <div class="profile-avatar">
-          <img src="../../css/img/perfil.jpg" alt="Perfil" class="avatar-img">
+          <img src="<?php echo $imagePath; ?>" alt="Foto de Perfil" class="usu_imagen">
         </div>
         <div class="profile-info">
-          <span class="profile-name">Usuario Admin</span>
-          <span class="profile-role">Administrador</span>
+        <span class="profile-name">
+          <?php
+            $nombre = htmlspecialchars($user['nombre_completo']);
+            echo (mb_strlen($nombre) > 10) ? mb_substr($nombre, 0, 10) . '...' : $nombre;
+          ?>
+        </span>          <span class="profile-role">Administrador</span>
         </div>
         <i class="bi bi-chevron-right profile-arrow"></i>
       </a>
