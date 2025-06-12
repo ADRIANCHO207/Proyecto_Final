@@ -42,7 +42,7 @@ if (!$documento) {
 
 </head>
 <body>
-  <?php include 'menu.html'; ?> <!-- Sidebar fuera del contenido principal -->
+  <?php include 'menu.php'; ?> <!-- Sidebar fuera del contenido principal -->
 
   <div class="content">
     <div class="buscador mb-3">
