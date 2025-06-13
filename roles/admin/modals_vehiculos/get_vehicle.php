@@ -1,25 +1,42 @@
 <?php
 session_start();
 require_once('../../../conecct/conex.php');
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+ini_set('error_log', 'php_errors.log');
+
 $db = new Database();
 $con = $db->conectar();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['placa'])) {
-    $placa = $_POST['placa'];
-    error_log("Fetching vehicle with placa: $placa");
-    $query = $con->prepare("SELECT placa, documento, id_marca, modelo, id_estado, kilometraje_actual FROM vehiculos WHERE placa = :placa");
+header('Content-Type: application/json');
+
+if (!$con) {
+    error_log("Failed to connect to database");
+    echo json_encode(['error' => 'No se pudo conectar a la base de datos']);
+    exit;
+}
+
+$placa = $_GET['placa'] ?? '';
+if (!$placa) {
+    error_log("No placa provided in get_vehicle.php");
+    echo json_encode(['error' => 'Placa no proporcionada']);
+    exit;
+}
+
+try {
+    $query = $con->prepare("SELECT * FROM vehiculos WHERE placa = :placa");
     $query->bindParam(':placa', $placa, PDO::PARAM_STR);
     $query->execute();
     $vehicle = $query->fetch(PDO::FETCH_ASSOC);
+
     if ($vehicle) {
-        error_log("Vehicle found: " . print_r($vehicle, true));
-        echo "success: " . implode('|', $vehicle);
+        echo json_encode($vehicle);
     } else {
         error_log("Vehicle not found for placa: $placa");
-        echo "error: Vehículo no encontrado";
+        echo json_encode(['error' => 'Vehículo no encontrado']);
     }
-} else {
-    error_log("Invalid request or missing placa: " . print_r($_POST, true));
-    echo "error: Solicitud inválida";
+} catch (PDOException $e) {
+    error_log("Database error in get_vehicle.php: " . $e->getMessage());
+    echo json_encode(['error' => 'Error en la consulta: ' . $e->getMessage()]);
 }
 ?>
