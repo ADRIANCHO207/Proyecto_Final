@@ -32,9 +32,9 @@ $estado = $estado->fetchAll(PDO::FETCH_COLUMN);
 
 // Obtener estadísticas
 $stats_query = $con->prepare("SELECT COUNT(*) AS total_vehiculos,
-        SUM(CASE WHEN vehiculos.id_estado = 1 THEN 1 ELSE 0 END) AS vehiculos_activos,
-        SUM(CASE WHEN vehiculos.id_estado = 2 THEN 1 ELSE 0 END) AS vehiculos_inactivos,
-        SUM(CASE WHEN vehiculos.id_estado = 3 THEN 1 ELSE 0 END) AS vehiculos_mantenimiento
+        SUM(CASE WHEN vehiculos.id_estado = '1' THEN 1 ELSE 0 END) AS vehiculos_activos,
+        SUM(CASE WHEN vehiculos.id_estado = '2' THEN 1 ELSE 0 END) AS vehiculos_inactivos,
+        SUM(CASE WHEN vehiculos.id_estado = '3' THEN 1 ELSE 0 END) AS vehiculos_mantenimiento
     FROM vehiculos 
     INNER JOIN estado_vehiculo ON vehiculos.id_estado = estado_vehiculo.id_estado");
 $stats_query->execute();
@@ -62,7 +62,7 @@ function getEstadoClass($estado) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gestión de Vehículos - Flotax AGC</title>
     <link rel="shortcut icon" href="../../css/img/logo_sinfondo.png">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"> <!-- Usar CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/vehiculos.css">
@@ -166,7 +166,7 @@ function getEstadoClass($estado) {
                     <?php
                     $sql = $con->prepare("SELECT *
                                         FROM vehiculos
-                                        INNER JOIN usuarios ON vehiculos.documento = usuarios.documento 
+                                        INNER JOIN usuarios ON vehiculos.Documento = usuarios.documento 
                                         INNER JOIN marca ON vehiculos.id_marca = marca.id_marca
                                         INNER JOIN estado_vehiculo ON vehiculos.id_estado = estado_vehiculo.id_estado
                                         ORDER BY vehiculos.fecha_registro DESC");
@@ -176,6 +176,7 @@ function getEstadoClass($estado) {
                     
                     if (count($vehiculos) > 0):
                         foreach ($vehiculos as $resu):
+                            error_log("Fetched vehicle: placa={$resu['placa']}, documento={$resu['Documento']}, id_marca={$resu['id_marca']}, modelo={$resu['modelo']}, id_estado={$resu['id_estado']}, kilometraje={$resu['kilometraje_actual']}");
                     ?>
                     <tr>    
                         <td><span class="numero-fila"><?php echo $count++; ?></span></td>
@@ -205,10 +206,10 @@ function getEstadoClass($estado) {
                         </td>
                         <td>
                             <div class="action-buttons">
-                                <a href="#" class="action-icon edit" data-id="<?php echo $resu['placa']; ?>" title="Editar vehículo">
+                                <a class="action-icon edit" data-id="<?php echo htmlspecialchars($resu['placa']); ?>" title="Editar vehículo">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
-                                <a href="#" class="action-icon delete" data-id="<?php echo $resu['placa']; ?>" title="Eliminar vehículo">
+                                <a class="action-icon delete" data-id="<?php echo htmlspecialchars($resu['placa']); ?>" title="Eliminar vehículo">
                                     <i class="bi bi-trash"></i>
                                 </a>
                             </div>
@@ -251,7 +252,7 @@ function getEstadoClass($estado) {
 <?php include 'modals_vehiculos/vehiculo_modals.php'; ?>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="modals_vehiculos/vehiculos-scripts.js"></script> <!-- Ajustar ruta al script -->
+<script src="modals_vehiculos/vehiculos-scripts.js"></script>
 <script>
     // Función de filtrado mejorada
     function filtrarTabla() {

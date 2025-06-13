@@ -1,72 +1,89 @@
 document.addEventListener('DOMContentLoaded', function () {
     console.log('vehiculos-scripts.js loaded');
 
+    // Verificar si los botones existen
+    const editButtons = document.querySelectorAll('.action-icon.edit');
+    const deleteButtons = document.querySelectorAll('.action-icon.delete');
+    console.log('Edit buttons found:', editButtons.length);
+    console.log('Delete buttons found:', deleteButtons.length);
+
     // Edit button click handler
-    document.querySelectorAll('.action-icon.edit').forEach(button => {
-        if (button && typeof button.getAttribute === 'function') {
-            button.addEventListener('click', function (e) {
-                e.preventDefault();
-                const placa = button.getAttribute('data-id');
-                console.log('Edit clicked for placa:', placa);
-                console.log('Fetching from:', window.location.origin + '/proyecto/roles/admin/modals_vehiculos/get_vehicle.php');
+    editButtons.forEach(button => {
+        button.addEventListener('click', function (e) {
+            e.preventDefault();
+            console.log('Botón editar clickeado', this.getAttribute('data-id'));
+            const placa = this.getAttribute('data-id');
+            console.log('Edit clicked for placa:', placa, 'Button:', this);
 
-                fetch('/proyecto/roles/admin/modals_vehiculos/get_vehicle.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: 'placa=' + encodeURIComponent(placa)
-                })
-                .then(response => {
-                    console.log('Fetch status:', response.status);
-                    console.log('Fetch URL:', response.url);
-                    if (!response.ok) throw new Error('Network response was not ok ' + response.status);
-                    return response.text(); // Cambiar a text() en lugar de json()
-                })
-                .then(data => {
-                    console.log('Fetch response:', data);
-                    if (data.startsWith('success:')) {
-                        const parts = data.replace('success: ', '').split('|');
-                        if (parts.length >= 6) {
-                            document.getElementById('editPlaca').value = parts[0] || '';
-                            document.getElementById('editDocumento').value = parts[1] || '';
-                            document.getElementById('editMarca').value = parts[2] || '';
-                            document.getElementById('editModelo').value = parts[3] || '';
-                            document.getElementById('editEstado').value = parts[4] || '';
-                            document.getElementById('editKilometraje').value = parts[5] || '';
-
-                            const editModal = new bootstrap.Modal(document.getElementById('editVehicleModal'));
-                            editModal.show();
+            fetch('modals_vehiculos/get_vehicle.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'placa=' + encodeURIComponent(placa)
+            })
+            .then(response => {
+                console.log('Fetch status:', response.status, 'URL:', response.url);
+                if (!response.ok) throw new Error('Network response was not ok ' + response.status);
+                return response.text();
+            })
+            .then(data => {
+                console.log('Fetch response:', data);
+                if (data.startsWith('success:')) {
+                    const parts = data.replace('success: ', '').split('|');
+                    const fields = ['editPlaca', 'editDocumento', 'editMarca', 'editModelo', 'editEstado', 'editKilometraje'];
+                    if (parts.length >= fields.length) {
+                        fields.forEach((id, index) => {
+                            const element = document.getElementById(id);
+                            if (element) {
+                                element.value = parts[index] || '';
+                                if (id === 'editPlaca' || id === 'editDocumento') {
+                                    element.readOnly = true;
+                                }
+                            } else {
+                                console.error(`Element with id ${id} not found`);
+                            }
+                        });
+                        const editModal = document.getElementById('editVehicleModal');
+                        if (editModal) {
+                            const modal = new bootstrap.Modal(editModal);
+                            modal.show();
                         } else {
-                            alert('Formato de datos inesperado');
+                            console.error('Edit modal element not found in DOM');
                         }
-                    } else if (data.startsWith('error:')) {
-                        alert(data.replace('error: ', ''));
                     } else {
-                        alert('Respuesta inesperada del servidor');
+                        alert('Datos insuficientes recibidos del servidor: ' + data);
                     }
-                })
-                .catch(error => {
-                    console.error('Fetch error:', error);
-                    alert('Error al conectar con el servidor: ' + error.message);
-                });
+                } else if (data.startsWith('error:')) {
+                    alert(data.replace('error: ', ''));
+                } else {
+                    alert('Respuesta inesperada del servidor: ' + data);
+                }
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                alert('Error al conectar con el servidor: ' + error.message);
             });
-        }
+        });
     });
 
     // Delete button click handler
-    document.querySelectorAll('.action-icon.delete').forEach(button => {
-        if (button && typeof button.getAttribute === 'function') {
-            button.addEventListener('click', function (e) {
-                e.preventDefault();
-                const placa = button.getAttribute('data-id');
-                console.log('Delete clicked for placa:', placa);
-                document.getElementById('deletePlaca').value = placa;
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function (e) {
+            e.preventDefault();
+            const placa = this.getAttribute('data-id');
+            console.log('Delete clicked for placa:', placa, 'Button:', this);
+            document.getElementById('deletePlaca').value = placa;
+            document.getElementById('deletePlacaDisplay').textContent = placa;
 
-                const deleteModal = new bootstrap.Modal(document.getElementById('editVehicleModal'));
-                deleteModal.show();
-            });
-        }
+            const deleteModal = document.getElementById('deleteVehicleModal');
+            if (deleteModal) {
+                const modal = new bootstrap.Modal(deleteModal);
+                modal.show();
+            } else {
+                console.error('Delete modal element not found in DOM');
+            }
+        });
     });
 
     // Handle delete form submission
@@ -77,25 +94,28 @@ document.addEventListener('DOMContentLoaded', function () {
             const formData = new FormData(this);
             console.log('Delete form submitted:', Object.fromEntries(formData));
 
-            fetch('/proyecto/roles/admin/modals_vehiculos/delete_vehicle.php', {
+            fetch('modals_vehiculos/delete_vehicle.php', {
                 method: 'POST',
                 body: formData
             })
             .then(response => {
-                console.log('Fetch status:', response.status);
-                console.log('Fetch URL:', response.url);
+                console.log('Fetch status:', response.status, 'URL:', response.url);
                 if (!response.ok) throw new Error('Network response was not ok ' + response.status);
                 return response.text();
             })
             .then(data => {
                 console.log('Delete response:', data);
                 if (data.startsWith('success:')) {
-                    alert(data.replace('success: ', ''));
+                    showNotification('Vehículo marcado como inactivo exitosamente');
                     location.reload();
                 } else if (data.startsWith('error:')) {
-                    alert(data.replace('error: ', ''));
+                    if (data.includes('Error interno')) {
+                        showNotification('No se puede eliminar el vehículo porque está en uso. Contacte al administrador.');
+                    } else {
+                        alert(data.replace('error: ', ''));
+                    }
                 } else {
-                    alert('Respuesta inesperada del servidor');
+                    alert('Respuesta inesperada del servidor: ' + data);
                 }
             })
             .catch(error => {
@@ -113,23 +133,32 @@ document.addEventListener('DOMContentLoaded', function () {
         editForm.addEventListener('submit', function (e) {
             e.preventDefault();
             const formData = new FormData(this);
+            const placaInput = document.getElementById('editPlaca');
+            if (placaInput) {
+                formData.set('placa', placaInput.value);
+            }
             console.log('Edit form submitted:', Object.fromEntries(formData));
 
-            fetch('/proyecto/roles/admin/modals_vehiculos/update_vehicle.php', {
+            fetch('modals_vehiculos/update_vehicle.php', {
                 method: 'POST',
                 body: formData
             })
             .then(response => {
+                console.log('Fetch status:', response.status);
                 if (!response.ok) throw new Error('Network response was not ok ' + response.status);
-                return response.json(); // Esto sigue necesitando JSON por ahora
+                return response.json();
             })
             .then(data => {
                 console.log('Update response:', data);
                 if (data.success) {
-                    alert('Vehículo actualizado correctamente');
+                    showNotification('Vehículo editado exitosamente');
                     location.reload();
                 } else {
-                    alert('Error al actualizar el vehículo: ' + data.message);
+                    if (data.message && data.message.includes('documento no corresponde')) {
+                        showNotification(data.message);
+                    } else {
+                        alert('Error al actualizar el vehículo: ' + (data.message || 'Error desconocido'));
+                    }
                 }
             })
             .catch(error => {
@@ -139,5 +168,11 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     } else {
         console.error('Edit form not found');
+    }
+
+    // Función para mostrar notificaciones
+    function showNotification(msg) {
+        document.getElementById('notificationMessage').textContent = msg;
+        new bootstrap.Modal(document.getElementById('notificationModal')).show();
     }
 });
