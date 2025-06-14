@@ -5,3 +5,5 @@
 [13-Jun-2025 22:12:59 Europe/Berlin] PHP Warning:  move_uploaded_file(images/DHS121_1749845579.jpg): Failed to open stream: No such file or directory in C:\xampp\htdocs\proyecto\roles\admin\modals_vehiculos\update_vehicle.php on line 41
 [13-Jun-2025 22:12:59 Europe/Berlin] PHP Warning:  move_uploaded_file(): Unable to move &quot;C:\xampp\tmp\php7834.tmp&quot; to &quot;images/DHS121_1749845579.jpg&quot; in C:\xampp\htdocs\proyecto\roles\admin\modals_vehiculos\update_vehicle.php on line 41
 [13-Jun-2025 22:12:59 Europe/Berlin] Failed to upload image for placa: DHS121
+[14-Jun-2025 19:10:59 Europe/Berlin] Intentando conectar a: mysql:host=localhost;dbname=proyecto_flota;charset=utf8
+[14-Jun-2025 19:10:59 Europe/Berlin] Conexión exitosa a proyecto_flota
