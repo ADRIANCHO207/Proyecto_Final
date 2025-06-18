@@ -20,7 +20,7 @@ const validarform = (e) => {
                 document.getElementById('nom').style.color = "black";
 
             }else{
-                document.getElementById('warnings').style.background = "#d32f2f";
+                document.getElementById('warnings').style.background = "#00000";
                 document.getElementById('warnings').style.opacity = 1;
                 document.getElementById('nom').style.border = "solid 3px #d32f2f";
                 document.getElementById('nom').style.color = "#d32f2f";
@@ -32,7 +32,7 @@ const validarform = (e) => {
                 document.getElementById('ape').style.border = "solid 3px green";;
                 document.getElementById('ape').style.color = "black";
             }else{
-                document.getElementById('warnings1').style.background = "#d32f2f";
+                document.getElementById('warnings1').style.background = "#00000";
                 document.getElementById('warnings1').style.opacity = 1;
                 document.getElementById('ape').style.border = "solid 3px #d32f2f";
                 document.getElementById('ape').style.color = "#d32f2f";
@@ -45,7 +45,7 @@ const validarform = (e) => {
                 document.getElementById('corre').style.color = "black";
 
             }else{
-                document.getElementById('warnings2').style.background = "#d32f2f";
+                document.getElementById('warnings2').style.background = "#00000";
                 document.getElementById('warnings2').style.opacity = 1;
                 document.getElementById('corre').style.border = "solid 3px #d32f2f";
                 document.getElementById('corre').style.color = "#d32f2f";
@@ -62,7 +62,7 @@ textarea.addEventListener('input', () => {
     const value = textarea.value.trim();
     if (value.length < 10) {
         warnings.textContent = "El mensaje debe tener al menos 10 caracteres.";
-        warnings.style.background = "#d32f2f";
+        warnings.style.background = "#00000";
         textarea.style.color = "#d32f2f";
         textarea.style.border = "solid 3px #d32f2f";
         warnings.style.opacity = 1;
@@ -70,7 +70,7 @@ textarea.addEventListener('input', () => {
         
     } else if (value.length > 500) {
         warnings.textContent = "El mensaje no debe exceder los 500 caracteres.";
-        warnings.style.background = "#d32f2f";
+        warnings.style.background = "#00000";
         textarea.style.color = "#d32f2f";
         textarea.style.border = "solid 3px #d32f2f";
         warnings.style.opacity = 1;
@@ -115,7 +115,7 @@ form.addEventListener('submit', function(event) {
                 console.log("Respuesta del servidor:", response);
                 mensajecorrecto.textContent = "Formulario enviado correctamente. Tu mensaje nos sera de mucha ayuda.";
                 mensajecorrecto.style.opacity = 1;
-                mensajecorrecto.style.background = "#388e3c";
+                mensajecorrecto.style.background = "#00000";
 
                 // Limpiar el formulario después de enviar
                 $('#form')[0].reset();
@@ -132,7 +132,7 @@ form.addEventListener('submit', function(event) {
                 console.error("Error al enviar el formulario:", error);
                 mensajeerror.textContent = "Ocurrió un error al enviar el formulario.";
                 mensajeerror.style.opacity = 1;
-                mensajeerror.style.background = "#d32f2f";
+                mensajeerror.style.background = "#00000";
                 
                 setTimeout(() => {
                     mensajeerror.style.opacity = 0;
@@ -144,7 +144,7 @@ form.addEventListener('submit', function(event) {
         mensajeerror.style.opacity = 1;
         mensajeerror.style.background = "#d32f2f";
         document.getElementById('nom').focus();
-        document.getElementById('warnings').style.background = "#d32f2f";
+        document.getElementById('warnings').style.background = "#00000";
         document.getElementById('warnings').style.opacity = 1;
         document.getElementById('nom').style.border = "solid 3px #d32f2f";
         document.getElementById('nom').style.color = "#d32f2f";
