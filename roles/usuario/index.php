@@ -74,10 +74,10 @@ if (!$nombre_completo || !$foto_perfil) {
         <a href="vehiculos/pico_placa.php" class="boton">
             <i class="bi bi-sign-stop"></i> Pico y Placa
         </a>
-        <a href="mantenimiento/gestionar_llantas.php" class="boton">
+        <a href="vehiculos/registrar_llantas.php" class="boton">
             <i class="bi bi-circle"></i> Llantas
         </a>
-        <a href="mantenimiento/gestionar_mantenimiento.php" class="boton">
+        <a href="vehiculos/registrar_mantenimiento.php" class="boton">
             <i class="bi bi-gear"></i> Mantenimiento y Aceite
         </a>
         <a href="vehiculos/multas.php" class="boton">

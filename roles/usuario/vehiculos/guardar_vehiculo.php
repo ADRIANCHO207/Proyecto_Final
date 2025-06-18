@@ -127,14 +127,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         error_log("Using default image: $foto_vehiculo");
     }
 
-    // Register the user who is adding the vehicle
-    $registrado_por = $_SESSION['nombre_usuario'] ?? 'desconocido';
-
     // Prepare the SQL query
-    $query = "INSERT INTO vehiculos 
-              (placa, Documento, id_marca, modelo, kilometraje_actual, id_estado, fecha_registro, foto_vehiculo, registrado_por) 
-              VALUES 
-              (:placa, :documento, :id_marca, :modelo, :kilometraje, :id_estado, :fecha, :foto_vehiculo, :registrado_por)";
+    $query = "INSERT INTO vehiculos (placa, Documento, id_marca, modelo, kilometraje_actual, id_estado, fecha_registro, foto_vehiculo) 
+              VALUES (:placa, :documento, :id_marca, :modelo, :kilometraje, :id_estado, :fecha, :foto_vehiculo)";
     $stmt = $conn->prepare($query);
 
     // Bind parameters
@@ -146,7 +141,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bindParam(':id_estado', $id_estado, PDO::PARAM_STR);
     $stmt->bindParam(':fecha', $fecha, PDO::PARAM_STR);
     $stmt->bindParam(':foto_vehiculo', $foto_vehiculo, PDO::PARAM_STR);
-    $stmt->bindParam(':registrado_por', $registrado_por, PDO::PARAM_STR);
 
     // Execute the query
     try {

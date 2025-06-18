@@ -4,7 +4,7 @@ require_once('../../../conecct/conex.php');
 $db = new Database();
 $con = $db->conectar();
 include '../../../includes/validarsession.php';
-include('../../../includes/auto_logout_modal.php');
+
 
 $documento = $_SESSION['documento'] ?? null;
 $filtro_placa = $_GET['placa'] ?? '';
@@ -172,6 +172,10 @@ if (!$nombre_completo || !$foto_perfil) {
         }, 500);
     });
 </script>
+
+    <?php
+      include('../../../includes/auto_logout_modal.php');
+    ?>
 
 </body>
 </html>
