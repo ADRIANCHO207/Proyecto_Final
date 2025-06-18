@@ -27,13 +27,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     try {
-        // Obtener categorías ya registradas por el usuario
+        // Obtener categorías ya registradas por el usuario que NO estén vencidas
         $query = $con->prepare("SELECT cl.id_categoria, cat.nombre_categoria 
                                 FROM licencias cl 
                                 JOIN categoria_licencia cat ON cl.id_categoria = cat.id_categoria 
-                                WHERE cl.id_documento = ?");
+                                WHERE cl.id_documento = ? 
+                                AND cl.fecha_vencimiento >= CURRENT_DATE()");
         $query->execute([$documento]);
         $categorias_existentes = $query->fetchAll(PDO::FETCH_ASSOC);
+
 
         // Obtener nombre de la categoría
         $stmt = $con->prepare("SELECT cl.nombre_categoria 
@@ -57,14 +59,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         // Validar que el servicio corresponda según la categoría
         $servicios_permitidos_por_categoria = [
-            'A1' => 'Particular',
-            'A2' => 'Particular',
-            'B1' => 'Particular',
-            'B2' => 'Particular',
-            'B3' => 'Particular',
-            'C1' => 'Publico',
-            'C2' => 'Publico',
-            'C3' => 'Publico',
+            'A1' => 'particular',
+            'A2' => 'particular',
+            'B1' => 'particular',
+            'B2' => 'particular',
+            'B3' => 'particular',
+            'C1' => 'publico',
+            'C2' => 'publico',
+            'C3' => 'publico',
         ];
 
         if (isset($servicios_permitidos_por_categoria[$codigo_categoria_actual])) {
@@ -78,7 +80,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             }
         }
 
-        // Validar conflictos entre categorías
+        // Obtener categorías ya registradas por el usuario que NO estén vencidas
+        $query = $con->prepare("SELECT cl.id_categoria, cat.nombre_categoria 
+                                FROM licencias cl 
+                                JOIN categoria_licencia cat ON cl.id_categoria = cat.id_categoria 
+                                WHERE cl.id_documento = ? 
+                                AND cl.fecha_vencimiento >= CURRENT_DATE()");
+        $query->execute([$documento]);
+        $categorias_existentes = $query->fetchAll(PDO::FETCH_ASSOC);
+
+        // Validar conflictos entre categorías solo con licencias vigentes
         $conflictos = [
             'A1' => ['A2'],
             'A2' => ['A1'],
@@ -94,7 +105,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $codigo_existente = substr($cat['nombre_categoria'], 0, 2);
             if (isset($conflictos[$codigo_categoria_actual]) &&
                 in_array($codigo_existente, $conflictos[$codigo_categoria_actual])) {
-                echo json_encode(['status' => 'error', 'message' => "No se puede registrar la categoría $codigo_categoria_actual porque entra en conflicto con $codigo_existente que ya está registrada."]);
+                echo json_encode(['status' => 'error', 
+                    'message' => "No se puede registrar la categoría $codigo_categoria_actual porque existe una licencia vigente de categoría $codigo_existente."]);
                 exit;
             }
         }
@@ -112,31 +124,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             exit;
         }
 
-        $consulta = $con->prepare("SELECT fecha_vencimiento FROM licencias WHERE id_documento = ? AND id_categoria = ? ORDER BY fecha_vencimiento DESC LIMIT 1");
-        $consulta->execute([$documento, $categoria]);
-        $licencia_existente = $consulta->fetch(PDO::FETCH_ASSOC);
-
-        if ($licencia_existente) {
-            $fecha_vencida = $licencia_existente['fecha_vencimiento'];
-            $hoy = date('Y-m-d');
-
-            if ($fecha_vencida >= $hoy) {
-                echo json_encode(['status' => 'error', 'message' => 'Ya existe una licencia activa para esta categoría.']);
-                exit;
-            }
-        }
-
-        // Validar solapamiento de fechas con cualquier otra licencia del usuario
+        // Validar solapamiento de fechas en la misma categoría
         $stmt = $con->prepare("SELECT * FROM licencias 
-                               WHERE id_documento = ? 
-                               AND (
-                                    (fecha_expedicion <= ? AND fecha_vencimiento >= ?) OR
-                                    (fecha_expedicion <= ? AND fecha_vencimiento >= ?) OR
-                                    (fecha_expedicion >= ? AND fecha_vencimiento <= ?)
-                               )");
-        $stmt->execute([$documento, $fecha_ven, $fecha_ven, $fecha_exp, $fecha_exp, $fecha_exp, $fecha_ven]);
+                               WHERE id_documento = ? AND id_categoria = ? 
+                               AND (fecha_expedicion <= ? AND fecha_vencimiento >= ?)");
+        $stmt->execute([$documento, $categoria, $fecha_ven, $fecha_exp]);
         if ($stmt->fetch()) {
-            echo json_encode(['status' => 'error', 'message' => 'Ya existe otra licencia registrada que se cruza en fechas con la que intenta registrar.']);
+            echo json_encode(['status' => 'error', 'message' => 'Ya existe una licencia con fechas que se cruzan para esta categoría.']);
             exit;
         }
 

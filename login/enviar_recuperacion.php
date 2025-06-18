@@ -43,6 +43,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Configurar PHPMailer
     $mail = new PHPMailer(true);
+    $mail->CharSet = 'UTF-8';
+    $mail->Encoding = 'base64';
     try {
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
@@ -60,13 +62,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $reset_link = "http://localhost/Proyecto/login/change.php?token=" . urlencode($token);
 
         // Contenido del correo.php
+        $logoUrl = 'https://logosinfondo.netlify.app/logo_sinfondo.png'; // Asegúrate que esta sea la URL exacta de tu imagen
+
         $mail->isHTML(true);
-        $mail->Body = "<h2>Recuperación de contraseña</h2>
-                       <p>Hola, has solicitado recuperar tu contraseña.</p>
-                       <p>Haz clic en el siguiente enlace para restablecerla:</p>
-                       <p><a href='$reset_link' style='background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>Restablecer contraseña</a></p>
-                       <p>Si no solicitaste este cambio, ignora este mensaje.</p>
-                       <p>Este enlace expira en 1 hora.</p>";
+        $mail->Body = "
+        <div style='background-color: #1a1a1a; width: 100%; padding: 20px 0; font-family: Arial, sans-serif;'>
+            <div style='background-color: #262626; max-width: 600px; margin: 0 auto; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.5);'>
+                <!-- Logo centrado -->
+                <div style='width: 150px; height: 150px; margin: auto; background-image: url(https://logosinfondo.netlify.app/logo_sinfondo.png); 
+                background-size: contain; background-repeat: no-repeat; background-position: center;'></div>
+                
+                <h2 style='color: #ffffff; text-align: center; margin-bottom: 20px; font-size: 24px;'>Recuperación de contraseña</h2>
+                
+                <div style='color: #e0e0e0; text-align: center; line-height: 1.6;'>
+                    <h4>Hola, has solicitado recuperar tu contraseña.</h4>
+                    <p>Haz clic en el siguiente botón para restablecerla:</p>
+                    
+                    <div style='margin: 30px 0;'>
+                        <a href='$reset_link' style='background-color: #d32f2f; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block; transition: background-color 0.3s ease;'>Restablecer contraseña</a>
+                    </div>
+                    
+                    <p style='color: #888888; font-size: 14px;'>Si no solicitaste este cambio, ignora este mensaje.</p>
+                    <p style='color: #888888; font-size: 14px;'>Este enlace expira en 1 hora.</p>
+                </div>
+                
+                <div style='margin-top: 30px; border-top: 1px solid #444444; padding-top: 20px; text-align: center;'>
+                    <p style='color: #888888; font-size: 12px;'>© 2024 Flota Vehicular. Todos los derechos reservados.</p>
+                </div>
+            </div>
+        </div>";
 
         // Enviar correo
         $mail->send();

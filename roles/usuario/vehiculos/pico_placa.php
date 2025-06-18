@@ -141,7 +141,7 @@ $placas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 return;
             }
 
-            fetch('obtener_dias.php', {
+            fetch('../AJAX/obtener_dias.php', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 body: 'placa=' + encodeURIComponent(placa)

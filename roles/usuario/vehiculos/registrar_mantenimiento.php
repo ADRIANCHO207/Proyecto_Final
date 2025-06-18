@@ -2,7 +2,6 @@
     session_start();
     require_once('../../../conecct/conex.php');
     require_once('../../../includes/validarsession.php');
-    include('../../../includes/auto_logout_modal.php');
     $db = new Database();
     $con = $db->conectar();
 
