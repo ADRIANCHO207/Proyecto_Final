@@ -4,7 +4,7 @@
     $db = new Database();
     $con = $db->conectar();
     include '../../../includes/validarsession.php';
-    include('../../../includes/auto_logout_modal.php');
+   
 
     $documento = $_SESSION['documento'] ?? null;
 
@@ -150,6 +150,10 @@
             </tbody>
         </table>
     </div>
+
+    <?php
+      include('../../../includes/auto_logout_modal.php');
+    ?>
     
 </div>
 </body>

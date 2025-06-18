@@ -2,7 +2,6 @@
   session_start();
   require_once '../../../conecct/conex.php';
   include '../../../includes/validarsession.php';
-  include('../../../includes/auto_logout_modal.php');
   $database = new Database();
   $con = $database->conectar();
 
@@ -173,6 +172,9 @@
   </div>
 
   <script src="../js/registrar_tecno.js"></script>
+   <?php
+      include('../../../includes/auto_logout_modal.php');
+    ?>
 </body>
 
 </html>

@@ -4,25 +4,32 @@ require_once('../../../conecct/conex.php');
 $db = new Database();
 $con = $db->conectar();
 include '../../../includes/validarsession.php';
-include('../../../includes/auto_logout_modal.php');
 
 $documento = $_SESSION['documento'] ?? null;
 
 $filtro_placa = $_GET['placa'] ?? '';
 
-// Consulta dinámica
+// ...existing code...
+
+$filtro_placa = $_GET['placa'] ?? '';
+
+// Consulta modificada para mostrar solo los SOAT del usuario logueado
 if (!empty($filtro_placa)) {
     $sql = $con->prepare("
         SELECT s.id_soat, v.placa, s.fecha_expedicion, s.fecha_vencimiento,
                a.nombre, e.soat_est
         FROM soat s
-        INNER JOIN vehiculos v ON s.id_placa = v.placa
-        INNER JOIN aseguradoras_soat a ON s.id_aseguradora = a.id_asegura
-        INNER JOIN estado_soat e ON s.id_estado = e.id_stado
-        WHERE v.placa LIKE :placa
+        INNER JOIN vehiculos v ON s.placa = v.placa
+        INNER JOIN aseguradoras_soat a ON s.id_asegura = a.id_asegura
+        INNER JOIN estado_soat e ON s.id_stado = e.id_stado
+        WHERE v.Documento = :documento 
+        AND v.placa LIKE :placa
         ORDER BY s.fecha_expedicion DESC
     ");
-    $sql->execute(['placa' => "%$filtro_placa%"]);
+    $sql->execute([
+        'documento' => $documento,
+        'placa' => "%$filtro_placa%"
+    ]);
 } else {
     $sql = $con->prepare("
         SELECT s.id_soat, v.placa, s.fecha_expedicion, s.fecha_vencimiento,
@@ -31,9 +38,10 @@ if (!empty($filtro_placa)) {
         INNER JOIN vehiculos v ON s.id_placa = v.placa
         INNER JOIN aseguradoras_soat a ON s.id_aseguradora = a.id_asegura
         INNER JOIN estado_soat e ON s.id_estado = e.id_stado
+        WHERE v.Documento = :documento
         ORDER BY s.fecha_expedicion DESC
     ");
-    $sql->execute();
+    $sql->execute(['documento' => $documento]);
 }
 $soats = $sql->fetchAll(PDO::FETCH_ASSOC);
 
@@ -184,6 +192,10 @@ if (!$nombre_completo || !$foto_perfil) {
         }, 500); // espera 500ms después de dejar de escribir
     });
 </script>
+
+    <?php
+      include('../../../includes/auto_logout_modal.php');
+    ?>
 
 
 </body>
