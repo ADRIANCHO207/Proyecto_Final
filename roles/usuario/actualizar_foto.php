@@ -2,7 +2,6 @@
 session_start();
 require_once('../../conecct/conex.php');
 include '../../includes/validarsession.php';
-include('../../includes/auto_logout_modal.php');
 $db = new Database();
 $con = $db->conectar();
 
@@ -132,6 +131,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['error'] = "No se recibió ningún archivo válido.";
     }
 }
+
+    include('../../includes/auto_logout_modal.php');
 
 $redirect = $_SERVER['HTTP_REFERER'] ?? 'index.php';
 header("Location: $redirect");

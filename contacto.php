@@ -498,12 +498,12 @@ body {
   opacity: 1;
 }
 
-.social-links {
+.social-linkse {
   display: flex;
   gap: 15px;
 }
 
-.social-link {
+.social-linki {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -518,7 +518,7 @@ body {
   border: 2px solid rgba(255, 255, 255, 0.3);
 }
 
-.social-link:hover {
+.social-linki:hover {
   background: white;
   color: #e53e3e;
   transform: scale(1.1);
@@ -769,7 +769,7 @@ body {
                 </div>
                 <div class="contact-info">
                     <h3>Correo Electrónico:</h3>
-                    <a href="mailto:flotavehicular69@gmail.com">flotavehicular69@gmail.com</a>
+                    <a href="https://mail.google.com/mail/?view=cm&fs=1&to=flotavehicularagc@gmail.com">flotavehicularagc@gmail.com</a>
                 </div>
             </div>
 
@@ -779,7 +779,7 @@ body {
                 </div>
                 <div class="contact-info">
                     <h3>Teléfono:</h3>
-                    <a href="tel:+573108571290">+57 310 857 1290</a>
+                    <a href="falta">falta</a>
                 </div>
             </div>
         </div>
@@ -870,22 +870,22 @@ body {
         <div class="developers-grid">
             <div class="developer-card">
                 <div class="developer-image">
-                    <img src="/placeholder.svg?height=300&width=300" alt="Desarrollador 1">
+                    <img src="css/img/adrian.jpg" alt="Desarrollador 1">
                     <div class="developer-overlay">
-                        <div class="social-links">
-                            <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
-                            <a href="#" class="social-link"><i class="fab fa-github"></i></a>
-                            <a href="#" class="social-link"><i class="fas fa-envelope"></i></a>
+                        <div class="social-linkse">
+                            <a href="https://www.linkedin.com/in/adrian-camargo-rodriguez-6bb23b364/" class="social-linki"><i class="fab fa-linkedin"></i></a>
+                            <a href="https://github.com/ADRIANCHO207" class="social-linki"><i class="fab fa-github"></i></a>
+                            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=adriancamargo69@gmail.com" class="social-linki"><i class="fas fa-envelope"></i></a>
                         </div>
                     </div>
                 </div>
                 <div class="developer-info">
-                    <h3>Ana García</h3>
+                    <h3>Adrian Camargo</h3>
                     <p class="role">Full Stack Developer</p>
-                    <p class="description">Especialista en desarrollo web con 5+ años de experiencia en tecnologías modernas.</p>
+                    <p class="description"></p>
                     <div class="skills">
-                        <span class="skill">React</span>
-                        <span class="skill">Node.js</span>
+                        <span class="skill">HTML/CSS/JAVASCRIPT</span>
+                        <span class="skill">MySQL</span>
                         <span class="skill">PHP</span>
                     </div>
                 </div>
@@ -895,10 +895,10 @@ body {
                 <div class="developer-image">
                     <img src="css/img/edwar.jpg" alt="Desarrollador 2">
                     <div class="developer-overlay">
-                        <div class="social-links">
-                            <a href="https://www.linkedin.com/in/edwar-farid-gomez-sanchez-9ab07732a/" class="social-link"><i class="fab fa-linkedin"></i></a>
-                            <a href="https://github.com/EdwarFaridgomezsanchez04" class="social-link"><i class="fab fa-github"></i></a>
-                            <a href="mailto:edwardfaridg@gmail.com" class="social-link"><i class="fas fa-envelope"></i></a>
+                        <div class="social-linkse">
+                            <a href="https://www.linkedin.com/in/edwar-farid-gomez-sanchez-9ab07732a/" class="social-linki"><i class="fab fa-linkedin"></i></a>
+                            <a href="https://github.com/EdwarFaridgomezsanchez04" class="social-linki"><i class="fab fa-github"></i></a>
+                            <a href="mailto:edwardfaridg@gmail.com" class="social-linki"><i class="fas fa-envelope"></i></a>
                         </div>
                     </div>
                 </div>
@@ -918,10 +918,10 @@ body {
                 <div class="developer-image">
                     <img src="/placeholder.svg?height=300&width=300" alt="Desarrollador 3">
                     <div class="developer-overlay">
-                        <div class="social-links">
-                            <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
-                            <a href="#" class="social-link"><i class="fab fa-github"></i></a>
-                            <a href="#" class="social-link"><i class="fas fa-envelope"></i></a>
+                        <div class="social-linkse">
+                            <a href="#" class="social-linki"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="social-linki"><i class="fab fa-github"></i></a>
+                            <a href="#" class="social-linki"><i class="fas fa-envelope"></i></a>
                         </div>
                     </div>
                 </div>

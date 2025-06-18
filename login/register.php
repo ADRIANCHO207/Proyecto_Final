@@ -90,7 +90,7 @@ $rol = 2;
                                 <input type="number" name = "doc" id = "doc" placeholder = "Documento">
                             </div>
                             <div class="formulario_error_doc">
-                                <p class="validacion" id="validacion">El documento solo debe contener numeros y el maximo son 10 dígitos.</p>
+                                <p class="validacion" id="validacion">El documento solo debe contener numeros y el minimo son 6 digitos y el maximo son 10 dígitos.</p>
                             </div>  
                         </div>
                         <div>
@@ -158,7 +158,7 @@ $rol = 2;
                         <button type="submit" name = "enviar" id="enviar" value = "Guardar" class="btn btn-primary">Registrarse</button>
                     </div>
                     <p class="formulario_exito" id="formulario_exito">Registro exitoso...</p>
-                    <p>¿Ya tienes una cuenta?<a class="re"href="login.php">Inicia Sesion</a></p>
+                    <p>¿Ya tienes una cuenta?<a class="res"href="login.php">Inicia Sesion</a></p>
             
                 </form>
             </div>

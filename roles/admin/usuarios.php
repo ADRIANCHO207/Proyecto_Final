@@ -94,23 +94,23 @@ if (!$nombre_completo || !$foto_perfil) {
                 foreach ($fila as $resu) {
                 ?>
                 <tr class="text-center">    
-                    <td><?php echo $count++; ?></td>
-                    <td><?php echo htmlspecialchars($resu['documento']); ?></td>
-                    <td><?php echo htmlspecialchars($resu['nombre_completo']); ?></td>
-                    <td><?php echo htmlspecialchars($resu['email']); ?></td>
-                    <td><?php echo htmlspecialchars($resu['telefono']); ?></td>
-                    <td><?php echo htmlspecialchars($resu['tipo_stade']); ?></td>
-                    <td><?php echo htmlspecialchars($resu['tip_rol']); ?></td>
-                    <td>
-                        <div class="d-flex justify-content-center">
-                            <a href="#" onclick="window.open('actualizar.php?id=<?php echo $resu['documento']; ?>', '', 'width=600, height=500, toolbar=NO')" class="text-primary me-2">
-                                <i class="bi bi-pencil-square action-icon" title="Editar"></i>
-                            </a>
-                            <a href="#" onclick="confirmarEliminacion('<?php echo $resu['documento']; ?>')" class="text-danger">
-                                <i class="bi bi-trash action-icon" title="Eliminar"></i>
-                            </a>
-                        </div>
-                    </td>
+                  <td><?php echo $count++; ?></td>
+                  <td><?php echo htmlspecialchars($resu['documento']); ?></td>
+                  <td><?php echo htmlspecialchars($resu['nombre_completo']); ?></td>
+                  <td><?php echo htmlspecialchars($resu['email']); ?></td>
+                  <td><?php echo htmlspecialchars($resu['telefono']); ?></td>
+                  <td><?php echo htmlspecialchars($resu['tipo_stade']); ?></td>
+                  <td><?php echo htmlspecialchars($resu['tip_rol']); ?></td>
+                  <td>
+                    <div class="d-flex justify-content-center action-buttons">
+                      <button class="text-primary me-2 edit-user" data-id="<?php echo htmlspecialchars($resu['documento']); ?>">
+                        <i class="bi bi-pencil-square action-icon" title="Editar"></i>
+                      </button>
+                      <button class="text-danger delete-user" data-id="<?php echo htmlspecialchars($resu['documento']); ?>">
+                        <i class="bi bi-trash action-icon" title="Eliminar"></i>
+                      </button>
+                    </div>
+                  </td>
                 </tr>
                 <?php
                 }
@@ -121,12 +121,16 @@ if (!$nombre_completo || !$foto_perfil) {
       <ul class="pagination justify-content-center" id="paginacion"></ul>
     </nav>
   <div class="boton-agregar">
-        <a href="agregar_usuario.php" class="boton">
+        <a id="btnAgregarUsuario" href="agregar_usuario.php" class="boton">
             <i class="bi bi-plus-circle"></i> <i class="bi bi-search"></i>Agregar Usuario
         </a>
     </div>
     </div>
   </div>
+  <?php include 'modals_usuarios/usuario_modals.php'; ?>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="modals_usuarios/usuarios-scripts.js"></script>
   
 <script>
 

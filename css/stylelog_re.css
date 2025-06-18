@@ -138,6 +138,16 @@ a {
 p {
     font-weight: 300;
 }
+.res{
+    color: #000;
+    font-weight: bold;
+    transition: 0.5s;
+}
+
+.res:hover {
+    color: #d32f2f;
+    font-weight: bold;
+}
 
 .re {
     color: #fff;
