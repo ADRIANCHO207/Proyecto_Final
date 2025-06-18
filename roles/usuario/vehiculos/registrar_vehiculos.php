@@ -203,6 +203,8 @@ $result_estados = $stmt_estados->fetchAll(PDO::FETCH_ASSOC);
     
 
     <script>
+            const nombreUsuario = "<?php echo $_SESSION['nombre_usuario'] ?? 'desconocido'; ?>";
+
         document.getElementById('tipo_vehiculo').addEventListener('change', function() {
             const id_tipo = this.value;
             const marcas = document.getElementById('id_marca');
@@ -232,3 +234,89 @@ $result_estados = $stmt_estados->fetchAll(PDO::FETCH_ASSOC);
     
 </body>
 </html>
+
+<?php
+// Handle form submission
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Collect and sanitize form data
+    $tipo_vehiculo = $_POST['tipo_vehiculo'] ?? '';
+    $id_marca = $_POST['id_marca'] ?? '';
+    $placa = $_POST['placa'] ?? '';
+    $modelo = $_POST['modelo'] ?? '';
+    $kilometraje = $_POST['kilometraje'] ?? '';
+    $estado = $_POST['estado'] ?? '';
+    $fecha = $_POST['fecha'] ?? '';
+    $foto_vehiculo = $_FILES['foto_vehiculo'] ?? null;
+
+    // Validate required fields
+    $errors = [];
+    if (empty($tipo_vehiculo)) {
+        $errors['tipo_vehiculo'] = 'El tipo de vehículo es obligatorio.';
+    }
+    if (empty($id_marca)) {
+        $errors['id_marca'] = 'La marca del vehículo es obligatoria.';
+    }
+    if (empty($placa)) {
+        $errors['placa'] = 'La placa del vehículo es obligatoria.';
+    }
+    if (empty($modelo)) {
+        $errors['modelo'] = 'El modelo del vehículo es obligatorio.';
+    }
+    if (empty($kilometraje)) {
+        $errors['kilometraje'] = 'El kilometraje del vehículo es obligatorio.';
+    }
+    if (empty($estado)) {
+        $errors['estado'] = 'El estado del vehículo es obligatorio.';
+    }
+    if (empty($fecha)) {
+        $errors['fecha'] = 'La fecha de registro es obligatoria.';
+    }
+
+    // If there are no errors, proceed with database insertion
+    if (empty($errors)) {
+        // Prepare SQL query to insert vehicle data
+        $query = "INSERT INTO vehiculos (tipo_vehiculo, id_marca, placa, modelo, kilometraje, estado, fecha_registro, foto_vehiculo, registrado_por) VALUES (:tipo_vehiculo, :id_marca, :placa, :modelo, :kilometraje, :estado, :fecha_registro, :foto_vehiculo, :registrado_por)";
+        $stmt = $con->prepare($query);
+
+        // Bind parameters
+        $stmt->bindParam(':tipo_vehiculo', $tipo_vehiculo);
+        $stmt->bindParam(':id_marca', $id_marca);
+        $stmt->bindParam(':placa', $placa);
+        $stmt->bindParam(':modelo', $modelo);
+        $stmt->bindParam(':kilometraje', $kilometraje);
+        $stmt->bindParam(':estado', $estado);
+        $stmt->bindParam(':fecha_registro', $fecha);
+        $stmt->bindParam(':registrado_por', $documento);
+
+        // Handle file upload for foto_vehiculo
+        if ($foto_vehiculo && $foto_vehiculo['error'] == 0) {
+            $foto_nombre = uniqid('foto_', true) . '.' . pathinfo($foto_vehiculo['name'], PATHINFO_EXTENSION);
+            $foto_temp = $foto_vehiculo['tmp_name'];
+            $foto_destino = $_SERVER['DOCUMENT_ROOT'] . '/proyecto/roles/usuario/fotos_vehiculos/' . $foto_nombre;
+
+            // Move the uploaded file to the destination folder
+            if (move_uploaded_file($foto_temp, $foto_destino)) {
+                $stmt->bindParam(':foto_vehiculo', $foto_nombre);
+            } else {
+                $stmt->bindParam(':foto_vehiculo', null, PDO::PARAM_NULL);
+            }
+        } else {
+            $stmt->bindParam(':foto_vehiculo', null, PDO::PARAM_NULL);
+        }
+
+        // Execute the query
+        if ($stmt->execute()) {
+            // Success: Redirect or show success message
+            echo '<script>alert("Vehículo registrado correctamente."); window.location.href = "registro_vehiculos.php";</script>';
+        } else {
+            // Error: Show error message
+            echo '<script>alert("Error al registrar el vehículo. Por favor, inténtelo de nuevo.");</script>';
+        }
+    } else {
+        // Handle validation errors (optional)
+        foreach ($errors as $campo => $error) {
+            echo '<script>document.getElementById("validacion' . substr($campo, -1) . '").innerText = "' . $error . '";</script>';
+        }
+    }
+}
+?>

@@ -5,12 +5,39 @@ include '../../includes/validarsession.php';
 $db = new Database();
 $con = $db->conectar();
 
+// Consulta para contar vehículos por id_estado específico
+$sql = $con->prepare("  SELECT id_estado, COUNT(*) as cantidad 
+    FROM vehiculos 
+    WHERE id_estado IN (1,2,3)
+    GROUP BY id_estado
+");
+$sql->execute();
+$resultados = $sql->fetchAll(PDO::FETCH_ASSOC);
+
+// Inicializa las cantidades en 0 por defecto
+$cantidades = [
+    1 => 0,
+    2 => 0,
+    3 => 0
+];
+
+// Llena las cantidades según los resultados
+foreach ($resultados as $row) {
+    $cantidades[$row['id_estado']] = $row['cantidad'];
+}
+
+// Ahora puedes usar:
+$cantidad_id1 = $cantidades[1];
+$cantidad_id2 = $cantidades[2];
+$cantidad_id3 = $cantidades[3];
+
+
 // Consulta para contar el total de vehículos registrados
 $stmt = $con->prepare("SELECT COUNT(*) AS total FROM vehiculos");
 $stmt->execute();
 $total_vehiculos = $stmt->fetchColumn();
 
-$stmt1= $con->prepare("SELECT COUNT(*) AS total FROM usuarios ");
+$stmt1 = $con->prepare("SELECT COUNT(*) AS total FROM usuarios ");
 $stmt1->execute();
 $total_usuarios = $stmt1->fetchColumn();
 
@@ -18,333 +45,475 @@ $stmt2 = $con->prepare("SELECT COUNT(*) AS total FROM vehiculos WHERE id_estado 
 $stmt2->execute();
 $veh_dia = $stmt2->fetchColumn();
 
+
+$sql = "SELECT * FROM soat 
+        WHERE fecha_vencimiento BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)";
+$stmt3 = $con->prepare($sql);
+$stmt3->execute();
+$datos = $stmt3->fetchAll(PDO::FETCH_ASSOC);
+
+$sql = $con->prepare("SELECT COUNT(*) AS total
+    FROM soat
+    WHERE fecha_vencimiento <= DATE_ADD(CURDATE(), INTERVAL 30 DAY)
+");
+$sql->execute();
+$row = $sql->fetch(PDO::FETCH_ASSOC);
+$soat_vencidos_o_por_vencer = $row['total'];
+
+// RTM próximo a vencer
+$sql_rtm = "SELECT * FROM tecnomecanica 
+            WHERE fecha_vencimiento BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)";
+$stmt_rtm = $con->prepare($sql_rtm);
+$stmt_rtm->execute();
+$datos_rtm = $stmt_rtm->fetchAll(PDO::FETCH_ASSOC);
+
+
+// Tecnomecánica activa (RTM vigente)
+$sql_rtm = $con->prepare(" SELECT COUNT(*) AS total
+    FROM tecnomecanica
+    WHERE fecha_vencimiento >= CURDATE()
+");
+$sql_rtm->execute();
+$row_rtm = $sql_rtm->fetch(PDO::FETCH_ASSOC);
+$tecnomecanica_activa = $row_rtm['total'];
+
+$sql_mantenimiento = "SELECT * FROM mantenimiento 
+                      WHERE proximo_cambio_fecha BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)";
+$stmt_mant = $con->prepare($sql_mantenimiento);
+$stmt_mant->execute();
+$datos_mant = $stmt_mant->fetchAll(PDO::FETCH_ASSOC);
+
+$sql_mant = $con->prepare("SELECT COUNT(*) AS total
+    FROM mantenimiento
+    WHERE proximo_cambio_fecha BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)
+");
+$sql_mant->execute();
+$row_mant = $sql_mant->fetch(PDO::FETCH_ASSOC);
+$proximos_mantenimientos = $row_mant['total'];
+
+
+// Obtener actividad reciente desde logs de usuarios
+$sql_logs = "SELECT * FROM log_registros ORDER BY fecha_registro DESC LIMIT 5";
+$stmt_logs = $con->prepare($sql_logs);
+$stmt_logs->execute();
+$actividades = $stmt_logs->fetchAll(PDO::FETCH_ASSOC);
+
+
+
 // Fecha actual para mostrar en el dashboard
 $fecha_actual = date("d M Y");
 $dia_semana = date("l");
 $dias_es = [
-    'Monday' => 'Lunes',
-    'Tuesday' => 'Martes',
-    'Wednesday' => 'Miércoles',
-    'Thursday' => 'Jueves',
-    'Friday' => 'Viernes',
-    'Saturday' => 'Sábado',
-    'Sunday' => 'Domingo'
+  'Monday' => 'Lunes',
+  'Tuesday' => 'Martes',
+  'Wednesday' => 'Miércoles',
+  'Thursday' => 'Jueves',
+  'Friday' => 'Viernes',
+  'Saturday' => 'Sábado',
+  'Sunday' => 'Domingo'
 ];
 $meses_es = [
-    'Jan' => 'Ene',
-    'Feb' => 'Feb',
-    'Mar' => 'Mar',
-    'Apr' => 'Abr',
-    'May' => 'May',
-    'Jun' => 'Jun',
-    'Jul' => 'Jul',
-    'Aug' => 'Ago',
-    'Sep' => 'Sep',
-    'Oct' => 'Oct',
-    'Nov' => 'Nov',
-    'Dec' => 'Dic'
+  'Jan' => 'Ene',
+  'Feb' => 'Feb',
+  'Mar' => 'Mar',
+  'Apr' => 'Abr',
+  'May' => 'May',
+  'Jun' => 'Jun',
+  'Jul' => 'Jul',
+  'Aug' => 'Ago',
+  'Sep' => 'Sep',
+  'Oct' => 'Oct',
+  'Nov' => 'Nov',
+  'Dec' => 'Dic'
 ];
 $dia_semana_es = $dias_es[$dia_semana];
 $fecha_es = date("d") . " " . $meses_es[date("M")] . " " . date("Y");
 ?>
+<?php
+$documento = $_SESSION['documento'] ?? null;
+if (!$documento) {
+  header('Location: ../../login.php');
+  exit;
+}
+
+// Fetch nombre_completo and foto_perfil if not in session
+$nombre_completo = $_SESSION['nombre_completo'] ?? null;
+$foto_perfil = $_SESSION['foto_perfil'] ?? null;
+if (!$nombre_completo || !$foto_perfil) {
+  $user_query = $con->prepare("SELECT * FROM usuarios WHERE documento = :documento");
+  $user_query->bindParam(':documento', $documento, PDO::PARAM_STR);
+  $user_query->execute();
+  $user = $user_query->fetch(PDO::FETCH_ASSOC);
+  $nombre_completo = $user['nombre_completo'] ?? 'Usuario';
+  $foto_perfil = $user['foto_perfil'] ?: 'css/img/perfil.jpg';
+  $_SESSION['nombre_completo'] = $nombre_completo;
+  $_SESSION['foto_perfil'] = $foto_perfil;
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Panel de Administrador - Flotax AGC</title>
-  <link rel="shortcut icon" href="../../css/img/logo_sinfondo.png">
-  <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/dashboard.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panel de Administrador - Flotax AGC</title>
+    <link rel="shortcut icon" href="../../css/img/logo_sinfondo.png">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
+
 <body>
-  
-  <?php include 'menu.php'; ?> 
 
-  <div class="content">
-    <!-- Header del Dashboard -->
-    <div class="dashboard-header">
-      <div>
-        <h1 class="dashboard-title">Panel de Control</h1>
-        <p class="dashboard-subtitle"><?php echo $dia_semana_es . ', ' . $fecha_es; ?></p>
-      </div>
-      <div class="dashboard-actions">
-        <button class="dashboard-btn"><a href="generar_reporte.php">Exportar Reporte
-</a>
-          <i class="bi bi-file-earmark-pdf"></i>
-        
-        </button>
+    <?php include 'menu.php'; ?>
 
-        
-        <button class="dashboard-btn">
-          <i class="bi bi-plus-circle"></i>
-          Nuevo Vehículo
-        </button>
-      </div>
-    </div>
-  
-    <!-- Tarjetas de estadísticas -->
-    <div class="cards">
-      <div class="card">
-        <i class="bi bi-truck card-icon"></i>
-        <h3>Vehículos Registrados</h3>
-        <p><?php echo $total_vehiculos; ?></p>
-        <div class="trend up">
-          <i class="bi bi-arrow-up-right"></i>
-          <span>5% vs mes anterior</span>
-        </div>
-      </div>
-      
-      <div class="card">
-        <i class="bi bi-people card-icon"></i>
-        <h3>Usuarios</h3>
-        <p><?php echo $total_usuarios; ?></p>
-        <div class="trend up">
-          <i class="bi bi-arrow-up-right"></i>
-          <span>2% vs mes anterior</span>
-        </div>
-      </div>
-      
-      <div class="card">
-        <i class="bi bi-check-circle card-icon"></i>
-        <h3>Vehículos al Día</h3>
-        <p><?php echo $veh_dia; ?></p>
-        <div class="trend up">
-          <i class="bi bi-arrow-up-right"></i>
-          <span>8% vs mes anterior</span>
-        </div>
-      </div>
-      
-      <div class="card">
-        <i class="bi bi-exclamation-triangle card-icon"></i>
-        <h3>SOAT Vencido o por Vencer</h3>
-        <p>7</p>
-        <div class="trend down">
-          <i class="bi bi-arrow-down-right"></i>
-          <span>3% vs mes anterior</span>
-        </div>
-      </div>
-      
-      <div class="card">
-        <i class="bi bi-file-earmark-text card-icon"></i>
-        <h3>Multas Activas</h3>
-        <p>12</p>
-        <div class="trend down">
-          <i class="bi bi-arrow-down-right"></i>
-          <span>2% vs mes anterior</span>
-        </div>
-      </div>
-      
-      <div class="card">
-        <i class="bi bi-tools card-icon"></i>
-        <h3>Próximos Mantenimientos</h3>
-        <p>4</p>
-        <div class="trend up">
-          <i class="bi bi-arrow-up-right"></i>
-          <span>1% vs mes anterior</span>
-        </div>
-      </div>
-    </div>
+    <div class="content">
+        <!-- Header del Dashboard -->
+        <div class="dashboard-header">
+            <div>
+                <h1 class="dashboard-title">Panel de Control</h1>
+                <p class="dashboard-subtitle"><?php echo $dia_semana_es . ', ' . $fecha_es; ?></p>
+            </div>
+            <div class="dashboard-actions">
+                <button class="dashboard-btn"><a href="generar_reporte.php">Exportar Reporte
+                    </a>
+                    <i class="bi bi-file-earmark-pdf"></i>
 
-    <!-- Gráficos -->
-    <div class="charts-container">
-      <div class="chart">
-        <h3><i class="bi bi-pie-chart"></i> Distribución por Estado</h3>
-        <canvas id="estadoChart"></canvas>
-      </div>
-      <div class="chart">
-        <h3><i class="bi bi-bar-chart"></i> Historial de Gastos por Mes</h3>
-        <canvas id="gastosChart"></canvas>
-      </div>
-    </div>
+                </button>
 
-    <!-- Calendario de Vencimientos -->
-    <div class="calendar">
-      <h3><i class="bi bi-calendar-event"></i> Próximos Vencimientos</h3>
-      <div class="calendar-events">
-        <div class="calendar-event">
-          <div class="event-date">
-            <span class="event-day">10</span>
-            <span class="event-month">May</span>
-          </div>
-          <div class="event-content">
-            <div class="event-title">Vencimiento SOAT</div>
-            <div class="event-vehicle"><i class="bi bi-car-front"></i> Placa: JSK13</div>
-          </div>
+
+                <button class="dashboard-btn">
+                    <i class="bi bi-plus-circle"></i>
+                    Nuevo Vehículo
+                </button>
+            </div>
         </div>
-        
-        <div class="calendar-event">
-          <div class="event-date">
-            <span class="event-day">12</span>
-            <span class="event-month">May</span>
-          </div>
-          <div class="event-content">
-            <div class="event-title">Revisión Técnica</div>
-            <div class="event-vehicle"><i class="bi bi-car-front"></i> Placa: ABC123</div>
-          </div>
+
+        <!-- Tarjetas de estadísticas -->
+        <div class="cards">
+            <div class="card">
+                <i class="bi bi-truck card-icon"></i>
+                <h3>Vehículos Registrados</h3>
+                <p><?php echo $total_vehiculos; ?></p>
+                <div class="trend up">
+                    <i class="bi bi-arrow-up-right"></i>
+                </div>
+            </div>
+
+            <div class="card">
+                <i class="bi bi-people card-icon"></i>
+                <h3>Usuarios</h3>
+                <p><?php echo $total_usuarios; ?></p>
+                <div class="trend up">
+                    <i class="bi bi-arrow-up-right"></i>
+                </div>
+            </div>
+
+            <div class="card">
+                <i class="bi bi-check-circle card-icon"></i>
+                <h3>Vehículos al Día</h3>
+                <p><?php echo $veh_dia; ?></p>
+                <div class="trend up">
+                    <i class="bi bi-arrow-up-right"></i>
+                    <span>8% vs mes anterior</span>
+                </div>
+            </div>
+            <div class="card">
+                <i class="bi bi-exclamation-triangle card-icon"></i>
+                <h3>SOAT Vencido o por Vencer</h3>
+                <p><?php echo $soat_vencidos_o_por_vencer; ?></p>
+                <div class="trend down">
+                    <i class="bi bi-arrow-down-right"></i>
+                </div>
+            </div>
+
+
+            <div class="card">
+                <i class="bi bi-clipboard-check card-icon"></i>
+                <h3>Tecnomecánica Activa</h3>
+                <p><?php echo $tecnomecanica_activa; ?></p>
+                <div class="trend up">
+                    <i class="bi bi-arrow-up-right"></i>
+                    <span>Actualizado</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <i class="bi bi-tools card-icon"></i>
+                <h3>Próximos Mantenimientos</h3>
+                <p><?php echo $proximos_mantenimientos; ?></p>
+                <div class="trend up">
+                    <i class="bi bi-arrow-up-right"></i>
+                    <span>Actualizado</span>
+                </div>
+            </div>
+
+            <!-- Gráficos -->
+            <div class="charts-container">
+                <div class="chart">
+                    <h3><i class="bi bi-pie-chart"></i> Distribución por Estado</h3>
+                    <canvas id="estadoChart"></canvas>
+                </div>
+                <!-- Mostrar tabla de vencimientos SOAT -->
+                <div class="calendar">
+                    <h3><i class="bi bi-calendar-event"></i> SOAT Próximos a Vencer</h3>
+                    <div class="calendar-events">
+                        <?php if (!empty($datos)): ?>
+                        <?php foreach ($datos as $row): ?>
+                        <?php
+                $dias_restantes = (strtotime($row['fecha_vencimiento']) - strtotime(date('Y-m-d'))) / (60 * 60 * 24);
+                $mes = date('M', strtotime($row['fecha_vencimiento']));
+                $dia = date('d', strtotime($row['fecha_vencimiento']));
+                ?>
+                        <div class="calendar-event">
+                            <div class="event-date">
+                                <span class="event-day"><?= $dia ?></span>
+                                <span class="event-month"><?= $meses_es[$mes] ?></span>
+                            </div>
+                            <div class="event-content">
+                                <div class="event-title">Vencimiento SOAT (<?= $dias_restantes ?> días)</div>
+                                <div class="event-vehicle"><i class="bi bi-car-front"></i> Placa:
+                                    <?= $row['id_placa'] ?></div>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                        <?php else: ?>
+                        <div class="calendar-event">
+                            <div class="event-date">
+                                <span class="event-day"><i class="bi bi-info-circle"></i></span>
+                                <span class="event-month"></span>
+                            </div>
+                            <div class="event-content">
+                                <div class="event-title" style="color:#2563eb;">Ningún vehículo próximo a vencer</div>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <!-- Mostrar tabla de vencimientos RTM -->
+                <div class="calendar">
+                    <h3><i class="bi bi-calendar-event"></i> Revisión Técnico-Mecánica Próxima a Vencer</h3>
+                    <div class="calendar-events">
+                        <?php if (!empty($datos_rtm)): ?>
+                        <?php foreach ($datos_rtm as $row): ?>
+                        <?php
+                $dias_restantes = (strtotime($row['fecha_vencimiento']) - strtotime(date('Y-m-d'))) / (60 * 60 * 24);
+                $mes = date('M', strtotime($row['fecha_vencimiento']));
+                $dia = date('d', strtotime($row['fecha_vencimiento']));
+                ?>
+                        <div class="calendar-event">
+                            <div class="event-date">
+                                <span class="event-day"><?= $dia ?></span>
+                                <span class="event-month"><?= $meses_es[$mes] ?></span>
+                            </div>
+                            <div class="event-content">
+                                <div class="event-title">Vencimiento RTM (<?= $dias_restantes ?> días)</div>
+                                <div class="event-vehicle"><i class="bi bi-car-front"></i> Placa:
+                                    <?= $row['id_placa'] ?></div>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                        <?php else: ?>
+                        <div class="calendar-event">
+                            <div class="event-content">
+                                <div class="event-title text-danger">Ningún vehículo próximo a vencer</div>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+
+                <!-- Mostrar tabla de mantenimientos programados -->
+                <div class="calendar">
+                    <h3><i class="bi bi-calendar-event"></i> Próximos Mantenimientos</h3>
+                    <div class="calendar-events">
+                        <?php foreach ($datos_mant as $row): ?>
+                        <?php
+              $dias_restantes = (strtotime($row['proximo_cambio_fecha']) - strtotime(date('Y-m-d'))) / (60 * 60 * 24);
+              $mes = date('M', strtotime($row['proximo_cambio_fecha']));
+              $dia = date('d', strtotime($row['proximo_cambio_fecha']));
+              ?>
+                        <div class="calendar-event">
+                            <div class="event-date">
+                                <span class="event-day"><?= $dia ?></span>
+                                <span class="event-month"><?= $meses_es[$mes] ?></span>
+                            </div>
+                            <div class="event-content">
+                                <div class="event-title">Mantenimiento Programado (<?= $dias_restantes ?> días)</div>
+                                <div class="event-vehicle"><i class="bi bi-car-front"></i> Placa: <?= $row['placa'] ?>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+
+
+
+
+
+                <!-- Calendario de Vencimientos
+                <div class="calendar">
+                    <h3><i class="bi bi-calendar-event"></i> Próximos Vencimientos</h3>
+                    <div class="calendar-events">
+                        <div class="calendar-event">
+                            <div class="event-date">
+                                <span class="event-day"></span>
+                                <span class="event-month">May</span>
+                            </div>
+                            <div class="event-content">
+                                <div class="event-title">Vencimiento SOAT</div>
+                                <div class="event-vehicle"><i class="bi bi-car-front"></i> Placa: JSK13</div>
+                            </div>
+                        </div>
+
+                        <div class="calendar-event">
+                            <div class="event-date">
+                                <span class="event-day">12</span>
+                                <span class="event-month">May</span>
+                            </div>
+                            <div class="event-content">
+                                <div class="event-title">Revisión Técnica</div>
+                                <div class="event-vehicle"><i class="bi bi-car-front"></i> Placa: ABC123</div>
+                            </div>
+                        </div>
+
+                        <div class="calendar-event">
+                            <div class="event-date">
+                                <span class="event-day">20</span>
+                                <span class="event-month">May</span>
+                            </div>
+                            <div class="event-content">
+                                <div class="event-title">Cambio de aceite</div>
+                                <div class="event-vehicle"><i class="bi bi-car-front"></i> Placa: DEF456</div>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+
+
+<!-- Mostrar actividad reciente -->
+<div class="recent-activity">
+  <h3><i class="bi bi-activity"></i> Actividad Reciente</h3>
+  <div class="activity-list">
+    <?php foreach ($actividades as $actividad): ?>
+      <?php
+        $fecha_actividad = new DateTime($actividad['fecha_registro']);
+        $hace_tiempo = $fecha_actividad->diff(new DateTime());
+        if ($hace_tiempo->d > 0) {
+          $tiempo = 'Hace ' . $hace_tiempo->d . ' día(s)';
+        } elseif ($hace_tiempo->h > 0) {
+          $tiempo = 'Hace ' . $hace_tiempo->h . ' hora(s)';
+        } elseif ($hace_tiempo->i > 0) {
+          $tiempo = 'Hace ' . $hace_tiempo->i . ' min';
+        } else {
+          $tiempo = 'Reciente';
+        }
+      ?>
+      <div class="activity-item">
+        <div class="activity-icon">
+          <i class="bi bi-person-plus"></i>
         </div>
-        
-        <div class="calendar-event">
-          <div class="event-date">
-            <span class="event-day">20</span>
-            <span class="event-month">May</span>
-          </div>
-          <div class="event-content">
-            <div class="event-title">Cambio de aceite</div>
-            <div class="event-vehicle"><i class="bi bi-car-front"></i> Placa: DEF456</div>
-          </div>
+        <div class="activity-content">
+          <div class="activity-title"><?= $actividad['descripcion'] ?></div>
+          <div class="activity-subtitle">Usuario: <?= $actividad['email_usuario'] ?> - Documento: <?= $actividad['documento_usuario'] ?></div>
         </div>
+        <div class="activity-time"><?= $tiempo ?></div>
       </div>
-    </div>
-    
-    <!-- Actividad Reciente -->
-    <div class="recent-activity">
-      <h3><i class="bi bi-activity"></i> Actividad Reciente</h3>
-      <div class="activity-list">
-        <div class="activity-item">
-          <div class="activity-icon">
-            <i class="bi bi-truck"></i>
-          </div>
-          <div class="activity-content">
-            <div class="activity-title">Nuevo vehículo registrado</div>
-            <div class="activity-subtitle">Camioneta Toyota Hilux - Placa ABC123</div>
-          </div>
-          <div class="activity-time">Hace 2 horas</div>
-        </div>
-        
-        <div class="activity-item">
-          <div class="activity-icon">
-            <i class="bi bi-tools"></i>
-          </div>
-          <div class="activity-content">
-            <div class="activity-title">Mantenimiento completado</div>
-            <div class="activity-subtitle">Cambio de aceite y filtros - Placa XYZ789</div>
-          </div>
-          <div class="activity-time">Hace 5 horas</div>
-        </div>
-        
-        <div class="activity-item">
-          <div class="activity-icon">
-            <i class="bi bi-exclamation-triangle"></i>
-          </div>
-          <div class="activity-content">
-            <div class="activity-title">Alerta de vencimiento</div>
-            <div class="activity-subtitle">SOAT próximo a vencer - Placa JSK13</div>
-          </div>
-          <div class="activity-time">Hace 1 día</div>
-        </div>
-      </div>
-    </div>
+    <?php endforeach; ?>
   </div>
+</div>
 
-  <script>
-    // Configuración de colores para gráficos
-    const chartColors = {
-      primary: '#667eea',
-      secondary: '#764ba2',
-      success: '#2ecc71',
-      warning: '#f39c12',
-      danger: '#e74c3c',
-      info: '#3498db',
-      purple: '#9b59b6',
-      teal: '#1abc9c',
-      orange: '#e67e22'
-    };
-    
-    // Gráfico de estado de vehículos
-    new Chart(document.getElementById('estadoChart'), {
-      type: 'doughnut',
-      data: {
-        labels: ['Activo', 'En mantenimiento', 'Fuera de servicio'],
+
+                <!-- Actividad Reciente -->
+                <div class="recent-activity">
+                    <h3><i class="bi bi-activity"></i> Actividad Reciente</h3>
+                    <div class="activity-list">
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="bi bi-truck"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">Nuevo vehículo registrado</div>
+                                <div class="activity-subtitle">Camioneta Toyota Hilux - Placa ABC123</div>
+                            </div>
+                            <div class="activity-time">Hace 2 horas</div>
+                        </div>
+
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="bi bi-tools"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">Mantenimiento completado</div>
+                                <div class="activity-subtitle">Cambio de aceite y filtros - Placa XYZ789</div>
+                            </div>
+                            <div class="activity-time">Hace 5 horas</div>
+                        </div>
+
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="bi bi-exclamation-triangle"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">Alerta de vencimiento</div>
+                                <div class="activity-subtitle">SOAT próximo a vencer - Placa JSK13</div>
+                            </div>
+                            <div class="activity-time">Hace 1 día</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+         <script>
+// Datos desde PHP
+const estadosData = {
+    labels: <?php echo json_encode($estados); ?>,
+    data: <?php echo json_encode($cantidades); ?>
+};
+// Colores para el gráfico
+const chartColors = {
+  success: '#10b981',
+  warning: '#f59e0b',
+  danger: '#ef4444'
+};
+// Gráfico de estado de vehículos
+new Chart(document.getElementById('estadoChart'), {
+    type: 'doughnut',
+    data: {
+        labels: estadosData.labels,
         datasets: [{
-          label: 'Vehículos',
-          data: [20, 10, 5],
-          backgroundColor: [chartColors.success, chartColors.warning, chartColors.danger],
-          borderColor: 'white',
-          borderWidth: 2,
-          hoverOffset: 10
+            label: 'Vehículos',
+            data: estadosData.data,
+            backgroundColor: [chartColors.success, chartColors.warning, chartColors.danger],
+            borderColor: 'white',
+            borderWidth: 2,
+            hoverOffset: 10
         }]
-      },
-      options: {
+    },
+    options: {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: {
-            position: 'bottom',
-            labels: {
-              padding: 20,
-              font: {
-                family: 'Poppins',
-                size: 12
-              }
+            legend: {
+                position: 'bottom',
+                labels: {
+                    padding: 20,
+                    font: {
+                        family: 'Poppins',
+                        size: 12
+                    }
+                }
             }
-          }
         }
-      }
-    });
-
-    // Gráfico de gastos por mes
-    new Chart(document.getElementById('gastosChart'), {
-      type: 'bar',
-      data: {
-        labels: ['Enero', 'Febrero', 'Marzo', 'Abril'],
-        datasets: [
-          {
-            label: 'Combustibles',
-            data: [3000000, 3200000, 2800000, 3100000],
-            backgroundColor: chartColors.info,
-            borderRadius: 4
-          },
-          {
-            label: 'Multas',
-            data: [500000, 300000, 1000000, 700000],
-            backgroundColor: chartColors.orange,
-            borderRadius: 4
-          },
-          {
-            label: 'Mantenimiento',
-            data: [1500000, 1800000, 1300000, 2000000],
-            backgroundColor: chartColors.purple,
-            borderRadius: 4
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          y: { 
-            beginAtZero: true,
-            ticks: {
-              callback: function(value) {
-                return '$' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-              }
-            }
-          },
-          x: {
-            grid: {
-              display: false
-            }
-          }
-        },
-        plugins: {
-          legend: {
-            position: 'bottom',
-            labels: {
-              padding: 20,
-              font: {
-                family: 'Poppins',
-                size: 12
-              }
-            }
-          }
-        }
-      }
-    });
-  </script>
+    }
+});
+</script>
 </body>
+
 </html>

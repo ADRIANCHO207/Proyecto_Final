@@ -6,35 +6,39 @@ header('Content-Disposition: attachment; filename=reporte_dashboard.csv');
 
 $output = fopen('php://output', 'w');
 
-// Encabezados del archivo
-fputcsv($output, ['Resumen del Dashboard']);
-fputcsv($output, ['Fecha', date('d/m/Y')]);
+// Encabezado general
+fputcsv($output, ['==============================================']);
+fputcsv($output, ['              REPORTE GENERAL DASHBOARD']);
+fputcsv($output, ['==============================================']);
+fputcsv($output, ['Fecha de Generación:', date('d/m/Y')]);
 fputcsv($output, []); // Línea en blanco
-fputcsv($output, ['Categoría', 'Cantidad']);
 
+// Conexión
 $db = new Database();
 $con = $db->conectar();
 
-// Total de vehículos
-$stmt = $con->prepare("SELECT COUNT(*) AS total FROM vehiculos");
-$stmt->execute();
-$total_vehiculos = $stmt->fetchColumn();
+// Consultas
+$consultas = [
+    ['label' => 'Total de Vehículos', 'query' => "SELECT COUNT(*) FROM vehiculos"],
+    ['label' => 'Vehículos al Día', 'query' => "SELECT COUNT(*) FROM vehiculos WHERE id_estado = 10"],
+    ['label' => 'Total de Usuarios', 'query' => "SELECT COUNT(*) FROM usuarios"],
+    // Puedes agregar más indicadores aquí...
+];
 
-// Total de usuarios
-$stmt1 = $con->prepare("SELECT COUNT(*) AS total FROM usuarios");
-$stmt1->execute();
-$total_usuarios = $stmt1->fetchColumn();
+// Encabezado de tabla
+fputcsv($output, ['Indicador', 'Cantidad']);
+fputcsv($output, ['--------------------------', '---------']);
 
-// Vehículos al día
-$stmt2 = $con->prepare("SELECT COUNT(*) AS total FROM vehiculos WHERE id_estado = 10");
-$stmt2->execute();
-$veh_dia = $stmt2->fetchColumn();
+// Datos
+foreach ($consultas as $consulta) {
+    $stmt = $con->prepare($consulta['query']);
+    $stmt->execute();
+    $valor = $stmt->fetchColumn();
+    fputcsv($output, [$consulta['label'], $valor]);
+}
 
-// Escribir datos
-fputcsv($output, ['Total de Vehículos', $total_vehiculos]);
-fputcsv($output, ['Total de Usuarios', $total_usuarios]);
-fputcsv($output, ['Vehículos al Día', $veh_dia]);
-
+fputcsv($output, []); // Línea final en blanco
+fputcsv($output, ['Fin del Reporte']);
 fclose($output);
 exit;
 ?>

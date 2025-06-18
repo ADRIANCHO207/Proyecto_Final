@@ -1,5 +1,6 @@
 
 <?php 
+
 // Obtener información del usuario
 $user_query = $con->prepare("SELECT documento, nombre_completo, email, telefono FROM usuarios WHERE documento = :documento");
 $user_query->bindParam(':documento', $documento, PDO::PARAM_STR);

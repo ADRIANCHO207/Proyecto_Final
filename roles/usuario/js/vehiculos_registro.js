@@ -153,7 +153,7 @@ formulario.addEventListener('submit', (e) => {
 
     if (tipoValido && marcaValido && placaValido && modeloValido && kmValido && estadoValido && fechaValido) {
         const formData = new FormData(formulario);
-        
+        formData.append('registrado_por', nombreUsuario);
       
         $.ajax({
             type: "POST",
