@@ -153,7 +153,7 @@ body {
 
 /* Contenedor de tabla */
 .table-container {
-  background: var(--card-bg);
+  background: #ffffff !important;
   border-radius: var(--border-radius);
   box-shadow: var(--shadow);
   overflow: hidden;
@@ -172,10 +172,10 @@ body {
   border-collapse: separate;
   border-spacing: 0;
   font-size: 14px;
+  background: var(--card-bg);
 }
 
 .table thead {
-  background: var(--primary-gradient);
   color: white;
 }
 
