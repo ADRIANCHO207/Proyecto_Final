@@ -8,77 +8,28 @@ $rol = 2;
 
 ?>
 
-<?php
-    if (isset ($_POST['enviar'])){
-        $doc = $_POST['doc'];
-        $nom =$_POST['nom'];
-        $correo = $_POST['correo'];
-        $cont = $_POST['con'];
-        $con2 = $_POST['con2'];
-        $cel = $_POST['cel'];
-
-        // echo $doc,"\n", $nom, "\n", $correo, "\n", $cont, "\n", $con2, "\n", $cel, "\n", $rol, "\n", $estado;
-
-        if ($cont != $con2){
-            echo '<script>alert ("Contraseñas no son iguales...")</script>';
-            echo '<script>window.location = "register.php"</script>';
-            
-        }
-        else{
-            // vamos a encriptar la contraseña ingresada por el usuario
-            $cont_enc = password_hash($cont, PASSWORD_DEFAULT, array ("pass"=>12));
-        
-            
-
-            $sql1 = $con-> prepare("SELECT * FROM usuarios WHERE documento = '$doc'");
-            $sql1->execute();
-            $fila = $sql1->fetchAll(PDO::FETCH_ASSOC);
-
-            if($fila){
-                echo '<script>alert ("Documento ya existe no se puede repetir")</script>';
-                echo '<script>window.location = "register.php"</script>';
-            }
-            if ($doc=="" || $nom == "" || $correo == "" || $cont=="" || $con2=="" || $cel==""){
-                echo '<script>alert("Existen datos vacios...")</script>';
-            echo '<script>window.location = "register.php"</script>';
-            }
-            else{
-
-            $inserto = $con->prepare("INSERT INTO usuarios(documento, nombre_completo, email, contraseña, telefono, id_estado_usuario, id_rol) 
-            VALUES('$doc', '$nom', '$correo', '$cont_enc','$cel', '$estado', '$rol')");
-            $inserto->execute();
-            echo '<script>alert ("Registros Guardados") </script>';
-            echo '<script>window.location = "login.php"</script>';
-            }
-        }   
-    }
-
-            
-?>
-
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro</title>
-    <link rel="shortcut icon" href="../css/img/logo_sinfondo.png">
+    <link rel="shortcut icon" href="/Proyecto/css/img/logo_sinfondo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link rel="stylesheet" href="../css/stylelog_re.css">
+    <link rel="stylesheet" href="/Proyecto/css/stylelog_re.css">
 </head>
 <body onload="formulario.doc.focus()">
     <div class ="content">
-            <div class="regresar"><a href="../index.php" class="re">
-                <i class="bi bi-house-door-fill"></i>
-            </a>
-            </div>
+        <div class="regresar"><a href="/Proyecto/index" class="re">
+            <i class="bi bi-house-door-fill"></i>
+        </a>
+        </div>
         <div class = "conten_form">
             <div class="form_infor">
-                <img src="../css/img/logo_sinfondo.png" alt="logo" class="logo">
+                <img src="/Proyecto/css/img/logo_sinfondo.png" alt="logo" class="logo">
                 
                 <h1 class= "titulo" >Registro</h1>
                 <form action = "" method = "post" id="formulario" enctype = "multipart/form-data" autocomplete="off">
@@ -158,8 +109,7 @@ $rol = 2;
                         <button type="submit" name = "enviar" id="enviar" value = "Guardar" class="btn btn-primary">Registrarse</button>
                     </div>
                     <p class="formulario_exito" id="formulario_exito">Registro exitoso...</p>
-                    <p>¿Ya tienes una cuenta?<a class="res"href="login.php">Inicia Sesion</a></p>
-            
+                    <p>¿Ya tienes una cuenta?<a class="res" href="/proyecto/login/login">Inicia Sesion</a></p>
                 </form>
             </div>
         </div>
@@ -195,7 +145,6 @@ $rol = 2;
             }
         }
     </script>
-    
     <script src="../js/scriptregistro.js"></script>
 </body>
 </html>

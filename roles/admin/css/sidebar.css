@@ -471,24 +471,3 @@ body {
   animation-delay: 0.3s;
 }
 
-/* Modo oscuro */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg-color: #1a202c;
-    --text-color: #e2e8f0;
-    --text-light: #a0aec0;
-    --bg-hover: #2d3748;
-    --border-color: #4a5568;
-    --primary-color: #d32f2f;
-    --primary-gradient: linear-gradient(135deg, #d32f2f 0%, #d32f2f 100%);
-  }
-
-  .sidebar-header {
-    background: #d32f2f;
-  }
-
-  .profile-link {
-    background: var(--bg-hover);
-    border-color: var(--border-color);
-  }
-}

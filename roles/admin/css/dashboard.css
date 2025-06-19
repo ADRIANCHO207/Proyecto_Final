@@ -1,31 +1,9 @@
- /* Estilos para el Dashboard Moderno */
-:root {
-  --primary-color: #667eea;
-  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --secondary-color: #2c3e50;
-  --accent-color: #d32f2f;
-  --success-color: #27ae60;
-  --warning-color: #f39c12;
-  --danger-color: #e74c3c;
-  --info-color: #3498db;
-  --text-color: #2d3748;
-  --text-light: #718096;
-  --bg-color: #f8fafc;
-  --card-bg: #ffffff;
-  --border-color: #e2e8f0;
-  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --sidebar-width: 80px;
-  --sidebar-expanded-width: 280px;
-  --border-radius: 12px;
-}
-
+/* Estilos para el Dashboard Moderno */
 body {
   font-family: "Poppins", sans-serif;
   margin: 0;
   padding: 0;
-  background-color: var(--bg-color);
+  background-color: #fff !important;
   color: var(--text-color);
   overflow-x: hidden;
 }
@@ -533,21 +511,3 @@ body {
   }
 }
 
-/* Modo oscuro */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg-color: #1a202c;
-    --card-bg: #2d3748;
-    --text-color: #e2e8f0;
-    --text-light: #a0aec0;
-    --border-color: #4a5568;
-  }
-
-  .event-date {
-    background: #2d3748;
-  }
-
-  .event-day {
-    color: #e2e8f0;
-  }
-}

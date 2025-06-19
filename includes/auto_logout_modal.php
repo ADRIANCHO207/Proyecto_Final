@@ -45,7 +45,7 @@
         }, tiempoInactividad - advertenciaTiempo);
 
         temporizadorInactividad = setTimeout(() => {
-            window.location.href = "/proyecto/includes/salir.php";
+            window.location.href = "/Proyecto/includes/salir.php";
         }, tiempoInactividad);
     }
 

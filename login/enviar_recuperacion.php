@@ -14,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (empty($email)) {
         echo '<script>alert("Ningún dato puede estar vacío");</script>';
-        echo '<script>window.location = "recovery.php";</script>';
+        echo '<script>window.location = "/Proyecto/login/recovery";</script>';
         exit;
     }
 
@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (!$user) {
         echo '<script>alert("Email incorrecto");</script>';
-        echo '<script>window.location = "recovery.php";</script>';
+        echo '<script>window.location = "/Proyecto/login/recovery;</script>';
         exit;
     }
 
@@ -59,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $mail->Subject = 'Recuperación de contraseña - Flota Vehicular';
 
         // Enlace de recuperación
-        $reset_link = "http://localhost/Proyecto/login/change.php?token=" . urlencode($token);
+        $reset_link = "https://flotaxagc.com/login/change?token=" . urlencode($token);
 
         // Contenido del correo.php
         $logoUrl = 'https://logosinfondo.netlify.app/logo_sinfondo.png'; // Asegúrate que esta sea la URL exacta de tu imagen
@@ -95,7 +95,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Enviar correo
         $mail->send();
         echo '<script>alert("Revisa tu correo para restablecer la contraseña.");</script>';
-        echo '<script>window.location = "login.php";</script>';
+        echo '<script>window.location = "/Proyecto/login/login";</script>';
     } catch (Exception $e) {
         echo '<script>alert("Error al enviar el correo: ' . $mail->ErrorInfo . '");</script>';
     }

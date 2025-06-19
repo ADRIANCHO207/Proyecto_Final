@@ -49,36 +49,56 @@ foreach ($soats as $soat) {
         $mail->clearAddresses();
         $mail->addAddress($soat['email']);
 
-        // Lógica de recordatorios
-        if ($diasRestantes == 90) {
-            $mail->Subject = 'Recordatorio: Tu SOAT vence en 3 meses';
-            $mensaje = generarMensaje($soat, '3 meses');
-            enviarNotificacion($mail, $mensaje);
-            echo "Correo enviado a: " . $soat['email'] . " (90 días)<br>";
+        // Determinar tipo de recordatorio
+        if ($diasRestantes == 30) {
+            $tipo_recordatorio = '30_dias';
+        } else if ($diasRestantes == 1) {
+            $tipo_recordatorio = '1_dia';
+        } else if ($diasRestantes == 0) {
+            $tipo_recordatorio = 'vencido';
+        } else {
+            continue; // No es un día de recordatorio
+        }
 
-        } else if ($diasRestantes == 30) {
+        // Validar si ya se envió este tipo de recordatorio para este SOAT y usuario
+        $verifica = $con->prepare("SELECT COUNT(*) FROM correos_enviados_soat WHERE id_soat = :id_soat AND email = :email AND tipo_recordatorio = :tipo");
+        $verifica->execute([
+            'id_soat' => $soat['id_soat'],
+            'email' => $soat['email'],
+            'tipo' => $tipo_recordatorio
+        ]);
+        if ($verifica->fetchColumn() > 0) {
+            // Ya se envió este recordatorio
+            continue;
+        }
+
+        // Lógica de recordatorio y envío
+        if ($tipo_recordatorio == '30_dias') {
             $mail->Subject = 'Recordatorio: Tu SOAT vence en 1 mes';
             $mensaje = generarMensaje($soat, '1 mes');
-            enviarNotificacion($mail, $mensaje);
-            echo "Correo enviado a: " . $soat['email'] . " (30 días)<br>";
-
-        } else if ($diasRestantes == 1) {
+        } else if ($tipo_recordatorio == '1_dia') {
             $mail->Subject = '¡URGENTE! Tu SOAT vence mañana';
             $mensaje = generarMensaje($soat, '1 día');
-            enviarNotificacion($mail, $mensaje);
-            echo "Correo enviado a: " . $soat['email'] . " (1 día)<br>";
-
-        } else if ($diasRestantes == 0) {
+        } else if ($tipo_recordatorio == 'vencido') {
             $mail->Subject = '¡ATENCIÓN! Tu SOAT ha vencido hoy';
             $mensaje = generarMensaje($soat, 'hoy');
-            enviarNotificacion($mail, $mensaje);
-            echo "Correo enviado a: " . $soat['email'] . " (vencido)<br>";
-
             // Actualizar estado del SOAT a vencido
             $updateQuery = "UPDATE soat SET id_estado = 2 WHERE id_soat = :id_soat";
             $updateStmt = $con->prepare($updateQuery);
             $updateStmt->execute(['id_soat' => $soat['id_soat']]);
         }
+
+        enviarNotificacion($mail, $mensaje);
+
+        // Registrar el envío en la base de datos
+        $registra = $con->prepare("INSERT INTO correos_enviados_soat (id_soat, email, tipo_recordatorio) VALUES (:id_soat, :email, :tipo)");
+        $registra->execute([
+            'id_soat' => $soat['id_soat'],
+            'email' => $soat['email'],
+            'tipo' => $tipo_recordatorio
+        ]);
+
+        echo "Correo enviado a: " . $soat['email'] . " ($tipo_recordatorio)<br>";
 
     } catch (Exception $e) {
         error_log("Error al enviar correo a {$soat['email']}: {$mail->ErrorInfo}");
@@ -111,4 +131,7 @@ function enviarNotificacion($mail, $mensaje) {
     $mail->Body = $mensaje;
     $mail->send();
 }
+
+
+echo $diasRestantes;
 ?>

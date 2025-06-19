@@ -104,7 +104,7 @@ formulario.addEventListener('submit', (e) => {
                     document.getElementById('formulario_exito').style.opacity = 1;
                     document.getElementById('formulario_exito').style.color = "#158000";
                     setTimeout(() => {
-                        window.location.href = "login.php";
+                        window.location.href = "/Proyecto/login/login";
                     }, 1000);
                 } else {
                     document.getElementById('formulario_error').style.opacity = 1;

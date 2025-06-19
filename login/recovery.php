@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
             $_SESSION['email'] = $fila['email'];
 
             // Redirigir con datos de recuperación
-            echo '<form id="sendForm" action="enviar_recuperacion.php" method="POST">
+            echo '<form id="sendForm" action="enviar_recuperacion" method="POST">
                       <input type="hidden" name="email" value="' . htmlspecialchars($correo, ENT_QUOTES, 'UTF-8') . '">
                   </form>
                   <script>document.getElementById("sendForm").submit();</script>';
@@ -39,24 +39,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recuperar contraseña</title>
-    <link rel="shortcut icon" href="../css/img/logo_sinfondo.png">
+    <link rel="shortcut icon" href="/Proyecto/css/img/logo_sinfondo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link rel="stylesheet" href="../css/stylelog_re.css">
+    <link rel="stylesheet" href="/Proyecto/css/stylelog_re.css">
 
 </head>
 <body onload="formulario_olvidate_con.email.focus()">
 <div class = "content">
-    <div class="regresar"><a href="login.php" class="re">
+    <div class="regresar"><a href="/Proyecto/login/login" class="re">
             <i class="bi bi-house-door-fill"></i>
         </a>
     </div>
 
     <div class="conten_form">
         <div class="form-infor">
-          <a href="index.php"><img src="../css/img/logo_sinfondo.png" alt="logo" class="logo"></a>
+          <a href="index"><img src="/Proyecto/css/img/logo_sinfondo.png" alt="logo" class="logo"></a>
           <h2>¿Olvidaste tu contraseña?</h2>
           <p>No te preocupes, restableceremos tu contraseña. </p> <p> Solo dinos con qué dirección de email te registraste al sistema.</p> 
             <form action="" method="POST" id="formulario_olvidate_con" autocomplete="off">

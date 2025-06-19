@@ -12,17 +12,17 @@ $estado = 1 ;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>login</title>
-    <link rel="shortcut icon" href="../css/img/logo_sinfondo.png">
+    <link rel="shortcut icon" href="/Proyecto/css/img/logo_sinfondo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link rel="stylesheet" href="../css/stylelog_re.css">
+    <link rel="stylesheet" href="/Proyecto/css/stylelog_re.css">
 </head>
 <body onload="formulario.doc.focus()">  
     
         <div class = "content">
-            <div class="regresar"><a href="../index.php" class="re">
+            <div class="regresar"><a href="/Proyecto/index" class="re">
                 <i class="bi bi-house-door-fill"></i>
             </a>
             </div>
@@ -31,7 +31,7 @@ $estado = 1 ;
                 <div class = "form-info">
                     
                     <div class = "form-infor">
-                        <img src="../css/img/logo_sinfondo.png" alt="logo" class="logo">
+                        <img src="/Proyecto/css/img/logo_sinfondo.png" alt="logo" class="logo">
                         <h1 class = "titu">Login</h1>
                     
                         <form action="../includes/inicio.php" method= "POST"  id="formulario" enctype = "multipart/form-data" autocomplete="off">
@@ -66,8 +66,8 @@ $estado = 1 ;
                                 <button type="submit" name = "log" id="log" value = "Log" class="btn btn-primary">Log in</button>
                             </div>
                             <p class="formulario_exito" id="formulario_exito">Iniciando sesion...</p>
-                            <a href="recovery.php"><label>Olvidaste tu contraseña?</label></a> 
-                            <a href="register.php"><label class="col">No tienes cuenta, Registrate</label></a> 
+                            <a href="/Proyecto/login/recovery"><label>Olvidaste tu contraseña?</label></a> 
+                            <a href="/Proyecto/login/register"><label class="col">No tienes cuenta, Registrate</label></a> 
                         </form>
                     </div>
                 </div>
@@ -93,4 +93,3 @@ $estado = 1 ;
 
 <script src="../js/scriptlogin.js"></script>
 </html>
-                            

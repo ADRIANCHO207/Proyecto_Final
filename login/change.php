@@ -6,7 +6,7 @@ $con = $db->conectar();
 
 if (!isset($_GET['token'])) {
     echo '<script>alert("Acceso no autorizado.");</script>';
-    echo '<script>window.location = "recovery.php";</script>';
+    echo '<script>window.location = "/Proyecto/login/recovery";</script>';
     exit;
 }
 
@@ -19,7 +19,7 @@ $user = $query->fetch(PDO::FETCH_ASSOC);
 
 if (!$user) {
     echo '<script>alert("El token es inválido o ha expirado.");</script>';
-    echo '<script>window.location = "recovery.php";</script>';
+    echo '<script>window.location = "/Proyecto/login/recovery";</script>';
     exit;
 }
 
@@ -45,7 +45,7 @@ if (isset($_POST['enviar'])) {
 
         if ($update->rowCount() > 0) {
             echo '<script>alert("Contraseña actualizada exitosamente.");</script>';
-            echo '<script>window.location = "login.php";</script>';
+            echo '<script>window.location = "/Proyecto/login/login";</script>';
         } else {
             echo '<script>alert("Error al actualizar la contraseña.");</script>';
         }
@@ -59,21 +59,21 @@ if (isset($_POST['enviar'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cambiar Contraseña</title>
-    <link rel="shortcut icon" href="../css/img/logo_sinfondo.png">
+    <link rel="shortcut icon" href="/Proyecto/css/img/logo_sinfondo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../css/stylelog_re.css">
+    <link rel="stylesheet" href="/Proyecto/css/stylelog_re.css">
 
 </head>
 <body onload="form_con.password1.focus()">
 <div class = "contenido">
-    <div class="regresar"><a href="../index.php" class="re">
+    <div class="regresar"><a href="/Proyecto/login/login" class="re">
         <i class="bi bi-house-door-fill"></i>
         </a>
     </div>
     <div class="conten_form">
         <div class="form-infor">
-            <img src="../css/img/logo_sinfondo.png" alt="logo" class="logo">
+            <img src="/Proyecto/css/img/logo_sinfondo.png" alt="logo" class="logo">
             <h2>Cambiar Contraseña</h2>
             <p>Por favor, ingresa tu nueva contraseña.</p>
 

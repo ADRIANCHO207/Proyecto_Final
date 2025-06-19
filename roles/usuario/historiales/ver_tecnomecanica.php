@@ -18,10 +18,13 @@ if (!empty($filtro_placa)) {
         INNER JOIN vehiculos v ON t.id_placa = v.placa
         INNER JOIN centro_rtm c ON t.id_centro_revision = c.id_centro
         INNER JOIN estado_soat e ON t.id_estado = e.id_stado
-        WHERE v.placa LIKE :placa
+        WHERE v.placa LIKE :placa AND v.Documento = :documento
         ORDER BY t.fecha_expedicion DESC
     ");
-    $sql->execute(['placa' => "%$filtro_placa%"]);
+    $sql->execute([
+        'placa' => "%$filtro_placa%",
+        'documento' => $documento
+    ]);
 } else {
     $sql = $con->prepare("
         SELECT t.id_rtm, v.placa, t.fecha_expedicion, t.fecha_vencimiento,
@@ -30,9 +33,10 @@ if (!empty($filtro_placa)) {
         INNER JOIN vehiculos v ON t.id_placa = v.placa
         INNER JOIN centro_rtm c ON t.id_centro_revision = c.id_centro
         INNER JOIN estado_soat e ON t.id_estado = e.id_stado
+        WHERE v.Documento = :documento
         ORDER BY t.fecha_expedicion DESC
     ");
-    $sql->execute();
+    $sql->execute(['documento' => $documento]);
 }
 
 $tecnomecanicas = $sql->fetchAll(PDO::FETCH_ASSOC);

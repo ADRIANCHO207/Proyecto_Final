@@ -8,14 +8,11 @@ require '../../../src/SMTP.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-// Forzar zona horaria de Colombia
 date_default_timezone_set('America/Bogota');
 
-// Crear conexión a la base de datos
 $database = new Database();
 $con = $database->conectar();
 
-// Obtener el día de mañana
 $tomorrow = date('l', strtotime('+1 day'));
 $dia_semana = [
     'Monday' => 'Lunes',
@@ -36,7 +33,11 @@ if (isset($dia_semana[$tomorrow])) {
     if ($resultado) {
         $digitos = explode(',', $resultado['digitos_restringidos']);
 
-        // Construir parte dinámica de la consulta
+        if (count($digitos) === 0) {
+            echo "No hay dígitos restringidos para mañana.<br>";
+            exit;
+        }
+
         $placeholders = rtrim(str_repeat('?,', count($digitos)), ',');
         $sql = "
             SELECT v.placa, u.email, u.nombre_completo
@@ -48,6 +49,11 @@ if (isset($dia_semana[$tomorrow])) {
         $stmtVehiculos = $con->prepare($sql);
         $stmtVehiculos->execute($digitos);
         $vehiculos = $stmtVehiculos->fetchAll(PDO::FETCH_ASSOC);
+
+        if (empty($vehiculos)) {
+            echo "No hay vehículos para enviar recordatorio mañana.<br>";
+            exit;
+        }
 
         $mail = new PHPMailer(true);
         $mail->CharSet = 'UTF-8';
@@ -65,17 +71,44 @@ if (isset($dia_semana[$tomorrow])) {
             try {
                 $mail->clearAddresses();
                 $mail->addAddress($vehiculo['email']);
-                $mail->Subject = "Recordatorio: Pico y Placa mañana para su vehículo";
 
+                $fecha_envio = date('Y-m-d', strtotime('+1 day'));
+                $verifica = $con->prepare("SELECT COUNT(*) FROM correos_enviados_pico_placa WHERE placa = :placa AND email = :email AND fecha_envio = :fecha");
+                $verifica->execute([
+                    'placa' => $vehiculo['placa'],
+                    'email' => $vehiculo['email'],
+                    'fecha' => $fecha_envio
+                ]);
+                if ($verifica->fetchColumn() > 0) {
+                    echo "Ya se envió recordatorio a {$vehiculo['email']} para la placa {$vehiculo['placa']} el $fecha_envio<br>";
+                    continue;
+                }
+
+                $mail->Subject = "Recordatorio: Pico y Placa mañana para su vehículo";
                 $mensaje = generarMensaje($vehiculo, $dia_esp);
-                enviarNotificacion($mail, $mensaje);
+                if (enviarNotificacion($mail, $mensaje)) {
+                    $registra = $con->prepare("INSERT INTO correos_enviados_pico_placa (placa, email, fecha_envio) VALUES (:placa, :email, :fecha)");
+                    $registra->execute([
+                        'placa' => $vehiculo['placa'],
+                        'email' => $vehiculo['email'],
+                        'fecha' => $fecha_envio
+                    ]);
+                    echo "Correo enviado a: " . $vehiculo['email'] . " (Pico y Placa $fecha_envio)<br>";
+                } else {
+                    echo "Error al enviar correo a {$vehiculo['email']}: {$mail->ErrorInfo}<br>";
+                }
 
             } catch (Exception $e) {
-                error_log("Error al enviar a {$vehiculo['email']}: {$e->getMessage()}");
+                echo "Excepción al enviar a {$vehiculo['email']}: {$mail->ErrorInfo}<br>";
+                error_log("Error al enviar a {$vehiculo['email']}: {$mail->ErrorInfo}");
                 continue;
             }
         }
+    } else {
+        echo "No hay configuración de pico y placa para el día $dia_esp.<br>";
     }
+} else {
+    echo "Mañana no hay pico y placa.<br>";
 }
 
 function generarMensaje($vehiculo, $dia) {
@@ -102,4 +135,5 @@ function enviarNotificacion($mail, $mensaje) {
     $mail->Body = $mensaje;
     return $mail->send();
 }
+
 ?>

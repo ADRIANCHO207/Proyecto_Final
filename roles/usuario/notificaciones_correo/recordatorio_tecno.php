@@ -48,40 +48,60 @@ foreach ($tecnos as $tecno) {
         $interval = $hoy->diff($fechaVencimiento);
         $diasRestantes = (int)$interval->format('%r%a'); // Permite negativos
 
-        // Limpiar destinatarios anteriores
         $mail->clearAddresses();
         $mail->addAddress($tecno['email']);
 
-        // Lógica de recordatorios
-        if ($diasRestantes == 90) {
+        // Determinar tipo de recordatorio
+        if ($diasRestantes == 30) {
+            $tipo_recordatorio = '30_dias';
+        } else if ($diasRestantes == 1) {
+            $tipo_recordatorio = '1_dia';
+        } else if ($diasRestantes == 0) {
+            $tipo_recordatorio = 'vencido';
+        } else {
+            continue;
+        }
+
+        // Validar si ya se envió este tipo de recordatorio
+        $verifica = $con->prepare("SELECT COUNT(*) FROM correos_enviados_tecno WHERE id_rtm = :id_rtm AND email = :email AND tipo_recordatorio = :tipo");
+        $verifica->execute([
+            'id_rtm' => $tecno['id_rtm'],
+            'email' => $tecno['email'],
+            'tipo' => $tipo_recordatorio
+        ]);
+        if ($verifica->fetchColumn() > 0) {
+            continue;
+        }
+
+        // Lógica de asunto y mensaje
+        if ($tipo_recordatorio == '90_dias') {
             $mail->Subject = 'Recordatorio: Tu Tecnomecánica vence en 3 meses';
             $mensaje = generarMensaje($tecno, '3 meses');
-            enviarNotificacion($mail, $mensaje);
-            echo "Correo enviado a: " . $tecno['email'] . " (90 días)<br>";
-
-        } else if ($diasRestantes == 30) {
+        } else if ($tipo_recordatorio == '30_dias') {
             $mail->Subject = 'Recordatorio: Tu Tecnomecánica vence en 1 mes';
             $mensaje = generarMensaje($tecno, '1 mes');
-            enviarNotificacion($mail, $mensaje);
-            echo "Correo enviado a: " . $tecno['email'] . " (30 días)<br>";
-
-        } else if ($diasRestantes == 1) {
+        } else if ($tipo_recordatorio == '1_dia') {
             $mail->Subject = '¡URGENTE! Tu Tecnomecánica vence mañana';
             $mensaje = generarMensaje($tecno, '1 día');
-            enviarNotificacion($mail, $mensaje);
-            echo "Correo enviado a: " . $tecno['email'] . " (1 día)<br>";
-
-        } else if ($diasRestantes == 0) {
+        } else if ($tipo_recordatorio == 'vencido') {
             $mail->Subject = '¡ATENCIÓN! Tu Tecnomecánica ha vencido hoy';
             $mensaje = generarMensaje($tecno, 'hoy');
-            enviarNotificacion($mail, $mensaje);
-            echo "Correo enviado a: " . $tecno['email'] . " (vencido)<br>";
-
-            // Actualizar estado de la tecnomecánica a vencido
             $updateQuery = "UPDATE tecnomecanica SET id_estado = 2 WHERE id_rtm = :id_rtm";
             $updateStmt = $con->prepare($updateQuery);
             $updateStmt->execute(['id_rtm' => $tecno['id_rtm']]);
         }
+
+        enviarNotificacion($mail, $mensaje);
+
+        // Registrar el envío
+        $registra = $con->prepare("INSERT INTO correos_enviados_tecno (id_rtm, email, tipo_recordatorio) VALUES (:id_rtm, :email, :tipo)");
+        $registra->execute([
+            'id_rtm' => $tecno['id_rtm'],
+            'email' => $tecno['email'],
+            'tipo' => $tipo_recordatorio
+        ]);
+
+        echo "Correo enviado a: " . $tecno['email'] . " ($tipo_recordatorio)<br>";
 
     } catch (Exception $e) {
         error_log("Error al enviar correo a {$tecno['email']}: {$mail->ErrorInfo}");
@@ -121,4 +141,6 @@ function enviarNotificacion($mail, $mensaje) {
     
     return $result;
 }
+
+echo $diasRestantes;
 ?>

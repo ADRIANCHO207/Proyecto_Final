@@ -45,35 +45,57 @@ foreach ($licencias as $licencia) {
         $interval = $hoy->diff($fechaVencimiento);
         $diasRestantes = (int)$interval->format('%r%a');
 
-        // Limpiar destinatarios anteriores
         $mail->clearAddresses();
         $mail->addAddress($licencia['email']);
 
-        // Lógica de recordatorios sin actualización de estado
-        if ($diasRestantes == 90) {
+        // Determinar tipo de recordatorio
+        if ($diasRestantes == 30) {
+            $tipo_recordatorio = '30_dias';
+        } else if ($diasRestantes == 1) {
+            $tipo_recordatorio = '1_dia';
+        } else if ($diasRestantes == 0) {
+            $tipo_recordatorio = 'vencido';
+        } else {
+            continue;
+        }
+
+        // Validar si ya se envió este tipo de recordatorio
+        $verifica = $con->prepare("SELECT COUNT(*) FROM correos_enviados_licencia WHERE id_licencia = :id_licencia AND email = :email AND tipo_recordatorio = :tipo");
+        $verifica->execute([
+            'id_licencia' => $licencia['id_licencia'],
+            'email' => $licencia['email'],
+            'tipo' => $tipo_recordatorio
+        ]);
+        if ($verifica->fetchColumn() > 0) {
+            continue;
+        }
+
+        // Lógica de asunto y mensaje
+        if ($tipo_recordatorio == '90_dias') {
             $mail->Subject = 'Recordatorio: Tu Licencia vence en 3 meses';
             $mensaje = generarMensaje($licencia, '3 meses');
-            enviarNotificacion($mail, $mensaje);
-            echo "Correo enviado a: " . $licencia['email'] . " (90 días)<br>";
-
-        } else if ($diasRestantes == 30) {
+        } else if ($tipo_recordatorio == '30_dias') {
             $mail->Subject = 'Recordatorio: Tu Licencia vence en 1 mes';
             $mensaje = generarMensaje($licencia, '1 mes');
-            enviarNotificacion($mail, $mensaje);
-            echo "Correo enviado a: " . $licencia['email'] . " (30 días)<br>";
-
-        } else if ($diasRestantes == 1) {
+        } else if ($tipo_recordatorio == '1_dia') {
             $mail->Subject = '¡URGENTE! Tu Licencia vence mañana';
             $mensaje = generarMensaje($licencia, '1 día');
-            enviarNotificacion($mail, $mensaje);
-            echo "Correo enviado a: " . $licencia['email'] . " (1 día)<br>";
-
-        } else if ($diasRestantes == 0) {
+        } else if ($tipo_recordatorio == 'vencido') {
             $mail->Subject = '¡ATENCIÓN! Tu Licencia ha vencido hoy';
             $mensaje = generarMensaje($licencia, 'hoy');
-            enviarNotificacion($mail, $mensaje);
-            echo "Correo enviado a: " . $licencia['email'] . " (vencido)<br>";
         }
+
+        enviarNotificacion($mail, $mensaje);
+
+        // Registrar el envío
+        $registra = $con->prepare("INSERT INTO correos_enviados_licencia (id_licencia, email, tipo_recordatorio) VALUES (:id_licencia, :email, :tipo)");
+        $registra->execute([
+            'id_licencia' => $licencia['id_licencia'],
+            'email' => $licencia['email'],
+            'tipo' => $tipo_recordatorio
+        ]);
+
+        echo "Correo enviado a: " . $licencia['email'] . " ($tipo_recordatorio)<br>";
 
     } catch (Exception $e) {
         error_log("Error al enviar correo a {$licencia['email']}: {$mail->ErrorInfo}");
@@ -94,7 +116,7 @@ function generarMensaje($licencia, $tiempo) {
             <li>Fecha de vencimiento: {$licencia['fecha_vencimiento']}</li>
             <li>Categoría: {$licencia['nombre_categoria']}</li>
             <li>Tipo de servicio: {$licencia['nombre_servicios']}</li>
-            <li>Restricciones: {$licencia['observaciones']}</li>
+            <li>Restricciones: {$licencia['restricciones']}</li>
         </ul>
         <p>Por favor, renueve su licencia a tiempo para evitar inconvenientes.</p>
         <p>Atentamente,<br>Sistema de Recordatorios</p>
@@ -107,4 +129,6 @@ function enviarNotificacion($mail, $mensaje) {
     $mail->Body = $mensaje;
     $mail->send();
 }
+
+echo $diasRestantes;
 ?>
