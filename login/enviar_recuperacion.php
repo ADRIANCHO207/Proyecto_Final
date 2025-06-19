@@ -14,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (empty($email)) {
         echo '<script>alert("Ningún dato puede estar vacío");</script>';
-        echo '<script>window.location = "/Proyecto/login/recovery";</script>';
+        echo '<script>window.location = "recovery";</script>';
         exit;
     }
 
@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (!$user) {
         echo '<script>alert("Email incorrecto");</script>';
-        echo '<script>window.location = "/Proyecto/login/recovery;</script>';
+        echo '<script>window.location = "recovery;</script>';
         exit;
     }
 
@@ -95,7 +95,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Enviar correo
         $mail->send();
         echo '<script>alert("Revisa tu correo para restablecer la contraseña.");</script>';
-        echo '<script>window.location = "/Proyecto/login/login";</script>';
+        echo '<script>window.location = "login";</script>';
     } catch (Exception $e) {
         echo '<script>alert("Error al enviar el correo: ' . $mail->ErrorInfo . '");</script>';
     }

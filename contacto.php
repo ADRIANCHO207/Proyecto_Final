@@ -13,7 +13,7 @@ $con = $db->conectar();
     <title>Contacto - Flotax AGC</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="shortcut icon" href="/Proyecto/css/img/logo_sinfondo.png">
+    <link rel="shortcut icon" href="css/img/logo_sinfondo.png">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -776,7 +776,7 @@ $con = $db->conectar();
 
         <div class="img2">
             <div class="image-container-contact">
-                <img src="/Proyecto/css/img/ima2.jpg" alt="Contacto Flotax AGC">
+                <img src="/css/img/ima2.jpg" alt="Contacto Flotax AGC">
                 <div class="image-overlay-contact"></div>
             </div>
         </div>
@@ -856,7 +856,7 @@ $con = $db->conectar();
         <div class="developers-grid">
             <div class="developer-card">
                 <div class="developer-image">
-                    <img src="/Proyecto/css/img/adrian.jpg" alt="Desarrollador 1">
+                    <img src="/css/img/adrian.jpg" alt="Desarrollador 1">
                     <div class="developer-overlay">
                         <div class="social-linkse">
                             <a href="https://www.linkedin.com/in/adrian-camargo-rodriguez-6bb23b364/" class="social-linki"><i class="fab fa-linkedin"></i></a>
@@ -879,7 +879,7 @@ $con = $db->conectar();
 
             <div class="developer-card">
                 <div class="developer-image">
-                    <img src="/Proyecto/css/img/edwar.jpg" alt="Desarrollador 2">
+                    <img src="/css/img/edwar.jpg" alt="Desarrollador 2">
                     <div class="developer-overlay">
                         <div class="social-linkse">
                             <a href="https://www.linkedin.com/in/edwar-farid-gomez-sanchez-9ab07732a/" class="social-linki"><i class="fab fa-linkedin"></i></a>
@@ -931,7 +931,7 @@ $con = $db->conectar();
 <?php
     include ('footer.html');
 ?>
-<script src="/Proyecto/js/scriptcontacto.js"></script>
+<script src="/js/scriptcontacto.js"></script>
 
 </body>
 </html>

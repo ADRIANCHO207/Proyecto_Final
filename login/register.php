@@ -14,22 +14,22 @@ $rol = 2;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro</title>
-    <link rel="shortcut icon" href="/Proyecto/css/img/logo_sinfondo.png">
+    <link rel="shortcut icon" href="../css/img/logo_sinfondo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link rel="stylesheet" href="/Proyecto/css/stylelog_re.css">
+    <link rel="stylesheet" href="../css/stylelog_re.css">
 </head>
 <body onload="formulario.doc.focus()">
     <div class ="content">
-        <div class="regresar"><a href="/Proyecto/index" class="re">
+        <div class="regresar"><a href="../index" class="re">
             <i class="bi bi-house-door-fill"></i>
         </a>
         </div>
         <div class = "conten_form">
             <div class="form_infor">
-                <img src="/Proyecto/css/img/logo_sinfondo.png" alt="logo" class="logo">
+                <img src="../css/img/logo_sinfondo.png" alt="logo" class="logo">
                 
                 <h1 class= "titulo" >Registro</h1>
                 <form action = "" method = "post" id="formulario" enctype = "multipart/form-data" autocomplete="off">
@@ -109,7 +109,7 @@ $rol = 2;
                         <button type="submit" name = "enviar" id="enviar" value = "Guardar" class="btn btn-primary">Registrarse</button>
                     </div>
                     <p class="formulario_exito" id="formulario_exito">Registro exitoso...</p>
-                    <p>¿Ya tienes una cuenta?<a class="res" href="/proyecto/login/login">Inicia Sesion</a></p>
+                    <p>¿Ya tienes una cuenta?<a class="res" href="login">Inicia Sesion</a></p>
                 </form>
             </div>
         </div>

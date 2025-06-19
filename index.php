@@ -10,8 +10,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="shortcut icon" href="/Proyecto/css/img/logo_sinfondo.png">
-    <link rel="stylesheet" href="/Proyecto/css/stylebody.css">
+    <link rel="shortcut icon" href="css/img/logo_sinfondo.png">
+    <link rel="stylesheet" href="css/stylebody.css">
 </head>
 <body>
     <?php
@@ -29,17 +29,17 @@
         </div>
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img src="/Proyecto/css/img/slider1.jpg" class="d-block w-100" alt="Slide 1">
+                <img src="css/img/slider1.jpg" class="d-block w-100" alt="Slide 1">
                 <div class="carousel-caption d-none d-md-block">
                 </div>
             </div>
             <div class="carousel-item">
-                <img src="/Proyecto/css/img/slider2.jpg" class="d-block w-100" alt="Slide 2">
+                <img src="css/img/slider2.jpg" class="d-block w-100" alt="Slide 2">
                 <div class="carousel-caption d-none d-md-block">
                 </div>
             </div>
             <div class="carousel-item">
-                <img src="/Proyecto/css/img/slider3.jpg" class="d-block w-100" alt="Slide 3">
+                <img src="css/img/slider3.jpg" class="d-block w-100" alt="Slide 3">
                 <div class="carousel-caption d-none d-md-block">
                 </div>
             </div>
@@ -54,7 +54,7 @@
         </button>
     </div>
     <div class="contenido">
-        <img src="/Proyecto/css/img/logo.png" alt="logo">
+        <img src="css/img/logo.png" alt="logo">
         <div class="parrafo">
             <h3>Bienvenido</h3>
             <p>Gestiona tu flota vehicular de manera eficiente y segura. Nuestro software te permite:

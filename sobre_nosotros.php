@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sobre Nosotros - Flotax AGC</title>
-    <link rel="shortcut icon" href="/Proyecto/css/img/Imagen_de_WhatsApp_2025-05-21_a_las_07.17-Photoroom__1_-removebg-preview.png">
-    <link rel="stylesheet" href="/Proyecto/css/stylos_generales.css">
+    <link rel="shortcut icon" href="/css/img/Imagen_de_WhatsApp_2025-05-21_a_las_07.17-Photoroom__1_-removebg-preview.png">
+    <link rel="stylesheet" href="/css/stylos_generales.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
@@ -709,7 +709,7 @@
         
         <div class="imagen">
             <div class="image-container">
-                <img src="/Proyecto/css/img/ima2.jpg" alt="Carros en movimiento">
+                <img src="css/img/ima2.jpg" alt="Carros en movimiento">
                 <div class="image-overlay"></div>
             </div>
         </div>
@@ -719,7 +719,7 @@
     <div class="contenido mission-section">
         <div class="imagen">
             <div class="image-container purple">
-                <img src="/Proyecto/css/img/imasobrenosotros.jpg" alt="Gestión de flotas">
+                <img src="css/img/imasobrenosotros.jpg" alt="Gestión de flotas">
                 <div class="image-overlay"></div>
             </div>
         </div>
@@ -776,7 +776,7 @@
 
         <div class="imagen">
             <div class="image-container blue">
-                <img src="/Proyecto/css/img/slider.jpg" alt="Visión de futuro">
+                <img src="css/img/slider.jpg" alt="Visión de futuro">
                 <div class="image-overlay"></div>
             </div>
         </div>
