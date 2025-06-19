@@ -96,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         $filename = $documento . '_' . time() . '.' . $ext;
         $destination = $upload_dir . $filename;
-        $relative_path = '/proyecto/roles/usuario/css/img/' . $filename;
+        $relative_path = '/roles/usuario/css/img/' . $filename;
 
 
         // Move uploaded file

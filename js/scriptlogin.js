@@ -70,9 +70,9 @@ formulario.addEventListener('submit', (e) => {
 
                         // Redirección dependiendo del rol
                         if (response.rol === "admin") {
-                            location.href = "/Proyecto/roles/admin/index";
+                            location.href = "/roles/admin/index";
                         } else if (response.rol === "usuario") {
-                            location.href = "/Proyecto/roles/usuario/index";
+                            location.href = "/roles/usuario/index";
                         }
 
                     }, 2000);

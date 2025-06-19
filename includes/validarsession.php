@@ -8,7 +8,7 @@ if(!isset($_SESSION['documento'])){
     session_destroy();
     session_write_close();
     echo "<script>alert ('INGRESE CREDENCIALES DE LOGIN')</script>";
-    echo "<script>window.location = '/Proyecto/login/login' </script>";
+    echo "<script>window.location = '../login/login' </script>";
     exit();
 
 }

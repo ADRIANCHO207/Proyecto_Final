@@ -656,67 +656,6 @@ body {
   animation-delay: 0.5s;
 }
 
-/* Modo oscuro */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg-color: #1a202c;
-    --card-bg: #2d3748;
-    --text-color: #e2e8f0;
-    --text-light: #a0aec0;
-    --border-color: #4a5568;
-  }
-
-  .buscador input {
-    background-color: var(--card-bg);
-    color: var(--text-color);
-  }
-
-  .placa-badge {
-    background: linear-gradient(135deg, #4a5568, #2d3748);
-  }
-}
-
-/* Estados adicionales para documentos */
-.status-no-disponible {
-  color: var(--text-light);
-  font-weight: 500;
-  padding: 6px 12px;
-  background-color: rgba(113, 128, 150, 0.1);
-  border-radius: 20px;
-  font-size: 12px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.status-no-disponible::before {
-  content: "\F341";
-  font-family: "Bootstrap Icons";
-  font-size: 14px;
-}
-
-/* Tooltip para fechas */
-.fecha-tooltip {
-  position: relative;
-  cursor: help;
-}
-
-.fecha-tooltip:hover::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--secondary-color);
-  color: white;
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-size: 12px;
-  white-space: nowrap;
-  z-index: 1000;
-  box-shadow: var(--shadow);
-}
-
   </style>
 </head>
 <body>
