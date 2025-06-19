@@ -1,21 +1,21 @@
 <div class="header">
     <div class="logo">
-        <a href="/Proyecto/roles/usuario/index">
-            <img src="/Proyecto/roles/usuario/css/img/logo_sinfondo.png" alt="Logo">
+        <a href="/roles/usuario/index">
+            <img src="/roles/usuario/css/img/logo_sinfondo.png" alt="Logo">
             <span class="empresa">Flotax AGC</span>
         </a>
     </div>
     <div class="menu">
-        <a href="/Proyecto/roles/usuario/index" class="boton">Inicio</a>
-        <a href="/Proyecto/roles/usuario/vehiculos/registrar_vehiculos" class="boton">Registrar Vehículo</a>
+        <a href="/roles/usuario/index" class="boton">Inicio</a>
+        <a href="/roles/usuario/vehiculos/registrar_vehiculos" class="boton">Registrar Vehículo</a>
         <div class="dropdown">
       <a href="#" class="boton">Historiales ▾</a>
       <div class="dropdown-content">
-        <a href="/Proyecto/roles/usuario/historiales/ver_soat">Historial de SOAT</a>
-        <a href="/Proyecto/roles/usuario/historiales/ver_tecnomecanica">Historial de Tecnomecánica</a>
-        <a href="/Proyecto/roles/usuario/historiales/ver_licencia">Historial de Licencia de Conducción</a>
-        <a href="/Proyecto/roles/usuario/historiales/ver_llantas">Historial de Llantas</a>
-        <a href="/Proyecto/roles/usuario/historiales/ver_mantenimiento">Historial de Mantenimiento</a>
+        <a href="/roles/usuario/historiales/ver_soat">Historial de SOAT</a>
+        <a href="/roles/usuario/historiales/ver_tecnomecanica">Historial de Tecnomecánica</a>
+        <a href="/roles/usuario/historiales/ver_licencia">Historial de Licencia de Conducción</a>
+        <a href="/roles/usuario/historiales/ver_llantas">Historial de Llantas</a>
+        <a href="/roles/usuario/historiales/ver_mantenimiento">Historial de Mantenimiento</a>
       </div>
     </div> 
     
@@ -39,7 +39,7 @@
             $imagePath = htmlspecialchars($foto_perfil) . '?v=' . time();
             ?>
             <img src="<?php echo $imagePath; ?>" alt="Foto de Perfil" class="usu_imagen" style="max-width: 100px; height: 100px;">
-            <?php if ($foto_perfil === '/Proyecto/roles/usuario/css/img/perfil.jpg'): ?>
+            <?php if ($foto_perfil === '/roles/usuario/css/img/perfil.jpg'): ?>
             <?php endif; ?>
             <?php
             $user_query = $con->prepare("SELECT documento, nombre_completo, email, telefono FROM usuarios WHERE documento = :documento");
@@ -51,7 +51,7 @@
             <p><strong>Nombre:</strong> <?php echo htmlspecialchars($user['nombre_completo']); ?></p>
             <p><strong>Email:</strong> <?php echo htmlspecialchars($user['email']); ?></p>
             <p><strong>Teléfono:</strong> <?php echo htmlspecialchars($user['telefono']); ?></p>
-            <form action="/Proyecto/roles/usuario/actualizar_foto.php" method="post" enctype="multipart/form-data">
+            <form action="/roles/usuario/actualizar_foto.php" method="post" enctype="multipart/form-data">
                 <label for="foto_perfil">Cambiar Foto de Perfil:</label>
                 <p class="upload-instructions">Formatos: JPEG, PNG, GIF. Máximo 5MB. Recomendado: 512x512 píxeles.</p>
             <div class="input-file-custom">
@@ -63,7 +63,7 @@
                 <br>
                 <button type="submit" class="boton">Actualizar Foto</button>
             </form>
-            <form action="/Proyecto/roles/usuario/actualizar_foto.php" method="post">
+            <form action="actualizar_foto.php" method="post">
                 <input type="hidden" name="reset_image" value="1">
                 <button type="submit" class="boton">Borrar Imagen</button>
             </form>
@@ -81,7 +81,7 @@
 </div>
 
 <div class="sidebar">
-    <a href="/Proyecto/includes/salir" class="logout" title="Cerrar Sesión">
+    <a href="../../includes/salir" class="logout" title="Cerrar Sesión">
         <i class="bi bi-box-arrow-right"></i>
     </a>
 </div>

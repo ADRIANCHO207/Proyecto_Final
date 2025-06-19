@@ -9,7 +9,7 @@ $con = $db->conectar();
 $documento = $_SESSION['documento'] ?? null;
 if (!$documento) {
     $_SESSION['error'] = "Por favor, inicia sesión para continuar.";
-    header('Location: /Proyecto/login/login');
+    header('Location: ../../login/login');
     exit;
 }
 
@@ -18,7 +18,7 @@ if (!$documento) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Restablecer la imagen de perfil a la predeterminada
     if (isset($_POST['reset_image'])) {
-        $default_image = '/Proyecto/roles/usuario/css/img/perfil.jpg';
+        $default_image = '/roles/usuario/css/img/perfil.jpg';
         $reset_query = $con->prepare("UPDATE usuarios SET foto_perfil = :foto_perfil WHERE documento = :documento");
         $reset_query->bindParam(':foto_perfil', $default_image, PDO::PARAM_STR);
         $reset_query->bindParam(':documento', $documento, PDO::PARAM_STR);

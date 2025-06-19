@@ -21,7 +21,7 @@ if (!$nombre_completo || !$foto_perfil) {
     $user_query->execute();
     $user = $user_query->fetch(PDO::FETCH_ASSOC);
     $nombre_completo = $user['nombre_completo'] ?? 'Usuario';
-    $foto_perfil = $user['foto_perfil'] ?: '/proyecto/roles/usuario/css/img/perfil.jpg';
+    $foto_perfil = $user['foto_perfil'] ?: 'roles/usuario/css/img/perfil.jpg';
     $_SESSION['nombre_completo'] = $nombre_completo;
     $_SESSION['foto_perfil'] = $foto_perfil;
 }
@@ -36,8 +36,8 @@ if (!$nombre_completo || !$foto_perfil) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flotax AGC - Inicio</title>
-    <link rel="shortcut icon" href="/Proyecto/css/img/logo_sinfondo.png">
-    <link rel="stylesheet" href="/Proyecto/roles/usuario/css/styles.css">
+    <link rel="shortcut icon" href="css/img/logo_sinfondo.png">
+    <link rel="stylesheet" href="css/styles.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
@@ -62,25 +62,25 @@ if (!$nombre_completo || !$foto_perfil) {
 <div class="alertas">
     <h1>Mis Alertas</h1>
     <div class="alertas-grid">
-        <a href="/Proyecto/roles/usuario/vehiculos/registrar_soat" class="boton">
+        <a href="vehiculos/registrar_soat" class="boton">
             <i class="bi bi-shield-check"></i> SOAT
         </a>
-        <a href="/Proyecto/roles/usuario/vehiculos/registrar_tecnomecanica" class="boton">
+        <a href="vehiculos/registrar_tecnomecanica" class="boton">
             <i class="bi bi-tools"></i> Tecnomecánica
         </a>
-        <a href="/Proyecto/roles/usuario/vehiculos/registrar_licencia" class="boton">
+        <a href="vehiculos/registrar_licencia" class="boton">
             <i class="bi bi-card-heading"></i> Licencia de Conducción
         </a>
-        <a href="/Proyecto/roles/usuario/vehiculos/pico_placa" class="boton">
+        <a href="vehiculos/pico_placa" class="boton">
             <i class="bi bi-sign-stop"></i> Pico y Placa
         </a>
-        <a href="/Proyecto/roles/usuario/vehiculos/registrar_llantas" class="boton">
+        <a href="vehiculos/registrar_llantas" class="boton">
             <i class="bi bi-circle"></i> Llantas
         </a>
-        <a href="/Proyecto/roles/usuario/vehiculos/registrar_mantenimiento" class="boton">
+        <a href="vehiculos/registrar_mantenimiento" class="boton">
             <i class="bi bi-gear"></i> Mantenimiento y Aceite
         </a>
-        <a href="/Proyecto/roles/usuario/vehiculos/multas" class="boton">
+        <a href="vehiculos/multas" class="boton">
             <i class="bi bi-receipt-cutoff"></i> Multas
         </a>
     </div>
@@ -110,7 +110,7 @@ if (!$nombre_completo || !$foto_perfil) {
 </div>
 
 <div class="sidebar">
-    <a href="/Proyecto/includes/salir" class="logout" title="Cerrar Sesión">
+    <a href="../../includes/salir" class="logout" title="Cerrar Sesión">
         <i class="bi bi-box-arrow-right"></i>
     </a>
 </div>
