@@ -57,6 +57,8 @@ if (isset($_POST['Eliminar'])) {
     exit;
 }
 ?>
+<?php
+
 
 
 // Fetch nombre_completo and foto_perfil if not in session
@@ -68,12 +70,12 @@ if (!$nombre_completo || !$foto_perfil) {
     $user_query->execute();
     $user = $user_query->fetch(PDO::FETCH_ASSOC);
     $nombre_completo = $user['nombre_completo'] ?? 'Usuario';
-    $foto_perfil = $user['foto_perfil'] ?: 'Proyecto_Final/roles/user/css/img/perfil.jpg';
+    $foto_perfil = $user['foto_perfil'] ?: '/roles/user/css/img/perfil.jpg';
     $_SESSION['nombre_completo'] = $nombre_completo;
     $_SESSION['foto_perfil'] = $foto_perfil;
 }
 
-// Aquí deberías incluir las consultas para obtener $result_tipos y $result_estados
+// Aquí deberías incluir las consultaçs para obtener $result_tipos y $result_estados
 // Por ejemplo:
 // $query_tipos = $con->prepare("SELECT * FROM tipos_vehiculo");
 // $query_tipos->execute();
@@ -293,6 +295,6 @@ if (!$nombre_completo || !$foto_perfil) {
     }
   </script>
 
-  <script src="../js/vehiculos_registro.js"></script>
+  <script src="../usuario/js/vehiculos_registro.js"></script>
 </body>
 </html>

@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Fetch vehicle data for editing
     function fetchVehicleData(placa) {
-        fetch(`modals_vehiculos/get_vehicle.php?placa=${encodeURIComponent(placa)}`)
+        fetch(`get_vehicle.php?placa=${encodeURIComponent(placa)}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('editarVehiculoForm').addEventListener('submit', function (e) {
         e.preventDefault();
         const formData = new FormData(this);
-        fetch('modals_vehiculos/update_vehicle.php', {
+        fetch('update_vehicle.php', {
             method: 'POST',
             body: formData
         })
@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Handle Delete confirmation
     document.getElementById('confirmarEliminar').addEventListener('click', function () {
         const placa = this.getAttribute('data-id');
-        fetch('modals_vehiculos/delete_vehicle.php', {
+        fetch('delete_vehicle.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
