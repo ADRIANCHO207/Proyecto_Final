@@ -18,7 +18,7 @@ if (!$documento) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Restablecer la imagen de perfil a la predeterminada
     if (isset($_POST['reset_image'])) {
-        $default_image = '/proyecto/roles/usuario/css/img/perfil.jpg';
+        $default_image = '../usuario/css/img/perfil.jpg';
         $reset_query = $con->prepare("UPDATE usuarios SET foto_perfil = :foto_perfil WHERE documento = :documento");
         $reset_query->bindParam(':foto_perfil', $default_image, PDO::PARAM_STR);
         $reset_query->bindParam(':documento', $documento, PDO::PARAM_STR);
@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $file = $_FILES['foto_perfil'];
         // Guardar en la carpeta del usuario
         $upload_dir = realpath(__DIR__ . '/../usuario/css/img/') . '/';
-        $relative_dir = '/proyecto/roles/usuario/css/img/';
+        $relative_dir = '/roles/usuario/css/img/';
 
         // Ensure directory exists and is writable
         if (!is_dir($upload_dir)) {

@@ -104,7 +104,7 @@ form.addEventListener('submit', function(event) {
     if (nombreValido && apellidoValido && correoValido && mensajeValido) {
         $.ajax({
             type: "POST",
-            url: "/Proyecto/ajax/datos_contacto.php", // Puedes renombrarlo a algo como "procesar_formulario.php"
+            url: "../ajax/datos_contacto.php", // Puedes renombrarlo a algo como "procesar_formulario.php"
             data: {
                 nom: $('#nom').val(),
                 ape: $('#ape').val(),
