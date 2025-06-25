@@ -1,21 +1,21 @@
 <div class="header">
     <div class="logo">
-        <a href="/roles/usuario/index">
-            <img src="/roles/usuario/css/img/logo_sinfondo.png" alt="Logo">
+        <a href="index">
+            <img src="css/img/logo_sinfondo.png" alt="Logo">
             <span class="empresa">Flotax AGC</span>
         </a>
     </div>
     <div class="menu">
-        <a href="/roles/usuario/index" class="boton">Inicio</a>
-        <a href="/roles/usuario/vehiculos/registrar_vehiculos" class="boton">Registrar Vehículo</a>
+        <a href="usuario/index" class="boton">Inicio</a>
+        <a href="usuario/vehiculos/registrar_vehiculos" class="boton">Registrar Vehículo</a>
         <div class="dropdown">
       <a href="#" class="boton">Historiales ▾</a>
       <div class="dropdown-content">
-        <a href="/roles/usuario/historiales/ver_soat">Historial de SOAT</a>
-        <a href="/roles/usuario/historiales/ver_tecnomecanica">Historial de Tecnomecánica</a>
-        <a href="/roles/usuario/historiales/ver_licencia">Historial de Licencia de Conducción</a>
-        <a href="/roles/usuario/historiales/ver_llantas">Historial de Llantas</a>
-        <a href="/roles/usuario/historiales/ver_mantenimiento">Historial de Mantenimiento</a>
+        <a href="historiales/ver_soat">Historial de SOAT</a>
+        <a href="historiales/ver_tecnomecanica">Historial de Tecnomecánica</a>
+        <a href="historiales/ver_licencia">Historial de Licencia de Conducción</a>
+        <a href="historiales/ver_llantas">Historial de Llantas</a>
+        <a href="historiales/ver_mantenimiento">Historial de Mantenimiento</a>
       </div>
     </div> 
     

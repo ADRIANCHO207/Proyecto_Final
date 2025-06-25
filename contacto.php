@@ -1,4 +1,5 @@
 <?php
+// Conexión a la base de datos (si se requiere para futuras funcionalidades)
 require_once('conecct/conex.php');
 $db = new Database();
 $con = $db->conectar();
@@ -11,6 +12,7 @@ $con = $db->conectar();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contacto - Flotax AGC</title>
+    <!-- Iconos de Bootstrap y FontAwesome -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="shortcut icon" href="css/img/logo_sinfondo.png">
@@ -19,6 +21,7 @@ $con = $db->conectar();
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <style>
+      /* Estilos generales y responsivos para la página de contacto */
       * {
         margin: 0;
         padding: 0;
@@ -731,12 +734,14 @@ $con = $db->conectar();
 </head>
 <body>
 <?php
+    // Incluye el encabezado del sitio (barra de navegación, logo, etc.)
     include ('header.html');
 ?>
 
-<!-- Contact Info Section -->
+<!-- Sección de información de contacto y formulario -->
 <div class="contenido_info">
     <div class="informa">
+        <!-- Tarjeta informativa principal -->
         <div class="info-card">
             <div class="info-icon">
                 <i class="fas fa-question-circle"></i>
@@ -748,6 +753,7 @@ $con = $db->conectar();
             </p>
         </div>
 
+        <!-- Detalles de contacto: correo y teléfono -->
         <div class="contact-details">
             <div class="contact-item">
                 <div class="contact-icon">
@@ -770,10 +776,12 @@ $con = $db->conectar();
             </div>
         </div>
 
+        <!-- Mensaje de soporte -->
         <div class="support-message">
             <p><i class="fas fa-heart"></i> Estamos aquí para ayudarte y responder a todas tus inquietudes.</p>
         </div>
 
+        <!-- Imagen ilustrativa de contacto -->
         <div class="img2">
             <div class="image-container-contact">
                 <img src="/css/img/ima2.jpg" alt="Contacto Flotax AGC">
@@ -782,6 +790,7 @@ $con = $db->conectar();
         </div>
     </div>
 
+    <!-- Formulario de contacto -->
     <div class="contenido_form">
         <div class="formulario">
             <div class="form-header">
@@ -842,7 +851,7 @@ $con = $db->conectar();
     </div>
 </div>
 
-<!-- Developers Section -->
+<!-- Sección de desarrolladores del proyecto -->
 <section class="developers-section">
     <div class="developers-container">
         <div class="section-header-dev">
@@ -854,6 +863,7 @@ $con = $db->conectar();
         </div>
 
         <div class="developers-grid">
+            <!-- Tarjeta de desarrollador 1 -->
             <div class="developer-card">
                 <div class="developer-image">
                     <img src="/css/img/adrian.jpg" alt="Desarrollador 1">
@@ -877,6 +887,7 @@ $con = $db->conectar();
                 </div>
             </div>
 
+            <!-- Tarjeta de desarrollador 2 -->
             <div class="developer-card">
                 <div class="developer-image">
                     <img src="/css/img/edwar.jpg" alt="Desarrollador 2">
@@ -900,6 +911,7 @@ $con = $db->conectar();
                 </div>
             </div>
 
+            <!-- Tarjeta de desarrollador 3 -->
             <div class="developer-card">
                 <div class="developer-image">
                     <img src="/placeholder.svg?height=300&width=300" alt="Desarrollador 3">
@@ -929,6 +941,7 @@ $con = $db->conectar();
 
 
 <?php
+    // Incluye el pie de página del sitio
     include ('footer.html');
 ?>
 <script src="/js/scriptcontacto.js"></script>
