@@ -4,10 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sobre Nosotros - Flotax AGC</title>
+    <!-- Favicon del sitio -->
     <link rel="shortcut icon" href="/css/img/Imagen_de_WhatsApp_2025-05-21_a_las_07.17-Photoroom__1_-removebg-preview.png">
+    <!-- Estilos generales personalizados -->
     <link rel="stylesheet" href="/css/stylos_generales.css">
+    <!-- Fuente Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        /* Estilos CSS personalizados y responsivos para la página "Sobre Nosotros" */
         * {
       margin: 0;
       padding: 0;
@@ -656,14 +660,16 @@
 </head>
 <body>
 <?php
+    // Incluye el encabezado del sitio (barra de navegación, logo, etc.)
     include ('header.html');
 ?>
 
  
-    <!-- Historia Section -->
+    <!-- Sección de Historia de la empresa -->
     <div class="contenido historia-section">
         <div class="content-card">
             <div class="section-icon">
+                <!-- Icono SVG representando historia/tiempo -->
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
                     <path d="M3 3v5h5"/>
@@ -681,11 +687,12 @@
         </div>
     </div>
 
-    <!-- Sobre Nosotros Section -->
+    <!-- Sección Sobre Nosotros: misión de la empresa y valores principales -->
     <div class="contenido about-section">
         <div class="info">
             <div class="section-header">
                 <div class="section-icon green">
+                    <!-- Icono SVG representando innovación/tecnología -->
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M3 21h18"/>
                         <path d="M5 21V7l8-4v18"/>
@@ -709,16 +716,18 @@
         
         <div class="imagen">
             <div class="image-container">
+                <!-- Imagen ilustrativa de la empresa -->
                 <img src="css/img/ima2.jpg" alt="Carros en movimiento">
                 <div class="image-overlay"></div>
             </div>
         </div>
     </div>
 
-    <!-- Misión Section -->
+    <!-- Sección Misión: objetivos y pilares de la empresa -->
     <div class="contenido mission-section">
         <div class="imagen">
             <div class="image-container purple">
+                <!-- Imagen relacionada con la misión -->
                 <img src="css/img/imasobrenosotros.jpg" alt="Gestión de flotas">
                 <div class="image-overlay"></div>
             </div>
@@ -726,6 +735,7 @@
         <div class="info">
             <div class="section-header">
                 <div class="section-icon purple">
+                    <!-- Icono SVG de misión/objetivo cumplido -->
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="10"/>
                         <path d="M8 12l2 2 4-4"/>
@@ -750,11 +760,12 @@
         </div>
     </div>
     
-    <!-- Visión Section -->
+    <!-- Sección Visión: proyección y futuro de la empresa -->
     <div class="contenido vision-section">
         <div class="info">
             <div class="section-header">
                 <div class="section-icon blue">
+                    <!-- Icono SVG de visión/futuro -->
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                         <circle cx="12" cy="12" r="3"/>
@@ -776,6 +787,7 @@
 
         <div class="imagen">
             <div class="image-container blue">
+                <!-- Imagen ilustrativa de visión/futuro -->
                 <img src="css/img/slider.jpg" alt="Visión de futuro">
                 <div class="image-overlay"></div>
             </div>
@@ -785,6 +797,7 @@
    
 
 <?php
+    // Incluye el pie de página del sitio
     include ('footer.html');
 ?>
 </body>
