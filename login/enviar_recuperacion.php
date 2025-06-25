@@ -59,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $mail->Subject = 'Recuperación de contraseña - Flota Vehicular';
 
         // Enlace de recuperación
-        $reset_link = "https://flotaxagc.com/login/change?token=" . urlencode($token);
+        $reset_link = "http://127.1.1.0/proyecto/login/change.php?token=" . urlencode($token);
 
         // Contenido del correo.php
         $logoUrl = 'https://logosinfondo.netlify.app/logo_sinfondo.png'; // Asegúrate que esta sea la URL exacta de tu imagen

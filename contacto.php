@@ -776,7 +776,7 @@ $con = $db->conectar();
 
         <div class="img2">
             <div class="image-container-contact">
-                <img src="/css/img/ima2.jpg" alt="Contacto Flotax AGC">
+                <img src="css/img/contacto.png" alt="Contacto Flotax AGC">
                 <div class="image-overlay-contact"></div>
             </div>
         </div>
@@ -856,7 +856,7 @@ $con = $db->conectar();
         <div class="developers-grid">
             <div class="developer-card">
                 <div class="developer-image">
-                    <img src="/css/img/adrian.jpg" alt="Desarrollador 1">
+                    <img src="css/img/adrian.jpg" alt="Desarrollador 1">
                     <div class="developer-overlay">
                         <div class="social-linkse">
                             <a href="https://www.linkedin.com/in/adrian-camargo-rodriguez-6bb23b364/" class="social-linki"><i class="fab fa-linkedin"></i></a>
@@ -879,7 +879,7 @@ $con = $db->conectar();
 
             <div class="developer-card">
                 <div class="developer-image">
-                    <img src="/css/img/edwar.jpg" alt="Desarrollador 2">
+                    <img src="css/img/edwar.jpg" alt="Desarrollador 2">
                     <div class="developer-overlay">
                         <div class="social-linkse">
                             <a href="https://www.linkedin.com/in/edwar-farid-gomez-sanchez-9ab07732a/" class="social-linki"><i class="fab fa-linkedin"></i></a>
@@ -902,7 +902,7 @@ $con = $db->conectar();
 
             <div class="developer-card">
                 <div class="developer-image">
-                    <img src="/placeholder.svg?height=300&width=300" alt="Desarrollador 3">
+                    <img src="css/img/carlos.jpg" alt="Desarrollador 3">
                     <div class="developer-overlay">
                         <div class="social-linkse">
                             <a href="#" class="social-linki"><i class="fab fa-linkedin"></i></a>
@@ -912,9 +912,9 @@ $con = $db->conectar();
                     </div>
                 </div>
                 <div class="developer-info">
-                    <h3>María López</h3>
-                    <p class="role">UI/UX Designer</p>
-                    <p class="description">Diseñadora creativa enfocada en crear experiencias de usuario excepcionales.</p>
+                    <h3>Carlos Guevara</h3>
+                    <p class="role">Full Stack Developer</p>
+                    <p class="description"></p>
                     <div class="skills">
                         <span class="skill">Figma</span>
                         <span class="skill">Adobe XD</span>
@@ -931,7 +931,7 @@ $con = $db->conectar();
 <?php
     include ('footer.html');
 ?>
-<script src="/js/scriptcontacto.js"></script>
+<script src="js/scriptcontacto.js"></script>
 
 </body>
 </html>

@@ -7,104 +7,129 @@ require '../../../src/SMTP.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-// Crear conexión a la base de datos
-$database = new Database();
-$con = $database->conectar();
+// ==== CONFIGURAR LOGS ==== //
+ini_set('display_errors', 1);
+ini_set('log_errors', 1);
+error_reporting(E_ALL);
 
-// Obtener fecha actual
-$hoy = new DateTime();
+$logFile = __DIR__ . '/log_general.txt';
 
-// Crear una única instancia de PHPMailer
-$mail = new PHPMailer(true);
-$mail->CharSet = 'UTF-8';
-$mail->Encoding = 'base64';
-$mail->isSMTP();
-$mail->Host = 'smtp.gmail.com';
-$mail->SMTPAuth = true;
-$mail->Username = 'flotavehicularagc@gmail.com';
-$mail->Password = 'brgl znfz eqfk mcct';
-$mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-$mail->Port = 465;
-$mail->setFrom('flotavehicularagc@gmail.com', 'Sistema de Recordatorios');
+function registrarLog($mensaje) {
+    global $logFile;
+    $fecha = date("Y-m-d H:i:s");
+    file_put_contents($logFile, "[$fecha] $mensaje\n", FILE_APPEND);
+}
 
-// Consulta para obtener los SOAT registrados con sus datos relacionados
-$query = "SELECT s.*, v.placa, u.email, u.nombre_completo, a.nombre as nombre_aseguradora 
-          FROM soat s 
-          INNER JOIN vehiculos v ON s.id_placa = v.placa 
-          INNER JOIN usuarios u ON v.Documento = u.documento 
-          INNER JOIN aseguradoras_soat a ON s.id_aseguradora = a.id_asegura
-          WHERE s.id_estado = 1";
+echo "<h2>Resultado del Envío de Recordatorios SOAT</h2><hr>";
+registrarLog("== INICIO de ejecución del cron para SOAT ==");
 
-$stmt = $con->prepare($query);
-$stmt->execute();
-$soats = $stmt->fetchAll(PDO::FETCH_ASSOC);
+try {
+    $database = new Database();
+    $con = $database->conectar();
 
-foreach ($soats as $soat) {
-    try {
-        $fechaVencimiento = new DateTime($soat['fecha_vencimiento']);
-        $interval = $hoy->diff($fechaVencimiento);
-        $diasRestantes = (int)$interval->format('%r%a'); // Permite negativos
+    $hoy = new DateTime();
 
-        // Limpiar destinatarios anteriores
-        $mail->clearAddresses();
-        $mail->addAddress($soat['email']);
+    $mail = new PHPMailer(true);
+    $mail->CharSet = 'UTF-8';
+    $mail->Encoding = 'base64';
+    $mail->isSMTP();
+    $mail->Host = 'smtp.gmail.com';
+    $mail->SMTPAuth = true;
+    $mail->Username = 'flotavehicularagc@gmail.com';
+    $mail->Password = 'brgl znfz eqfk mcct';
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+    $mail->Port = 465;
+    $mail->setFrom('flotavehicularagc@gmail.com', 'Sistema de Recordatorios');
 
-        // Determinar tipo de recordatorio
-        if ($diasRestantes == 30) {
-            $tipo_recordatorio = '30_dias';
-        } else if ($diasRestantes == 1) {
-            $tipo_recordatorio = '1_dia';
-        } else if ($diasRestantes == 0) {
-            $tipo_recordatorio = 'vencido';
-        } else {
-            continue; // No es un día de recordatorio
-        }
+    $query = "SELECT s.*, v.placa, u.email, u.nombre_completo, a.nombre as nombre_aseguradora 
+              FROM soat s 
+              INNER JOIN vehiculos v ON s.id_placa = v.placa 
+              INNER JOIN usuarios u ON v.Documento = u.documento 
+              INNER JOIN aseguradoras_soat a ON s.id_aseguradora = a.id_asegura
+              WHERE s.id_estado = 1";
 
-        // Validar si ya se envió este tipo de recordatorio para este SOAT y usuario
-        $verifica = $con->prepare("SELECT COUNT(*) FROM correos_enviados_soat WHERE id_soat = :id_soat AND email = :email AND tipo_recordatorio = :tipo");
-        $verifica->execute([
-            'id_soat' => $soat['id_soat'],
-            'email' => $soat['email'],
-            'tipo' => $tipo_recordatorio
-        ]);
-        if ($verifica->fetchColumn() > 0) {
-            // Ya se envió este recordatorio
+    $stmt = $con->prepare($query);
+    $stmt->execute();
+    $soats = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($soats as $soat) {
+        try {
+            $fechaVencimiento = new DateTime($soat['fecha_vencimiento']);
+            $interval = $hoy->diff($fechaVencimiento);
+            $diasRestantes = (int)$interval->format('%r%a');
+
+            echo "<strong>Placa:</strong> {$soat['placa']}<br>";
+            echo "<strong>Usuario:</strong> {$soat['nombre_completo']} ({$soat['email']})<br>";
+            echo "<strong>Fecha de vencimiento:</strong> {$soat['fecha_vencimiento']}<br>";
+            echo "<strong>Días restantes:</strong> $diasRestantes<br>";
+
+            $mail->clearAddresses();
+            $mail->addAddress($soat['email']);
+
+            // ¿Debe enviarse el recordatorio?
+            
+            if ($diasRestantes == 3) {
+                $tipo_recordatorio = '3_dia';
+            } else if ($diasRestantes == 0) {
+                $tipo_recordatorio = 'vencido';
+            } else {
+                echo "<span style='color: gray;'>No se cumple condición de envío</span><hr>";
+                continue;
+            }
+
+            // ¿Ya se envió antes?
+            $verifica = $con->prepare("SELECT COUNT(*) FROM correos_enviados_soat WHERE id_soat = :id_soat AND email = :email AND tipo_recordatorio = :tipo");
+            $verifica->execute([
+                'id_soat' => $soat['id_soat'],
+                'email' => $soat['email'],
+                'tipo' => $tipo_recordatorio
+            ]);
+            if ($verifica->fetchColumn() > 0) {
+                registrarLog("Ya se envió el recordatorio de tipo $tipo_recordatorio a {$soat['email']}");
+                echo "<span style='color: orange;'>Ya se envió este tipo de recordatorio antes</span><hr>";
+                continue;
+            }
+
+            // Preparar correo
+            if ($tipo_recordatorio == '3_dia') {
+                $mail->Subject = '¡URGENTE! Tu SOAT vence en 3 dias';
+                $mensaje = generarMensaje($soat, '3 día');
+            } else if ($tipo_recordatorio == 'vencido') {
+                $mail->Subject = '¡ATENCIÓN! Tu SOAT ha vencido hoy';
+                $mensaje = generarMensaje($soat, 'hoy');
+                // Cambiar estado en base de datos
+                $updateQuery = "UPDATE soat SET id_estado = 2 WHERE id_soat = :id_soat";
+                $updateStmt = $con->prepare($updateQuery);
+                $updateStmt->execute(['id_soat' => $soat['id_soat']]);
+            }
+
+            enviarNotificacion($mail, $mensaje);
+
+            $registra = $con->prepare("INSERT INTO correos_enviados_soat (id_soat, email, tipo_recordatorio) VALUES (:id_soat, :email, :tipo)");
+            $registra->execute([
+                'id_soat' => $soat['id_soat'],
+                'email' => $soat['email'],
+                'tipo' => $tipo_recordatorio
+            ]);
+
+            registrarLog("Correo enviado a {$soat['email']} ($tipo_recordatorio)");
+            echo "<span style='color: green;'>Correo enviado ($tipo_recordatorio)</span><hr>";
+
+        } catch (Exception $e) {
+            registrarLog("ERROR al enviar a {$soat['email']}: " . $mail->ErrorInfo);
+            echo "<span style='color: red;'>Error al enviar: {$mail->ErrorInfo}</span><hr>";
             continue;
         }
-
-        // Lógica de recordatorio y envío
-        if ($tipo_recordatorio == '30_dias') {
-            $mail->Subject = 'Recordatorio: Tu SOAT vence en 1 mes';
-            $mensaje = generarMensaje($soat, '1 mes');
-        } else if ($tipo_recordatorio == '1_dia') {
-            $mail->Subject = '¡URGENTE! Tu SOAT vence mañana';
-            $mensaje = generarMensaje($soat, '1 día');
-        } else if ($tipo_recordatorio == 'vencido') {
-            $mail->Subject = '¡ATENCIÓN! Tu SOAT ha vencido hoy';
-            $mensaje = generarMensaje($soat, 'hoy');
-            // Actualizar estado del SOAT a vencido
-            $updateQuery = "UPDATE soat SET id_estado = 2 WHERE id_soat = :id_soat";
-            $updateStmt = $con->prepare($updateQuery);
-            $updateStmt->execute(['id_soat' => $soat['id_soat']]);
-        }
-
-        enviarNotificacion($mail, $mensaje);
-
-        // Registrar el envío en la base de datos
-        $registra = $con->prepare("INSERT INTO correos_enviados_soat (id_soat, email, tipo_recordatorio) VALUES (:id_soat, :email, :tipo)");
-        $registra->execute([
-            'id_soat' => $soat['id_soat'],
-            'email' => $soat['email'],
-            'tipo' => $tipo_recordatorio
-        ]);
-
-        echo "Correo enviado a: " . $soat['email'] . " ($tipo_recordatorio)<br>";
-
-    } catch (Exception $e) {
-        error_log("Error al enviar correo a {$soat['email']}: {$mail->ErrorInfo}");
-        continue;
     }
+
+} catch (Exception $e) {
+    registrarLog("ERROR GLOBAL: " . $e->getMessage());
+    echo "<span style='color: red;'>ERROR GLOBAL: {$e->getMessage()}</span><br>";
 }
+
+registrarLog("== FIN de ejecución del cron para SOAT ==");
+
+// === FUNCIONES ===
 
 function generarMensaje($soat, $tiempo) {
     return "
@@ -131,7 +156,4 @@ function enviarNotificacion($mail, $mensaje) {
     $mail->Body = $mensaje;
     $mail->send();
 }
-
-
-echo $diasRestantes;
 ?>

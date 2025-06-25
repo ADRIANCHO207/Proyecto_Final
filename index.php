@@ -29,17 +29,17 @@
         </div>
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img src="css/img/slider1.jpg" class="d-block w-100" alt="Slide 1">
+                <img src="css/img/slider3.png" class="d-block w-100" alt="Slide 1">
                 <div class="carousel-caption d-none d-md-block">
                 </div>
             </div>
             <div class="carousel-item">
-                <img src="css/img/slider2.jpg" class="d-block w-100" alt="Slide 2">
+                <img src="css/img/slider6.jpg" class="d-block w-100" alt="Slide 2">
                 <div class="carousel-caption d-none d-md-block">
                 </div>
             </div>
             <div class="carousel-item">
-                <img src="css/img/slider3.jpg" class="d-block w-100" alt="Slide 3">
+                <img src="css/img/slider7.png" class="d-block w-100" alt="Slide 3">
                 <div class="carousel-caption d-none d-md-block">
                 </div>
             </div>
