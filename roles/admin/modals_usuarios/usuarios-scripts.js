@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('actualizarUsuario').addEventListener('click', function (e) {
     e.preventDefault();
     const formData = new FormData(document.getElementById('editarUsuarioForm'));
-    fetch('modals_usuarios/actualizar_usuario.php', {
+    fetch('actualizar_usuario.php', {
       method: 'POST',
       body: formData
     })
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('confirmarEliminar').addEventListener('click', function (e) {
     e.preventDefault();
     const documento = document.getElementById('documentoEliminarInput').value;
-    fetch('modals_usuarios/eliminar_usuario.php', {
+    fetch('eliminar_usuario.php', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('guardarUsuario').addEventListener('click', function (e) {
     e.preventDefault();
     const formData = new FormData(document.getElementById('agregarUsuarioForm'));
-    fetch('modals_usuarios/agregar_usuario.php', {
+    fetch('agregar_usuario.php', {
       method: 'POST',
       body: formData
     })

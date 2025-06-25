@@ -8,7 +8,7 @@ if (!isset($_SESSION['documento'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $documentNumber = $_SESSION['documento'];
     $documentType = 'CC';
-    $token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRJZCI6IjY4MWUwZWQ5MDA3OWM4ZjkxZGE5ZmY3YiIsInAiOiJ2ayIsIkpXVFBocmFzZSI6IjY3ZjljYTg3MjQ5ZDVmOTFhNmE0NjA4ZiIsImV4cGlyZXNBdCI6MTc0OTQ4MDc0OSwiaWF0IjoxNzQ2ODAyMzQ5fQ.aBdzb5vTFMTv4lTeHbXSffPHMW25qTqAYVbvyEGSaH4';
+    $token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRJZCI6IjY4MWUwZWQ5MDA3OWM4ZjkxZGE5ZmY3YiIsInAiOiJ2ayIsIkpXVFBocmFzZSI6IjY3ZjljYTg3MjQ5ZDVmOTFhNmE0NjA4ZiIsImV4cGlyZXNBdCI6MTc1MzQwMzA2NCwiaWF0IjoxNzUwODExMDY0fQ.ECvK-j7s8ZIIv1m9zLG34PeuAeXutz9midEbmnNy7pM';
 
     $url = "https://api.verifik.co/v2/co/simit/consultar?documentType=$documentType&documentNumber=$documentNumber";
 
