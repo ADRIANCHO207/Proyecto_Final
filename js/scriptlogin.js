@@ -3,8 +3,7 @@ const inputs = document.querySelectorAll('#formulario input');
 
 const expresiones = {
     validadocumento: /^\d{6,10}$/,
-    validanombre: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{2,50}$/,
-    validapassword: /^.{4,12}$/
+    validapassword: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,14}$/
 };
 
 // Función reutilizable para validar campos

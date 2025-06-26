@@ -70,10 +70,10 @@ $rol = 2;
                             <div class = "input_field_con" id="grupo_con">
                                 <label for="con"></label>
                                 <i class="bi bi-eye-slash" id="showpass1" onclick="showpass1()"></i>
-                                <input type="password" name = "con" id = "con" placeholder = "Contraseña" value="" maxlength= "15" minlength = "8">
+                                <input type="password" name = "con" id = "con" placeholder = "Contraseña" value="" maxlength= "14" minlength = "8">
                             </div>
                             <div class="formulario_error_con">
-                                <p class="validacion3" id="validacion3">La contraseña debe tener entre 4 y 12 caracteres...</p>
+                                <p class="validacion3" id="validacion3">La contraseña debe tener entre 8 a 14 caracteres, debe llevar una mayucula, minuscula y un caracter especial.</p>
                             </div>
                         </div>
                         
