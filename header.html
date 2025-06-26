@@ -89,32 +89,54 @@
 
         .listheader a {
             font-weight: bold;
+            display:inline-block;              
+            transition:transform .2s ease,    
+                    box-shadow .25s ease;
         }
         .listheader a:hover {
             color:  #d32f2f;
+            background-color: transparent;
             font-weight: bold;
             transition: .5s;
+            transform:translateY(-2px);        
         }
 
         .listheader a.active {
             text-decoration: none;
             background-color: transparent;
             color: #000;
-            border: solid 2px #333;
+            padding: 6px 20px;
+            border: solid 1px #333;
+            border-radius: 5px;
+            display:inline-block;              /* para que el desplazamiento funcione en todos los navegadores */
+            transition:transform .2s ease,    /* velocidad y tipo de animación */
+                    box-shadow .2s ease;   /* (ya lo usas para la sombra) */
         }
+
         .listheader a.active-re {
             text-decoration: none;
             background-color: transparent;
+            padding: 6px 30px;
             color: #fff;
-            border: solid 2px #333;
             background-color: #d32f2f;
+            border-radius: 5px;
+            display:inline-block;              
+            transition:transform .25s ease,    
+                    box-shadow .25s ease;   
+        }
+
+        .listheader a.active-re:hover {
+            background-color: #d32f2f;
+            color: #fff;
+            transform:translateY(-2px);        /* sube 5 px */
+            box-shadow:0 8px 20px rgba(211,47,47,.45);
         }
 
         .listheader a.active:hover {
             background-color: #d32f2f;
-            border: solid 2px #333;
             color: #fff;
-
+            transform:translateY(-2px);        /* sube 5 px */
+            box-shadow:0 8px 20px rgba(211,47,47,.45);
         }
 
         /* Botón menú hamburguesa para móviles */
