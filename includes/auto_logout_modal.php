@@ -27,7 +27,7 @@
     }
 </style>
 <script>
-    let tiempoInactividad = 240000; // 4 minutos
+    let tiempoInactividad = 60000; // 4 minutos
     let advertenciaTiempo = 10000;  // Mostrar advertencia 10 segundos antes
     let temporizadorInactividad;
     let temporizadorAdvertencia;
@@ -45,7 +45,7 @@
         }, tiempoInactividad - advertenciaTiempo);
 
         temporizadorInactividad = setTimeout(() => {
-            window.location.href = "salir";
+            window.location.href = "../../includes/salir";
         }, tiempoInactividad);
     }
 

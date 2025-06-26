@@ -87,7 +87,7 @@ if (isset($_POST['enviar'])) {
                             <input type="password" name = "password1" id="password1" placeholder = "Nueva contraseña">
                         </div>
                         <div class="formulario_error_passw1" id="formulario_correcto_passw1">
-                            <p class="validacion_passw1" id="validacion_passw1">La contraseña debe tener entre 4 y 12 caracteres...</p>
+                            <p class="validacion_passw1" id="validacion_passw1">La contraseña debe tener entre 8 a 14 caracteres, debe llevar una mayucula, minuscula y un caracter especial.</p>
                         </div>
                     </div>
                     
@@ -120,7 +120,7 @@ if (isset($_POST['enviar'])) {
         const inputs = document.querySelectorAll('#form_con input')
 
         const expresiones = {
-            validapassword: /^.{6,12}$/
+            validapassword: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,14}$/
         }
 
         const validpassw = (e) =>{
