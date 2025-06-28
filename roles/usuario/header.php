@@ -1,30 +1,36 @@
+<?php
+if (!defined('BASE_URL')) {
+    if (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false) {
+        define('BASE_URL', '/Proyecto');
+    } else {
+        define('BASE_URL', ''); // O '/subcarpeta' si tu proyecto está en una subcarpeta en el hosting
+    }
+}
+?>
 <div class="header">
     <div class="logo">
-        <a href="index">
-            <img src="css/img/logo_sinfondo.png" alt="Logo">
+        <a href="<?= BASE_URL ?>/roles/usuario/index">
+            <img src="<?= BASE_URL ?>/roles/usuario/css/img/logo_sinfondo.png" alt="Logo">
             <span class="empresa">Flotax AGC</span>
         </a>
     </div>
     <div class="menu">
-        <a href="usuario/index" class="boton">Inicio</a>
-        <a href="usuario/vehiculos/registrar_vehiculos" class="boton">Registrar Vehículo</a>
+        <a href="<?= BASE_URL ?>/roles/usuario/index" class="boton">Inicio</a>
+        <a href="<?= BASE_URL ?>/roles/usuario/vehiculos/registrar_vehiculos" class="boton">Registrar Vehículo</a>
         <div class="dropdown">
-      <a href="#" class="boton">Historiales ▾</a>
-      <div class="dropdown-content">
-        <a href="historiales/ver_soat">Historial de SOAT</a>
-        <a href="historiales/ver_tecnomecanica">Historial de Tecnomecánica</a>
-        <a href="historiales/ver_licencia">Historial de Licencia de Conducción</a>
-        <a href="historiales/ver_llantas">Historial de Llantas</a>
-        <a href="historiales/ver_mantenimiento">Historial de Mantenimiento</a>
-      </div>
-    </div> 
-    
-  </div>
+            <a href="#" class="boton">Historiales ▾</a>
+            <div class="dropdown-content">
+                <a href="<?= BASE_URL ?>/roles/usuario/historiales/ver_soat">Historial de SOAT</a>
+                <a href="<?= BASE_URL ?>/roles/usuario/historiales/ver_tecnomecanica">Historial de Tecnomecánica</a>
+                <a href="<?= BASE_URL ?>/roles/usuario/historiales/ver_licencia">Historial de Licencia de Conducción</a>
+                <a href="<?= BASE_URL ?>/roles/usuario/historiales/ver_llantas">Historial de Llantas</a>
+                <a href="<?= BASE_URL ?>/roles/usuario/historiales/ver_mantenimiento">Historial de Mantenimiento</a>
+            </div>
+        </div> 
+    </div>
 
     <div class="perfil" onclick="openModal()">
-        <img src="<?= $_SESSION['foto_perfil'] ?>" alt="Foto de perfil" class="imagen-usuario">
- 
-        
+        <img src="<?= htmlspecialchars(BASE_URL . $_SESSION['foto_perfil']) ?>" alt="Foto de perfil" class="imagen-usuario">
         <div class="info-usuario">
             <span><?php echo htmlspecialchars($nombre_completo); ?></span>
             <span>Perfil Usuario</span>
@@ -35,8 +41,7 @@
             <button class="close" onclick="closeModal()">Cerrar</button>
             <h2>Información del Usuario</h2>
             <?php
-            // Usar la misma lógica que en el header: simplemente mostrar la imagen con cache-busting
-            $imagePath = htmlspecialchars($foto_perfil) . '?v=' . time();
+            $imagePath = htmlspecialchars(BASE_URL . $foto_perfil) . '?v=' . time();
             ?>
             <img src="<?php echo $imagePath; ?>" alt="Foto de Perfil" class="usu_imagen" style="max-width: 100px; height: 100px;">
             <?php if ($foto_perfil === '/roles/usuario/css/img/perfil.jpg'): ?>
@@ -51,19 +56,19 @@
             <p><strong>Nombre:</strong> <?php echo htmlspecialchars($user['nombre_completo']); ?></p>
             <p><strong>Email:</strong> <?php echo htmlspecialchars($user['email']); ?></p>
             <p><strong>Teléfono:</strong> <?php echo htmlspecialchars($user['telefono']); ?></p>
-            <form action="/roles/usuario/actualizar_foto.php" method="post" enctype="multipart/form-data">
+            <form action="<?= BASE_URL ?>/roles/usuario/actualizar_foto.php" method="post" enctype="multipart/form-data">
                 <label for="foto_perfil">Cambiar Foto de Perfil:</label>
                 <p class="upload-instructions">Formatos: JPEG, PNG, GIF. Máximo 5MB. Recomendado: 512x512 píxeles.</p>
-            <div class="input-file-custom">
-                <button class="input-file-btn">
-                    <i class="bi bi-cloud-upload"></i> Elegir archivo
-                </button>
-                <input type="file" id="foto_perfil" name="foto_perfil" accept="image/jpeg,image/png,image/gif">
+                <div class="input-file-custom">
+                    <button class="input-file-btn">
+                        <i class="bi bi-cloud-upload"></i> Elegir archivo
+                    </button>
+                    <input type="file" id="foto_perfil" name="foto_perfil" accept="image/jpeg,image/png,image/gif">
                 </div>
                 <br>
                 <button type="submit" class="boton">Actualizar Foto</button>
             </form>
-            <form action="actualizar_foto.php" method="post">
+            <form action="<?= BASE_URL ?>/roles/usuario/actualizar_foto.php" method="post">
                 <input type="hidden" name="reset_image" value="1">
                 <button type="submit" class="boton">Borrar Imagen</button>
             </form>
@@ -81,7 +86,7 @@
 </div>
 
 <div class="sidebar">
-    <a href="../../includes/salir" class="logout" title="Cerrar Sesión">
+    <a href="<?= BASE_URL ?>/includes/salir" class="logout" title="Cerrar Sesión">
         <i class="bi bi-box-arrow-right"></i>
     </a>
 </div>

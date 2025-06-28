@@ -26,22 +26,26 @@ if (!$nombre_completo || !$foto_perfil) {
 
 $filtro_placa = $_GET['placa'] ?? '';
 
-// Consulta de llantas filtrada
+// Consulta de llantas filtrada SOLO para los vehículos del usuario logueado
 if (!empty($filtro_placa)) {
     $llantas_query = $con->prepare("
         SELECT l.*, v.placa 
         FROM llantas l 
         JOIN vehiculos v ON l.placa = v.placa 
-        WHERE v.placa LIKE :placa
+        WHERE v.placa LIKE :placa AND v.Documento = :documento
     ");
-    $llantas_query->execute(['placa' => "%$filtro_placa%"]);
+    $llantas_query->execute([
+        'placa' => "%$filtro_placa%",
+        'documento' => $documento
+    ]);
 } else {
     $llantas_query = $con->prepare("
         SELECT l.*, v.placa 
         FROM llantas l 
         JOIN vehiculos v ON l.placa = v.placa 
+        WHERE v.Documento = :documento
     ");
-    $llantas_query->execute();
+    $llantas_query->execute(['documento' => $documento]);
 }
 $llantas = $llantas_query->fetchAll(PDO::FETCH_ASSOC);
 ?>

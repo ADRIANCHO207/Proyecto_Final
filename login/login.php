@@ -52,7 +52,7 @@ $estado = 1 ;
                                     <div class = "input_field_passw" id="grupo_passw">
                                         <label for="passw"></label>
                                         <i class="bi bi-eye-slash" id="showpass1" onclick="showpass1()"></i>
-                                        <input type="password" name = "passw" id = "passw" placeholder = "Contraseña" value="" maxlength= "14" minlength = "8">
+                                        <input type="password" name = "passw" id = "passw" placeholder = "Contraseña" maxlength= "14" minlength = "8">
                                     </div>
                                     <div class="formulario_error_passw" id=" formulario_correcto_passw">
                                         <p class="validacion2" id="validacion2">La contraseña debe tener entre 8 a 14 caracteres, debe llevar una mayucula, minuscula y un caracter especial.</p>

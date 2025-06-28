@@ -62,12 +62,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit;
     }
 
-    // Insertar nuevo usuario
-    $inserto = $con->prepare("INSERT INTO usuarios(documento, nombre_completo, email, password, telefono, id_estado_usuario, id_rol) 
-        VALUES (?, ?, ?, ?, ?, ?, ?)");
-
-    if ($inserto->execute([$doc, $nom, $correo, $cont_enc, $cel, $estado, $rol])) {
+    // Ruta de la imagen por defecto
+    $foto = '/roles/usuario/css/img/perfil.jpg'; // Usa esta ruta relativa a la raíz del proyecto
+    
+    // Insertar nuevo usuario con foto
+    $inserto = $con->prepare("INSERT INTO usuarios(documento, nombre_completo, email, password, telefono, foto_perfil, id_estado_usuario, id_rol) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    
+    if ($inserto->execute([$doc, $nom, $correo, $cont_enc, $cel, $foto, $estado, $rol])) {
         echo json_encode(['status' => 'success', 'message' => 'Registro exitoso']);
+
     } else {
         echo json_encode(['status' => 'error', 'message' => 'Error al guardar']);
     }

@@ -1,4 +1,12 @@
-<!-- auto_logout_modal.php -->
+<?php
+if (!defined('BASE_URL')) {
+    if (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false) {
+        define('BASE_URL', '/Proyecto');
+    } else {
+        define('BASE_URL', ''); // O '/subcarpeta' si tu proyecto está en una subcarpeta en el hosting
+    }
+}
+?>
 <div id="modalInactividad" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: none; backdrop-filter:blur(4px); z-index:9999; display:flex; align-items:center; justify-content:center;">
     <div id="apa" style="display:none;background: rgba(255, 255, 255, 0.95); padding: 25px; border-radius: 12px; text-align: center; max-width: 320px; width: 90%; box-shadow: 0 4px 20px rgba(0,0,0,0.3); font-family: 'Poppins', sans-serif;">
         <h3 class="titumo" style="margin-bottom: 10px; font-weight: 600;">¿Sigues ahí?</h3>
@@ -27,7 +35,10 @@
     }
 </style>
 <script>
-    let tiempoInactividad = 60000; // 4 minutos
+    // Pasar BASE_URL de PHP a JS
+    const BASE_URL = "<?= BASE_URL ?>";
+
+    let tiempoInactividad = 240000; // 4 minuto
     let advertenciaTiempo = 10000;  // Mostrar advertencia 10 segundos antes
     let temporizadorInactividad;
     let temporizadorAdvertencia;
@@ -45,7 +56,7 @@
         }, tiempoInactividad - advertenciaTiempo);
 
         temporizadorInactividad = setTimeout(() => {
-            window.location.href = "../../includes/salir";
+            window.location.href = BASE_URL + "/includes/salir";
         }, tiempoInactividad);
     }
 

@@ -1,13 +1,21 @@
 <?php
-date_default_timezone_set('America/Bogota'); // Ajusta la zona horaria según tu ubicación
+date_default_timezone_set('America/Bogota');
 require '../src/PHPMailer.php';
 require '../src/SMTP.php';
 require '../src/Exception.php';
-require '../conecct/conex.php'; // Conexión a la base de datos
-
+require '../conecct/conex.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+
+// Definir BASE_URL si no está definida
+if (!defined('BASE_URL')) {
+    if (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false) {
+        define('BASE_URL', '/Proyecto');
+    } else {
+        define('BASE_URL', ''); // O '/subcarpeta' si tu proyecto está en una subcarpeta en el hosting
+    }
+}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = trim($_POST["email"]);
@@ -29,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (!$user) {
         echo '<script>alert("Email incorrecto");</script>';
-        echo '<script>window.location = "recovery;</script>';
+        echo '<script>window.location = "recovery";</script>';
         exit;
     }
 
@@ -58,18 +66,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $mail->addAddress($email);
         $mail->Subject = 'Recuperación de contraseña - Flota Vehicular';
 
-        // Enlace de recuperación
-        $reset_link = "http://127.1.1.0/proyecto/login/change.php?token=" . urlencode($token);
+        // Enlace de recuperación dinámico y compatible
+        $host = $_SERVER['HTTP_HOST'];
+        $protocolo = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https" : "http";
+        $reset_link = $protocolo . "://" . $host . BASE_URL . "/login/change/" . urlencode($token);
 
-        // Contenido del correo.php
-        $logoUrl = 'https://logosinfondo.netlify.app/logo_sinfondo.png'; // Asegúrate que esta sea la URL exacta de tu imagen
+        // Contenido del correo
+        $logoUrl = 'https://logosinfondo.netlify.app/logo_sinfondo.png';
 
         $mail->isHTML(true);
         $mail->Body = "
         <div style='background-color: #1a1a1a; width: 100%; padding: 20px 0; font-family: Arial, sans-serif;'>
             <div style='background-color: #262626; max-width: 600px; margin: 0 auto; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.5);'>
                 <!-- Logo centrado -->
-                <div style='width: 150px; height: 150px; margin: auto; background-image: url(https://logosinfondo.netlify.app/logo_sinfondo.png); 
+                <div style='width: 150px; height: 150px; margin: auto; background-image: url($logoUrl); 
                 background-size: contain; background-repeat: no-repeat; background-position: center;'></div>
                 
                 <h2 style='color: #ffffff; text-align: center; margin-bottom: 20px; font-size: 24px;'>Recuperación de contraseña</h2>

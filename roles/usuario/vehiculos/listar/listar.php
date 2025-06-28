@@ -90,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['new_foto_vehiculo'])
             // Valida la extensión del archivo
             if (in_array($file_ext, $allowed_exts)) {
                 $new_file_name = uniqid('vehiculo_') . '.' . $file_ext;
-                $upload_dir = '../../vehiculos/listar/guardar_foto_vehiculo/';
+                $upload_dir = 'guardar_foto_vehiculo/';
                 $upload_path = $upload_dir . $new_file_name;
 
                 // Verifica que exista el directorio
@@ -120,11 +120,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['new_foto_vehiculo'])
                     $current_image = $current_image_query->fetchColumn();
 
                     // Elimina la imagen anterior si no es la predeterminada
-                    if ($current_image && file_exists('../../' . $current_image) && $current_image !== 'vehiculos/listar/guardar_foto_vehiculo/sin_foto_carro.png') {
-                        if (unlink('../../' . $current_image)) {
-                            error_log("Old image deleted: ../../$current_image");
+                    if ($current_image && file_exists($current_image) && $current_image !== 'vehiculos/listar/guardar_foto_vehiculo/sin_foto_carro.png') {
+                        if (unlink($current_image)) {
+                            error_log("Old image deleted: $current_image");
                         } else {
-                            error_log("Failed to delete old image: ../../$current_image");
+                            error_log("Failed to delete old image: $current_image");
                         }
                     }
 
@@ -168,11 +168,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reset_image']) && $pl
     $current_image = $current_image_query->fetchColumn();
 
     // Elimina la imagen actual si no es la predeterminada
-    if ($current_image && file_exists('../../' . $current_image) && $current_image !== 'vehiculos/listar/guardar_foto_vehiculo/sin_foto_carro.png') {
-        if (unlink('../../' . $current_image)) {
-            error_log("Old image deleted: ../../$current_image");
+    if ($current_image && file_exists($current_image) && $current_image !== 'vehiculos/listar/guardar_foto_vehiculo/sin_foto_carro.png') {
+        if (unlink($current_image)) {
+            error_log("Old image deleted: $current_image");
         } else {
-            error_log("Failed to delete old image: ../../$current_image");
+            error_log("Failed to delete old image: $current_image");
         }
     }
 
@@ -195,7 +195,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reset_image']) && $pl
     }
 }
 
-// Obtiene los detalles del vehículo (para mostrar después de actualizar o restablecer)
+// Obtiene los detalles del vehículo
 if ($placa) {
     $query = "
         SELECT 
@@ -267,20 +267,27 @@ if ($placa) {
             <div class="vehicle-details">
                 <div class="vehicle-image">
                     <?php
-                    $imagePath = $vehicle_data['foto_vehiculo'] 
-                        ? "../../" . htmlspecialchars($vehicle_data['foto_vehiculo']) . '?v=' . time()
-                        : "../../vehiculos/listar/guardar_foto_vehiculo/sin_foto_carro.png";
-                    $absoluteImagePath = realpath(__DIR__ . '/../../' . $vehicle_data['foto_vehiculo']);
+                    // Construir la ruta relativa para la imagen
+                    $relativeImagePath = $vehicle_data['foto_vehiculo'] 
+                        ? 'guardar_foto_vehiculo/' . basename($vehicle_data['foto_vehiculo']) 
+                        : 'guardar_foto_vehiculo/sin_foto_carro.png';
+                    
+                    // Construir la ruta absoluta para verificar existencia
+                    $absoluteImagePath = realpath(__DIR__ . '/' . $relativeImagePath);
+                    
+                    // Ruta para la etiqueta <img> (relativa desde listar.php)
+                    $imagePath = htmlspecialchars($relativeImagePath) . '?v=' . time();
+
+                    // Verificar si el archivo existe
                     if (!$absoluteImagePath || !file_exists($absoluteImagePath)) {
-                        error_log("Image file does not exist: $absoluteImagePath (original: $imagePath)");
-                        $imagePath = "../../vehiculos/listar/guardar_foto_vehiculo/sin_foto_carro.png";
+                        error_log("Image file does not exist: $absoluteImagePath (relative: $relativeImagePath)");
+                        $imagePath = 'guardar_foto_vehiculo/sin_foto_carro.png?v=' . time();
+                        $absoluteImagePath = realpath(__DIR__ . '/guardar_foto_vehiculo/sin_foto_carro.png');
                     }
-                    error_log("Generated image path: $imagePath");
+
+                    error_log("Generated image path: $imagePath (absolute: $absoluteImagePath)");
                     ?>
                     <img src="<?php echo $imagePath; ?>" alt="Foto del Vehículo" style="max-width: 100%; height: auto;">
-                    <?php if (!$vehicle_data['foto_vehiculo'] || $imagePath === "../../vehiculos/listar/guardar_foto_vehiculo/sin_foto_carro.png"): ?>
-                        <p>Debug: Usando imagen predeterminada.</p>
-                    <?php endif; ?>
                     <form action="listar.php?vehiculo=<?php echo urlencode($placa); ?>" method="post" enctype="multipart/form-data">
                         <label for="new_foto_vehiculo">Cambiar Imagen:</label>
                         <input type="file" id="new_foto_vehiculo" name="new_foto_vehiculo" accept="image/jpeg,image/png,image/gif">

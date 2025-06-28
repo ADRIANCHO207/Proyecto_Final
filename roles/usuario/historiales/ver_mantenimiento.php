@@ -25,27 +25,42 @@ if (!$nombre_completo || !$foto_perfil) {
     $_SESSION['foto_perfil'] = $foto_perfil;
 }
 
-// Fetch tipos de mantenimiento
-$tipos_mantenimiento_query = $con->prepare("SELECT id_tipo_mantenimiento, descripcion FROM tipo_mantenimiento");
-$tipos_mantenimiento_query->execute();
-$tipos_mantenimiento = $tipos_mantenimiento_query->fetchAll(PDO::FETCH_ASSOC);
+// Filtro por placa
+$filtro_placa = $_GET['placa'] ?? '';
 
-// Fetch mantenimientos
-$mantenimientos_query = $con->prepare("
-    SELECT m.*, v.placa, tm.descripcion AS tipo_mantenimiento,
-           GROUP_CONCAT(c.Trabajo, ': $', d.subtotal) AS detalles_trabajos
-    FROM mantenimiento m
-    JOIN vehiculos v ON m.placa = v.placa
-    JOIN tipo_mantenimiento tm ON m.id_tipo_mantenimiento = tm.id_tipo_mantenimiento
-    LEFT JOIN detalles_mantenimiento_clasificacion d ON m.id_mantenimiento = d.id_mantenimiento
-    LEFT JOIN clasificacion_trabajo c ON d.id_trabajo = c.id
-    WHERE v.Documento = :documento
-    GROUP BY m.id_mantenimiento
-");
-$mantenimientos_query->bindParam(':documento', $documento, PDO::PARAM_STR);
-$mantenimientos_query->execute();
+// Consulta de mantenimientos solo para los vehículos del usuario logueado y filtro por placa
+if (!empty($filtro_placa)) {
+    $mantenimientos_query = $con->prepare("
+        SELECT m.*, v.placa, tm.descripcion AS tipo_mantenimiento,
+               GROUP_CONCAT(c.Trabajo, ': $', d.subtotal) AS detalles_trabajos
+        FROM mantenimiento m
+        JOIN vehiculos v ON m.placa = v.placa
+        JOIN tipo_mantenimiento tm ON m.id_tipo_mantenimiento = tm.id_tipo_mantenimiento
+        LEFT JOIN detalles_mantenimiento_clasificacion d ON m.id_mantenimiento = d.id_mantenimiento
+        LEFT JOIN clasificacion_trabajo c ON d.id_trabajo = c.id
+        WHERE v.Documento = :documento
+        AND v.placa LIKE :placa
+        GROUP BY m.id_mantenimiento
+    ");
+    $mantenimientos_query->execute([
+        'documento' => $documento,
+        'placa' => "%$filtro_placa%"
+    ]);
+} else {
+    $mantenimientos_query = $con->prepare("
+        SELECT m.*, v.placa, tm.descripcion AS tipo_mantenimiento,
+               GROUP_CONCAT(c.Trabajo, ': $', d.subtotal) AS detalles_trabajos
+        FROM mantenimiento m
+        JOIN vehiculos v ON m.placa = v.placa
+        JOIN tipo_mantenimiento tm ON m.id_tipo_mantenimiento = tm.id_tipo_mantenimiento
+        LEFT JOIN detalles_mantenimiento_clasificacion d ON m.id_mantenimiento = d.id_mantenimiento
+        LEFT JOIN clasificacion_trabajo c ON d.id_trabajo = c.id
+        WHERE v.Documento = :documento
+        GROUP BY m.id_mantenimiento
+    ");
+    $mantenimientos_query->execute(['documento' => $documento]);
+}
 $mantenimientos = $mantenimientos_query->fetchAll(PDO::FETCH_ASSOC);
-
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -139,6 +154,11 @@ $mantenimientos = $mantenimientos_query->fetchAll(PDO::FETCH_ASSOC);
     <div class="container">
         <h2>Historial de Mantenimientos</h2>
 
+        <!-- Campo de búsqueda por placa -->
+        <div class="mb-4 d-flex justify-content-center">
+            <input type="text" id="filtroPlaca" class="form-control w-50 text-uppercase" placeholder="Buscar por placa" value="<?= htmlspecialchars($filtro_placa) ?>" style="text-transform: uppercase;">
+        </div>
+
         <div class="table-responsive">
         
             <table class="table table-hover table-bordered align-middle">
@@ -199,4 +219,24 @@ $mantenimientos = $mantenimientos_query->fetchAll(PDO::FETCH_ASSOC);
       include('../../../includes/auto_logout_modal.php');
     ?>
 
+    <!-- Script para búsqueda automática -->
+    <script>
+        const input = document.getElementById('filtroPlaca');
+        let timeout = null;
+
+        input.addEventListener('input', () => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                const placa = input.value.trim().toUpperCase();
+                const params = new URLSearchParams(window.location.search);
+                if (placa) {
+                    params.set('placa', placa);
+                } else {
+                    params.delete('placa');
+                }
+                window.location.href = window.location.pathname + '?' + params.toString();
+            }, 500); // espera 500ms después de dejar de escribir
+        });
+    </script>
 </body>
+</html>

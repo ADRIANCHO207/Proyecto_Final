@@ -4,20 +4,38 @@
     $db = new Database();
     $con = $db->conectar();
     include '../../../includes/validarsession.php';
-   
 
     $documento = $_SESSION['documento'] ?? null;
 
-    $condicion = "";
+    // Filtros
+    $filtro_categoria = $_GET['categoria'] ?? '';
+    $filtro_estado = $_GET['estado'] ?? '';
 
-    if (isset($_GET['buscar'])) {
-        $documento = $_GET['documento'];
-        $condicion = "WHERE licencias.id_documento = '$documento'";
+    // Consulta para mostrar solo las licencias del usuario logueado y filtrar por categoría y estado
+    $where = "licencias.id_documento = :documento";
+    $params = ['documento' => $documento];
+
+    if (!empty($filtro_categoria)) {
+        $where .= " AND categoria_licencia.nombre_categoria LIKE :categoria";
+        $params['categoria'] = "%$filtro_categoria%";
     }
 
-    $sql = "SELECT licencias.*, categoria_licencia.nombre_categoria, servicios_licencias.nombre_servicios FROM licencias INNER JOIN categoria_licencia ON licencias.id_categoria = categoria_licencia.id_categoria INNER JOIN servicios_licencias ON licencias.id_servicio = servicios_licencias.id_servicio WHERE id_documento = $documento";
+    if (!empty($filtro_estado)) {
+        // El estado se calcula en PHP, así que filtramos después de la consulta
+        $filtrar_estado = strtolower($filtro_estado);
+    } else {
+        $filtrar_estado = '';
+    }
 
-    $resultado = $con->query($sql);
+    $sql = $con->prepare("
+        SELECT licencias.*, categoria_licencia.nombre_categoria, servicios_licencias.nombre_servicios
+        FROM licencias
+        INNER JOIN categoria_licencia ON licencias.id_categoria = categoria_licencia.id_categoria
+        INNER JOIN servicios_licencias ON licencias.id_servicio = servicios_licencias.id_servicio
+        WHERE $where
+    ");
+    $sql->execute($params);
+    $licencias = $sql->fetchAll(PDO::FETCH_ASSOC);
 
     // Datos de perfil
     $nombre_completo = $_SESSION['nombre_completo'] ?? null;
@@ -36,9 +54,6 @@
 
 
 <!DOCTYPE html>
-<html lang="es">
-<head>
-    <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -105,6 +120,24 @@
 <div class="container">
     <h2><i class="bi bi-person-vcard me-2"></i>Listado de Licencias Registradas</h2>
 
+    <!-- Filtros por categoría y estado -->
+    <form method="get" class="row mb-4 justify-content-center g-2">
+        <div class="col-md-4">
+            <input type="text" name="categoria" id="filtroCategoria" class="form-control" placeholder="Buscar por categoría (ej: B1, C1, etc)" value="<?= htmlspecialchars($filtro_categoria) ?>">
+        </div>
+        <div class="col-md-3">
+            <select name="estado" id="filtroEstado" class="form-select">
+                <option value="">Todos los estados</option>
+                <option value="vigente" <?= $filtro_estado == 'vigente' ? 'selected' : '' ?>>Vigente</option>
+                <option value="vencido" <?= $filtro_estado == 'vencido' ? 'selected' : '' ?>>Vencido</option>
+                <option value="pendiente" <?= $filtro_estado == 'pendiente' ? 'selected' : '' ?>>Pendiente</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-dark w-100"><i class="fa fa-search"></i> Buscar</button>
+        </div>
+    </form>
+
     <div class="table-responsive">
         <table class="table table-hover table-bordered align-middle">
             <thead>
@@ -117,13 +150,11 @@
                 </tr>
             </thead>
             <tbody>
-                <?php 
-                $hayDatos = false;
-                while ($fila = $resultado->fetch(PDO::FETCH_ASSOC)): 
-                    $hayDatos = true;
-                    $fechaActual = date("Y-m-d");
-                    $estado = "";
-
+                <?php
+                $fechaActual = date("Y-m-d");
+                $hayRegistros = false;
+                foreach ($licencias as $fila):
+                    // Determinar estado
                     if (empty($fila['fecha_expedicion'])) {
                         $estado = "pendiente";
                         $clase = "estado-pendiente";
@@ -134,6 +165,9 @@
                         $estado = "vigente";
                         $clase = "estado-vigente";
                     }
+                    // Filtrar por estado si corresponde
+                    if ($filtrar_estado && $estado !== $filtrar_estado) continue;
+                    $hayRegistros = true;
                 ?>
                     <tr>
                         <td><?= htmlspecialchars($fila['fecha_expedicion']) ?></td>
@@ -142,19 +176,15 @@
                         <td><?= htmlspecialchars($fila['nombre_servicios']) ?></td>
                         <td><span class="badge <?= $clase ?>"><?= ucfirst($estado) ?></span></td>
                     </tr>
-                <?php endwhile; ?>
-
-                <?php if (!$hayDatos): ?>
-                    <tr><td colspan="6" class="text-center">No hay registros de Licencias.</td></tr>
+                <?php endforeach; ?>
+                <?php if (!$hayRegistros): ?>
+                    <tr><td colspan="5" class="text-center">No hay registros de Licencias.</td></tr>
                 <?php endif; ?>
             </tbody>
         </table>
     </div>
 
-    <?php
-      include('../../../includes/auto_logout_modal.php');
-    ?>
-    
+    <?php include('../../../includes/auto_logout_modal.php'); ?>
 </div>
 </body>
 </html>

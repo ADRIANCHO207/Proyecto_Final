@@ -5,7 +5,8 @@ const expresiones = {
     validadocumento: /^\d{6,10}$/,
     validanombre: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{2,50}$/,
     validacorreo: /^[a-zA-Z0-9._%+-]+@gmail\.com$/,
-    validapassword: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,14}$/
+    validapassword: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,14}$/,
+    validacelular: /^\d{10}$/
 };
 
 // Función reutilizable para validar campos
@@ -64,7 +65,7 @@ const validarformulario = (e) => {
             validarPassword2()
             break;
         case "cel":
-            validarcampo(expresiones.validadocumento, e.target, 'cel', 'validacion5');
+            validarcampo(expresiones.validacelular, e.target, 'cel', 'validacion5');
             break;
     }
 };
@@ -84,7 +85,7 @@ formulario.addEventListener('submit', (e) => {
     const corrvalido = expresiones.validacorreo.test($('#correo').val());
     const passvalido = expresiones.validapassword.test($('#con').val());
     const pass2valido = expresiones.validapassword.test($('#con2').val()) && $('#con').val() === $('#con2').val();
-    const celvalido = expresiones.validapassword.test($('#cel').val());
+    const celvalido = expresiones.validacelular.test($('#cel').val());
 
     if (docvalido && nomvalido && corrvalido && passvalido && pass2valido && celvalido) {
         $.ajax({
@@ -144,7 +145,7 @@ formulario.addEventListener('submit', (e) => {
             validarcampo(expresiones.validapassword, document.getElementById('con2'), 'con2', 'validacion4');
         }else if (!celvalido) {
             $('#cel').focus();
-            validarcampo(expresiones.validapassword, document.getElementById('cel'), 'cel', 'validacion5');
+            validarcampo(expresiones.validacelular, document.getElementById('cel'), 'cel', 'validacion5');
         }
 
         
