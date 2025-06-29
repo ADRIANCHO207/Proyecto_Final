@@ -251,12 +251,14 @@ if (!$nombre_completo || !$foto_perfil) {
                 </div>
             </div>
 
-            <!-- Gráficos -->
+                      <!-- Gráficos -->
             <div class="charts-container">
                 <div class="chart">
                     <h3><i class="bi bi-pie-chart"></i> Distribución por Estado</h3>
                     <canvas id="estadoChart"></canvas>
                 </div>
+
+
                 <!-- Mostrar tabla de vencimientos SOAT -->
                 <div class="calendar">
                     <h3><i class="bi bi-calendar-event"></i> SOAT Próximos a Vencer</h3>
@@ -326,6 +328,8 @@ if (!$nombre_completo || !$foto_perfil) {
                         <?php endif; ?>
                     </div>
                 </div>
+                
+  
 
 
                 <!-- Mostrar tabla de mantenimientos programados -->
@@ -354,47 +358,6 @@ if (!$nombre_completo || !$foto_perfil) {
                 </div>
 
 
-
-
-
-                <!-- Calendario de Vencimientos
-                <div class="calendar">
-                    <h3><i class="bi bi-calendar-event"></i> Próximos Vencimientos</h3>
-                    <div class="calendar-events">
-                        <div class="calendar-event">
-                            <div class="event-date">
-                                <span class="event-day"></span>
-                                <span class="event-month">May</span>
-                            </div>
-                            <div class="event-content">
-                                <div class="event-title">Vencimiento SOAT</div>
-                                <div class="event-vehicle"><i class="bi bi-car-front"></i> Placa: JSK13</div>
-                            </div>
-                        </div>
-
-                        <div class="calendar-event">
-                            <div class="event-date">
-                                <span class="event-day">12</span>
-                                <span class="event-month">May</span>
-                            </div>
-                            <div class="event-content">
-                                <div class="event-title">Revisión Técnica</div>
-                                <div class="event-vehicle"><i class="bi bi-car-front"></i> Placa: ABC123</div>
-                            </div>
-                        </div>
-
-                        <div class="calendar-event">
-                            <div class="event-date">
-                                <span class="event-day">20</span>
-                                <span class="event-month">May</span>
-                            </div>
-                            <div class="event-content">
-                                <div class="event-title">Cambio de aceite</div>
-                                <div class="event-vehicle"><i class="bi bi-car-front"></i> Placa: DEF456</div>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
 
 
 <!-- Mostrar actividad reciente -->
@@ -429,46 +392,6 @@ if (!$nombre_completo || !$foto_perfil) {
   </div>
 </div>
 
-
-                <!-- Actividad Reciente -->
-                <div class="recent-activity">
-                    <h3><i class="bi bi-activity"></i> Actividad Reciente</h3>
-                    <div class="activity-list">
-                        <div class="activity-item">
-                            <div class="activity-icon">
-                                <i class="bi bi-truck"></i>
-                            </div>
-                            <div class="activity-content">
-                                <div class="activity-title">Nuevo vehículo registrado</div>
-                                <div class="activity-subtitle">Camioneta Toyota Hilux - Placa ABC123</div>
-                            </div>
-                            <div class="activity-time">Hace 2 horas</div>
-                        </div>
-
-                        <div class="activity-item">
-                            <div class="activity-icon">
-                                <i class="bi bi-tools"></i>
-                            </div>
-                            <div class="activity-content">
-                                <div class="activity-title">Mantenimiento completado</div>
-                                <div class="activity-subtitle">Cambio de aceite y filtros - Placa XYZ789</div>
-                            </div>
-                            <div class="activity-time">Hace 5 horas</div>
-                        </div>
-
-                        <div class="activity-item">
-                            <div class="activity-icon">
-                                <i class="bi bi-exclamation-triangle"></i>
-                            </div>
-                            <div class="activity-content">
-                                <div class="activity-title">Alerta de vencimiento</div>
-                                <div class="activity-subtitle">SOAT próximo a vencer - Placa JSK13</div>
-                            </div>
-                            <div class="activity-time">Hace 1 día</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
          <script>
 // Datos desde PHP

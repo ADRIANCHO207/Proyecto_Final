@@ -24,7 +24,7 @@ if (!$nombre_completo || !$foto_perfil) {
     $user_query->execute();
     $user = $user_query->fetch(PDO::FETCH_ASSOC);
     $nombre_completo = $user['nombre_completo'] ?? 'Usuario';
-    $foto_perfil = $user['foto_perfil'] ?: 'Proyecto_Final/roles/user/css/img/perfil.jpg';
+    $foto_perfil = $user['foto_perfil'] ?: 'roles/user/css/img/perfil.jpg';
     $_SESSION['nombre_completo'] = $nombre_completo;
     $_SESSION['foto_perfil'] = $foto_perfil;
 }
@@ -46,30 +46,39 @@ function getDocumentStatus($fecha_vencimiento) {
     }
 }
 
-// Datos de ejemplo para documentos (deberías obtener esto de tu base de datos)
-$documentos = [
-    [
-        'placa' => 'ABC123',
-        'soat_vence' => '2025-08-12',
-        'tecnomecanica_vence' => '2024-04-01',
-        'licencia_estado' => 'vigente',
-        'tarjeta_propiedad' => true
-    ],
-    [
-        'placa' => 'XYZ789',
-        'soat_vence' => '2025-06-15',
-        'tecnomecanica_vence' => '2025-12-20',
-        'licencia_estado' => 'vigente',
-        'tarjeta_propiedad' => true
-    ],
-    [
-        'placa' => 'DEF456',
-        'soat_vence' => '2024-03-10',
-        'tecnomecanica_vence' => '2025-09-15',
-        'licencia_estado' => 'vencido',
-        'tarjeta_propiedad' => false
-    ]
-];
+// Datos de documentos desde la base de datos
+$documentos = [];
+
+$query = $con->prepare("
+    SELECT 
+        v.placa,
+        s.fecha_vencimiento AS soat_vence,
+        t.fecha_vencimiento AS tecnomecanica_vence,
+        l.fecha_vencimiento AS licencia_vence,
+        u.nombre_completo AS propietario
+    FROM vehiculos v
+    LEFT JOIN soat s ON v.placa = s.id_placa
+    LEFT JOIN tecnomecanica t ON v.placa = t.id_placa
+    LEFT JOIN licencias l ON v.documento = l.id_documento
+    LEFT JOIN usuarios u ON v.documento = u.documento
+    WHERE v.documento = :documento
+");
+
+$query->bindParam(':documento', $documento);
+$query->execute();
+$resultados = $query->fetchAll(PDO::FETCH_ASSOC);
+
+foreach ($resultados as $row) {
+    $estado_licencia = getDocumentStatus($row['licencia_vence']);
+
+    $documentos[] = [
+        'placa' => $row['placa'],
+        'soat_vence' => $row['soat_vence'],
+        'tecnomecanica_vence' => $row['tecnomecanica_vence'],
+        'licencia_estado' => $estado_licencia,
+        'propietario' => $row['propietario'] ?? 'Desconocido'
+    ];
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -723,7 +732,7 @@ body {
                 <th><i class="bi bi-shield-check"></i> SOAT</th>
                 <th><i class="bi bi-gear"></i> TecnoMecánica</th>
                 <th><i class="bi bi-person-badge"></i> Licencia</th>
-                <th><i class="bi bi-file-earmark-text"></i> Tarjeta Propiedad</th>
+                <th><i class="bi bi-file-earmark-text"></i>Propietario</th>
                 <th><i class="bi bi-tools"></i> Acciones</th>
               </tr>
             </thead>
