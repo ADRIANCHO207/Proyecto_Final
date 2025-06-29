@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => '__root__',
-        'pretty_version' => 'dev-Edwar_Gomez',
-        'version' => 'dev-Edwar_Gomez',
-        'reference' => '2bb3a045e8fb3e6962af456005bbf0862c1439d3',
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => 'ce25b552a6a34eed7630d2dc23aeb01da753cc0c',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         '__root__' => array(
-            'pretty_version' => 'dev-Edwar_Gomez',
-            'version' => 'dev-Edwar_Gomez',
-            'reference' => '2bb3a045e8fb3e6962af456005bbf0862c1439d3',
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => 'ce25b552a6a34eed7630d2dc23aeb01da753cc0c',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -61,6 +61,15 @@
             'reference' => '3de493bdddfd1f051249af725c7e0d2c38fed740',
             'type' => 'library',
             'install_path' => __DIR__ . '/../sabberworm/php-css-parser',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'twilio/sdk' => array(
+            'pretty_version' => '8.6.3',
+            'version' => '8.6.3.0',
+            'reference' => '0adab66d4ebb0fa2780ad3c9332f495cc78b44c6',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../twilio/sdk',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
