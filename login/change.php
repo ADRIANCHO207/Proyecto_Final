@@ -4,22 +4,30 @@ require_once('../conecct/conex.php');
 $db = new Database();
 $con = $db->conectar();
 
+// Definir BASE_URL si no está definida
+if (!defined('BASE_URL')) {
+    if (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false) {
+        define('BASE_URL', '/Proyecto');
+    } else {
+        define('BASE_URL', ''); // O '/subcarpeta' si tu proyecto está en una subcarpeta en el hosting
+    }
+}
+
 if (!isset($_GET['token'])) {
     echo '<script>alert("Acceso no autorizado.");</script>';
-    echo '<script>window.location = "recovery";</script>';
+    echo '<script>window.location = "'.BASE_URL.'/login/recovery";</script>';
     exit;
 }
 
 $token = $_GET['token'];
-$expira = $_GET['token'];
 
 $query = $con->prepare("SELECT * FROM usuarios WHERE reset_token = ? AND reset_expira >= NOW()");
-$query->execute([$token] );
+$query->execute([$token]);
 $user = $query->fetch(PDO::FETCH_ASSOC);
 
 if (!$user) {
     echo '<script>alert("El token es inválido o ha expirado.");</script>';
-    echo '<script>window.location = "recovery";</script>';
+    echo '<script>window.location = "'.BASE_URL.'/login/recovery";</script>';
     exit;
 }
 
@@ -33,8 +41,8 @@ if (isset($_POST['enviar'])) {
     // Validar si la nueva contraseña es igual a la anterior
     if (password_verify($password1, $user['password'])) {
         echo '<script>alert("La nueva contraseña no puede ser igual a la anterior.");</script>';
-    } elseif (strlen($password1) < 6) {
-        echo '<script>alert("La contraseña debe tener al menos 6 caracteres.");</script>';
+    } elseif (strlen($password1) < 8) {
+        echo '<script>alert("La contraseña debe tener al menos 8 caracteres.");</script>';
     } elseif ($password1 !== $password2) {
         echo '<script>alert("Las contraseñas no coinciden.");</script>';
     } else {
@@ -45,7 +53,7 @@ if (isset($_POST['enviar'])) {
 
         if ($update->rowCount() > 0) {
             echo '<script>alert("Contraseña actualizada exitosamente.");</script>';
-            echo '<script>window.location = "login";</script>';
+            echo '<script>window.location = "'.BASE_URL.'/login/login";</script>';
         } else {
             echo '<script>alert("Error al actualizar la contraseña.");</script>';
         }

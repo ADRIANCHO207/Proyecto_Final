@@ -1,5 +1,5 @@
 <?php
-
+date_default_timezone_set('America/Bogota');
 require_once '../../../conecct/conex.php';
 require '../../../src/Exception.php';
 require '../../../src/PHPMailer.php';
@@ -148,12 +148,16 @@ function generarMensaje($vehiculo, $dia) {
     <body style='font-family: Arial, sans-serif;'>
         <h2>Recordatorio de Pico y Placa</h2>
         <p>Estimado/a {$vehiculo['nombre_completo']},</p>
-        <p>Le recordamos que mañana <strong>{$dia}</strong> su vehículo con placa 
+        <p>Le recordamos que mañana en la ciudad de Ibague<strong>{$dia}</strong> su vehículo con placa 
            <strong>{$vehiculo['placa']}</strong> tiene restricción de Pico y Placa.</p>
         <p>Horarios de restricción:</p>
         <ul>
-            <li>Mañana: <strong>6:00 AM - 11:00 AM</strong></li>
-            <li>Tarde: <strong>3:00 PM - 5:00 PM</strong></li>
+            <li>Dia: <strong>6:00 AM - 9:00 PM</strong></li>
+        </ul>
+        <p><strong>Importante:</strong>Los conductores que tengan matriculado los vehiculos en la ciudad de Ibague pueden disfrutar del beneficio de la hora valle y transitar el dia de su pico y placa en los siguientes horarios:</p>
+        <ul>
+            <li>Desde: <strong>9:00 AM</strong> Hasta: <strong> 11:00 AM </strong></li>
+            <li>Desde: <strong>3:00 PM</strong> Hasta: <strong> 5:00 PM </strong></li>
         </ul>
         <p>Planifique sus desplazamientos teniendo en cuenta esta restricción.</p>
         <p>Atentamente,<br>Sistema de Recordatorios</p>

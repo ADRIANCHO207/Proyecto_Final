@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('America/Bogota');
 // filepath: c:\xampp\htdocs\Proyecto\roles\usuario\notificaciones_correo\recordatorio_tecno.php
 require_once '../../../conecct/conex.php';
 require '../../../src/Exception.php';
