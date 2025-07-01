@@ -22,40 +22,39 @@ if (!$nombre_completo || !$foto_perfil) {
     $user_query->execute();
     $user = $user_query->fetch(PDO::FETCH_ASSOC);
     $nombre_completo = $user['nombre_completo'] ?? 'Usuario';
-    $foto_perfil = $user['foto_perfil'] ?: 'Proyecto_Final/roles/user/css/img/perfil.jpg';
+    $foto_perfil = $user['foto_perfil'] ?: 'roles/user/css/img/perfil.jpg';
     $_SESSION['nombre_completo'] = $nombre_completo;
     $_SESSION['foto_perfil'] = $foto_perfil;
 }
 
-// // Obtener estadísticas de mantenimientos
-// $stats_query = $con->prepare("SELECT 
-//         COUNT(*) as total_mantenimientos,
-//         SUM(CASE WHEN estado = 'Completado' THEN 1 ELSE 0 END) as mantenimientos_completados,
-//         SUM(CASE WHEN estado = 'Pendiente' THEN 1 ELSE 0 END) as mantenimientos_pendientes,
-//         SUM(costo) as costo_total
-//     FROM mantenimiento
-// ");
-// $stats_query->execute();
-// $stats = $stats_query->fetch(PDO::FETCH_ASSOC);
+// Obtener estadísticas de mantenimientos
+$stats_query = $con->prepare("SELECT 
+        COUNT(*) as total_mantenimientos,
+        SUM(CASE WHEN estado = 'Completado' THEN 1 ELSE 0 END) as mantenimientos_completados,
+        SUM(CASE WHEN estado = 'Pendiente' THEN 1 ELSE 0 END) as mantenimientos_pendientes,
+        SUM(costo) as costo_total
+    FROM mantenimiento
+");
+$stats_query->execute();
+$stats = $stats_query->fetch(PDO::FETCH_ASSOC);
 
-// // Función para determinar la clase CSS del estado
-// function getEstadoClass($estado) {
-//     switch (strtolower($estado)) {
-//         case 'completado':
-//         case 'listo':
-//             return 'estado-completado';
-//         case 'pendiente':
-//             return 'estado-pendiente';
-//         case 'en proceso':
-//             return 'estado-proceso';
-//         case 'cancelado':
-//             return 'estado-cancelado';
-//         default:
-//             return 'estado-pendiente';
-//     }
-// }
+// Función para determinar la clase CSS del estado
+function getEstadoClass($estado) {
+    switch (strtolower($estado)) {
+        case 'completado':
+        case 'listo':
+            return 'estado-completado';
+        case 'pendiente':
+            return 'estado-pendiente';
+        case 'en proceso':
+            return 'estado-proceso';
+        case 'cancelado':
+            return 'estado-cancelado';
+        default:
+            return 'estado-pendiente';
+    }
+}
 
-// Función para determinar la clase CSS del tipo de mantenimiento
 function getTipoClass($tipo) {
     switch (strtolower($tipo)) {
         case 'preventivo':
@@ -193,11 +192,8 @@ $mantenimientos = [
         <div class="stat-number"><?= $stats['mantenimientos_pendientes'] ?? 2 ?></div>
         <div class="stat-label">Pendientes</div>
       </div>
-      <div class="stat-card costos">
-        <i class="bi bi-cash-stack stat-icon"></i>
-        <div class="stat-number">$<?= number_format($stats['costo_total'] ?? 1350000, 0, ',', '.') ?></div>
-        <div class="stat-label">Costo Total</div>
-      </div>
+
+      
     </div>
 
     <!-- Filtros -->
