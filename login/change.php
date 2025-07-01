@@ -11,20 +11,8 @@ if (!isset($_GET['token'])) {
     exit;
 }
 
-$token = trim(urldecode($_GET['token']));
+$token = $_GET['token'];
 $now = date("Y-m-d H:i:s"); // Hora de PHP (America/Bogota)
-
-// Debug temporal
-$stmt = $con->prepare("SELECT reset_token, reset_expira FROM usuarios WHERE reset_token = ?");
-$stmt->execute([$token]);
-$row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-echo "Token GET: " . $token . "<br>";
-echo "Hora PHP (now): " . $now . "<br>";
-echo "Token BD: " . ($row['reset_token'] ?? 'NULL') . "<br>";
-echo "Expira BD: " . ($row['reset_expira'] ?? 'NULL') . "<br>";
-exit;
-
 $query = $con->prepare("SELECT * FROM usuarios WHERE reset_token = ? AND reset_expira >= ?");
 $query->execute([$token, $now]);
 $user = $query->fetch(PDO::FETCH_ASSOC);
@@ -240,3 +228,5 @@ if (isset($_POST['enviar'])) {
 
 
 
+
+  
