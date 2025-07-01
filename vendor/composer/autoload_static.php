@@ -7,10 +7,6 @@ namespace Composer\Autoload;
 class ComposerStaticInitac2d307f4ed514763a8119f3523066bb
 {
     public static $prefixLengthsPsr4 = array (
-        'T' => 
-        array (
-            'Twilio\\' => 7,
-        ),
         'S' => 
         array (
             'Svg\\' => 4,
@@ -31,10 +27,6 @@ class ComposerStaticInitac2d307f4ed514763a8119f3523066bb
     );
 
     public static $prefixDirsPsr4 = array (
-        'Twilio\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/twilio/sdk/src/Twilio',
-        ),
         'Svg\\' => 
         array (
             0 => __DIR__ . '/..' . '/dompdf/php-svg-lib/src/Svg',
