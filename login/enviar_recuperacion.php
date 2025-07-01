@@ -11,9 +11,9 @@ use PHPMailer\PHPMailer\Exception;
 // Definir BASE_URL si no está definida
 if (!defined('BASE_URL')) {
     if (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false) {
-        define('BASE_URL', '/Proyecto');
+        define('BASE_URL', '/Proyecto'); // Desarrollo local
     } else {
-        define('BASE_URL', ''); // O '/subcarpeta' si tu proyecto está en una subcarpeta en el hosting
+        define('BASE_URL', 'https://flotaxagc.com'); // Producción
     }
 }
 
@@ -43,9 +43,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Generar un token único
     $token = bin2hex(random_bytes(50));
+    // Antes de guardar el token y la expiración
+    date_default_timezone_set('America/Bogota'); // Asegúrate de tener esto antes de usar date()
     $expira = date("Y-m-d H:i:s", strtotime("+1 hour")); // Expira en 1 hora
 
-    // Guardar el token en la base de datos
+    // Guarda solo el token, no la URL
     $stmt = $con->prepare("UPDATE usuarios SET reset_token = ?, reset_expira = ? WHERE documento = ?");
     $stmt->execute([$token, $expira, $user['documento']]);
 
@@ -66,10 +68,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $mail->addAddress($email);
         $mail->Subject = 'Recuperación de contraseña - Flota Vehicular';
 
-        // Enlace de recuperación dinámico y compatible
         $host = $_SERVER['HTTP_HOST'];
-        $protocolo = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https" : "http";
-        $reset_link = $protocolo . "://" . $host . BASE_URL . "/login/change/" . urlencode($token);
+        if (strpos($host, 'localhost') !== false) {
+            $protocolo = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https" : "http";
+            $reset_link = $protocolo . "://" . $host . BASE_URL . "/login/change.php?token=" . urlencode($token);
+        } else {
+            $reset_link = BASE_URL . "/login/change.php?token=" . urlencode($token);
+        }
 
         // Contenido del correo
         $logoUrl = 'https://logosinfondo.netlify.app/logo_sinfondo.png';

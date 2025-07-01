@@ -3,6 +3,7 @@ session_start();
 require_once('../conecct/conex.php');
 $db = new Database();
 $con = $db->conectar();
+date_default_timezone_set('America/Bogota'); // Asegúrate de tener esto aquí
 
 if (!isset($_GET['token'])) {
     echo '<script>alert("Acceso no autorizado.");</script>';
@@ -10,11 +11,22 @@ if (!isset($_GET['token'])) {
     exit;
 }
 
-$token = $_GET['token'];
-$expira = $_GET['token'];
+$token = trim(urldecode($_GET['token']));
+$now = date("Y-m-d H:i:s"); // Hora de PHP (America/Bogota)
 
-$query = $con->prepare("SELECT * FROM usuarios WHERE reset_token = ? AND reset_expira >= NOW()");
-$query->execute([$token] );
+// Debug temporal
+$stmt = $con->prepare("SELECT reset_token, reset_expira FROM usuarios WHERE reset_token = ?");
+$stmt->execute([$token]);
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+echo "Token GET: " . $token . "<br>";
+echo "Hora PHP (now): " . $now . "<br>";
+echo "Token BD: " . ($row['reset_token'] ?? 'NULL') . "<br>";
+echo "Expira BD: " . ($row['reset_expira'] ?? 'NULL') . "<br>";
+exit;
+
+$query = $con->prepare("SELECT * FROM usuarios WHERE reset_token = ? AND reset_expira >= ?");
+$query->execute([$token, $now]);
 $user = $query->fetch(PDO::FETCH_ASSOC);
 
 if (!$user) {
