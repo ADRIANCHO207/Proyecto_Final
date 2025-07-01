@@ -25,127 +25,11 @@ if (!$nombre_completo || !$foto_perfil) {
     $foto_perfil = $user['foto_perfil'] ?: 'roles/user/css/img/perfil.jpg';
     $_SESSION['nombre_completo'] = $nombre_completo;
     $_SESSION['foto_perfil'] = $foto_perfil;
-}
+};
 
-// Obtener estadísticas de mantenimientos
-$stats_query = $con->prepare("SELECT 
-        COUNT(*) as total_mantenimientos,
-        SUM(CASE WHEN estado = 'Completado' THEN 1 ELSE 0 END) as mantenimientos_completados,
-        SUM(CASE WHEN estado = 'Pendiente' THEN 1 ELSE 0 END) as mantenimientos_pendientes,
-        SUM(costo) as costo_total
-    FROM mantenimiento
-");
-$stats_query->execute();
-$stats = $stats_query->fetch(PDO::FETCH_ASSOC);
 
-// Función para determinar la clase CSS del estado
-function getEstadoClass($estado) {
-    switch (strtolower($estado)) {
-        case 'completado':
-        case 'listo':
-            return 'estado-completado';
-        case 'pendiente':
-            return 'estado-pendiente';
-        case 'en proceso':
-            return 'estado-proceso';
-        case 'cancelado':
-            return 'estado-cancelado';
-        default:
-            return 'estado-pendiente';
-    }
-}
 
-function getTipoClass($tipo) {
-    switch (strtolower($tipo)) {
-        case 'preventivo':
-            return 'tipo-preventivo';
-        case 'correctivo':
-            return 'tipo-correctivo';
-        case 'emergencia':
-            return 'tipo-emergencia';
-        default:
-            return '';
-    }
-}
 
-// Datos de ejemplo para mantenimientos (reemplazar con consulta real)
-$mantenimientos = [
-    [
-        'id' => 1,
-        'fecha' => '2025-05-20',
-        'placa' => 'ABC123',
-        'tipo' => 'Preventivo',
-        'kilometraje' => '55000',
-        'descripcion' => 'Cambio aceite y filtro',
-        'taller' => 'Taller Saldaña',
-        'costo' => '120000',
-        'estado' => 'Completado',
-        'detalles' => 'Se realizó cambio de aceite 20W50 sintético y filtro de aceite. También se revisaron niveles de líquidos y presión de neumáticos.',
-        'tecnico' => 'Juan Pérez',
-        'fecha_programada' => '2025-05-18',
-        'fecha_completado' => '2025-05-20'
-    ],
-    [
-        'id' => 2,
-        'fecha' => '2025-05-15',
-        'placa' => 'XYZ789',
-        'tipo' => 'Correctivo',
-        'kilometraje' => '78500',
-        'descripcion' => 'Cambio de frenos delanteros',
-        'taller' => 'AutoServicio Express',
-        'costo' => '350000',
-        'estado' => 'Completado',
-        'detalles' => 'Se reemplazaron pastillas de freno delanteras y se rectificaron discos. Se verificó el sistema hidráulico.',
-        'tecnico' => 'Carlos Rodríguez',
-        'fecha_programada' => '2025-05-15',
-        'fecha_completado' => '2025-05-15'
-    ],
-    [
-        'id' => 3,
-        'fecha' => '2025-06-05',
-        'placa' => 'DEF456',
-        'tipo' => 'Preventivo',
-        'kilometraje' => '32000',
-        'descripcion' => 'Revisión general',
-        'taller' => 'Taller Oficial',
-        'costo' => '180000',
-        'estado' => 'Pendiente',
-        'detalles' => 'Revisión de 30.000 km según manual del fabricante. Incluye cambio de aceite, filtros y revisión de 21 puntos.',
-        'tecnico' => 'Por asignar',
-        'fecha_programada' => '2025-06-05',
-        'fecha_completado' => null
-    ],
-    [
-        'id' => 4,
-        'fecha' => '2025-05-28',
-        'placa' => 'GHI789',
-        'tipo' => 'Emergencia',
-        'kilometraje' => '45200',
-        'descripcion' => 'Reparación sistema eléctrico',
-        'taller' => 'ElectriAutos',
-        'costo' => '280000',
-        'estado' => 'En proceso',
-        'detalles' => 'Falla en el sistema eléctrico. Se está revisando alternador y batería. Posible reemplazo de regulador de voltaje.',
-        'tecnico' => 'Roberto Gómez',
-        'fecha_programada' => '2025-05-28',
-        'fecha_completado' => null
-    ],
-    [
-        'id' => 5,
-        'fecha' => '2025-05-10',
-        'placa' => 'JKL012',
-        'tipo' => 'Correctivo',
-        'kilometraje' => '62300',
-        'descripcion' => 'Cambio de amortiguadores',
-        'taller' => 'Taller Saldaña',
-        'costo' => '420000',
-        'estado' => 'Completado',
-        'detalles' => 'Reemplazo de amortiguadores traseros y delanteros. Se alineó y balanceó el vehículo.',
-        'tecnico' => 'Juan Pérez',
-        'fecha_programada' => '2025-05-08',
-        'fecha_completado' => '2025-05-10'
-    ]
-];
 ?>
 
 <!DOCTYPE html>
@@ -267,7 +151,7 @@ $mantenimientos = [
             <tr>
               <td><span class="fecha-cell"><?= date('d/m/Y', strtotime($mant['fecha'])) ?></span></td>
               <td><span class="placa-cell"><?= htmlspecialchars($mant['placa']) ?></span></td>
-              <td><span class="tipo-cell <?= getTipoClass($mant['tipo']) ?>"><?= htmlspecialchars($mant['tipo']) ?></span></td>
+              <td><span class="tipo-cell <?= ($mant['tipo']) ?>"><?= htmlspecialchars($mant['tipo']) ?></span></td>
               <td><span class="kilometraje-cell"><?= number_format($mant['kilometraje'], 0, ',', '.') ?> km</span></td>
               <td class="expandable-cell">
                 <span class="descripcion-cell"><?= htmlspecialchars($mant['descripcion']) ?></span>

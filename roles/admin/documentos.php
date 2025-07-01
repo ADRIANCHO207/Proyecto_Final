@@ -49,8 +49,7 @@ function getDocumentStatus($fecha_vencimiento) {
 // Datos de documentos desde la base de datos
 $documentos = [];
 
-$query = $con->prepare("
-    SELECT 
+$query = $con->prepare("SELECT 
         v.placa,
         s.fecha_vencimiento AS soat_vence,
         t.fecha_vencimiento AS tecnomecanica_vence,

@@ -132,36 +132,3 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     });
 });
-<?php
-session_start();
-header('Content-Type: application/json');
-
-// Validar sesión
-if (!isset($_SESSION['documento'])) {
-    echo json_encode(['success' => false, 'error' => 'Sesión expirada']);
-    exit;
-}
-
-// Validar método y parámetro
-if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_POST['placa'])) {
-    echo json_encode(['success' => false, 'error' => 'Solicitud inválida']);
-    exit;
-}
-
-require_once('../../conecct/conex.php');
-$db = new Database();
-$con = $db->conectar();
-
-$placa = $_POST['placa'];
-
-// Eliminar el vehículo (ajusta la consulta según tu modelo de datos)
-$stmt = $con->prepare("DELETE FROM vehiculos WHERE placa = :placa");
-$stmt->bindParam(':placa', $placa);
-
-if ($stmt->execute()) {
-    echo json_encode(['success' => true]);
-} else {
-    echo json_encode(['success' => false, 'error' => 'No se pudo eliminar el vehículo']);
-}
-exit;
-?>

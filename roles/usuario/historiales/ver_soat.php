@@ -15,8 +15,7 @@ $filtro_placa = $_GET['placa'] ?? '';
 
 // Consulta modificada para mostrar solo los SOAT del usuario logueado
 if (!empty($filtro_placa)) {
-    $sql = $con->prepare("
-        SELECT s.id_soat, v.placa, s.fecha_expedicion, s.fecha_vencimiento,
+    $sql = $con->prepare("SELECT s.id_soat, v.placa, s.fecha_expedicion, s.fecha_vencimiento,
                a.nombre, e.soat_est
         FROM soat s
         INNER JOIN vehiculos v ON s.placa = v.placa
@@ -54,7 +53,7 @@ if (!$nombre_completo || !$foto_perfil) {
     $user_query->execute();
     $user = $user_query->fetch(PDO::FETCH_ASSOC);
     $nombre_completo = $user['nombre_completo'] ?? 'Usuario';
-    $foto_perfil = $user['foto_perfil'] ?? '/proyecto/roles/usuario/css/img/perfil.jpg';
+    $foto_perfil = $user['foto_perfil'] ?? 'roles/usuario/css/img/perfil.jpg';
     $_SESSION['nombre_completo'] = $nombre_completo;
     $_SESSION['foto_perfil'] = $foto_perfil;
 }

@@ -43,7 +43,12 @@
 [15-Jun-2025 16:34:56 Europe/Berlin] PHP Warning:  move_uploaded_file(): Unable to move &quot;C:\xampp1\tmp\php1C55.tmp&quot; to &quot;images/KKK222_1749998096.webp&quot; in C:\xampp1\htdocs\proyecto\roles\admin\modals_vehiculos\update_vehicle.php on line 41
 [15-Jun-2025 16:34:56 Europe/Berlin] Failed to upload image for placa: KKK222
 [15-Jun-2025 16:42:28 Europe/Berlin] PHP Warning:  move_uploaded_file(images/DAS231_1749998548.webp): Failed to open stream: No such file or directory in C:\xampp1\htdocs\proyecto\roles\admin\modals_vehiculos\update_vehicle.php on line 41
-[15-Jun-2025 16:42:28 Europe/Berlin] PHP Warning:  move_uploaded_file(): Unable to move &quot;C:\xampp1\tmp\php3BC.tmp&quot; to &quot;images/DAS231_1749998548.webp&quot; in C:\xampp1\htdocs\proyecto\roles\admin\modals_vehiculos\update_vehicle.php on line 41
+[15-Jun-2025 16:42:28 Europe/Berlin] PHPHP Warning:  move_uploaded_file(): Unable to move &quot;C:\xampp1\tmp\phpBFDD.tmp&quot; to &quot;images/KKK333_1750244818.webp&quot; in C:\xampp1\htdocs\proyecto\roles\admin\modals_vehiculos\update_vehicle.php on line 41
+[18-Jun-2025 13:06:58 Europe/Berlin] Failed to upload image for placa: KKK333
+[18-Jun-2025 13:07:05 Europe/Berlin] PHP Warning:  move_uploaded_file(images/KKK333_1750244825.webp): Failed to open stream: No such file or directory in C:\xampp1\htdocs\proyecto\roles\admin\modals_vehiculos\update_vehicle.php on line 41
+[18-Jun-2025 13:07:05 Europe/Berlin] PHP Warning:  move_uploaded_file(): Unable to move &quot;C:\xampp1\tmp\phpDA5B.tmp&quot; to &quot;images/KKK333_1750244825.webp&quot; in C:\xampp1\htdocs\proyecto\roles\admin\modals_vehiculos\update_vehicle.php on line 41
+[18-Jun-2025 13:07:05 Europe/Berlin] Failed to upload image for placa: KKK333
+P Warning:  move_uploaded_file(): Unable to move &quot;C:\xampp1\tmp\php3BC.tmp&quot; to &quot;images/DAS231_1749998548.webp&quot; in C:\xampp1\htdocs\proyecto\roles\admin\modals_vehiculos\update_vehicle.php on line 41
 [15-Jun-2025 16:42:28 Europe/Berlin] Failed to upload image for placa: DAS231
 [18-Jun-2025 04:56:38 Europe/Berlin] Executing query: SELECT COUNT(*) FROM mantenimiento WHERE placa = :placa for placa: DHS121
 [18-Jun-2025 04:56:38 Europe/Berlin] Result for mantenimiento: 0 records
@@ -56,8 +61,4 @@
 [18-Jun-2025 04:56:38 Europe/Berlin] Executing query: SELECT COUNT(*) FROM tecnomecanica WHERE id_placa = :placa for placa: DHS121
 [18-Jun-2025 04:56:38 Europe/Berlin] Result for tecnomecanica: 0 records
 [18-Jun-2025 13:06:58 Europe/Berlin] PHP Warning:  move_uploaded_file(images/KKK333_1750244818.webp): Failed to open stream: No such file or directory in C:\xampp1\htdocs\proyecto\roles\admin\modals_vehiculos\update_vehicle.php on line 41
-[18-Jun-2025 13:06:58 Europe/Berlin] PHP Warning:  move_uploaded_file(): Unable to move &quot;C:\xampp1\tmp\phpBFDD.tmp&quot; to &quot;images/KKK333_1750244818.webp&quot; in C:\xampp1\htdocs\proyecto\roles\admin\modals_vehiculos\update_vehicle.php on line 41
-[18-Jun-2025 13:06:58 Europe/Berlin] Failed to upload image for placa: KKK333
-[18-Jun-2025 13:07:05 Europe/Berlin] PHP Warning:  move_uploaded_file(images/KKK333_1750244825.webp): Failed to open stream: No such file or directory in C:\xampp1\htdocs\proyecto\roles\admin\modals_vehiculos\update_vehicle.php on line 41
-[18-Jun-2025 13:07:05 Europe/Berlin] PHP Warning:  move_uploaded_file(): Unable to move &quot;C:\xampp1\tmp\phpDA5B.tmp&quot; to &quot;images/KKK333_1750244825.webp&quot; in C:\xampp1\htdocs\proyecto\roles\admin\modals_vehiculos\update_vehicle.php on line 41
-[18-Jun-2025 13:07:05 Europe/Berlin] Failed to upload image for placa: KKK333
+[18-Jun-2025 13:06:58 Europe/Berlin] 

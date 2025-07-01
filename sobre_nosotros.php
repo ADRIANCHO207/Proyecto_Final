@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sobre Nosotros - Flotax AGC</title>
     <!-- Favicon del sitio -->
-    <link rel="shortcut icon" href="/css/img/Imagen_de_WhatsApp_2025-05-21_a_las_07.17-Photoroom__1_-removebg-preview.png">
+    <link rel="shortcut icon" href="css/img/Imagen_de_WhatsApp_2025-05-21_a_las_07.17-Photoroom__1_-removebg-preview.png">
     <!-- Estilos generales personalizados -->
-    <link rel="stylesheet" href="/css/stylos_generales.css">
+    <link rel="stylesheet" href="css/stylos_generales.css">
     <!-- Fuente Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>

@@ -86,12 +86,11 @@ $imagePath = htmlspecialchars($foto_perfil) . '?v=' . time();
           <span>Historial</span>
           <div class="nav-indicator"></div>
         </a>
-        <a href="#" class="nav-link">
-          <i class="bi bi-bell-fill"></i>
-          <span>Notificaciones</span>
-          <div class="nav-badge">12</div>
+        <a href="reportes.php" class="nav-link">
+          <i class="bi bi-graph-up"></i>
+          <span>Reportes</span>
           <div class="nav-indicator"></div>
-        </a>
+       
       </div>
     </nav>
 
