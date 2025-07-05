@@ -29,7 +29,7 @@ try {
     $database = new Database();
     $con = $database->conectar();
 
-    $hoy = new DateTime();
+    $hoy = new DateTime(date('Y-m-d'));
 
     $mail = new PHPMailer(true);
     $mail->CharSet = 'UTF-8';
@@ -43,7 +43,7 @@ try {
     $mail->Port = 465;
     $mail->setFrom('flotavehicularagc@gmail.com', 'Sistema de Recordatorios');
 
-    $query = "SELECT t.*, v.placa, u.email, u.nombre_completo, c.centro_revision 
+    $query = "SELECT t.*, v.placa, u.email, u.documento, u.nombre_completo, c.centro_revision as nombre_aseguradora 
               FROM tecnomecanica t 
               INNER JOIN vehiculos v ON t.id_placa = v.placa 
               INNER JOIN usuarios u ON v.Documento = u.documento 
@@ -57,12 +57,12 @@ try {
     foreach ($tecnos as $tecno) {
         try {
             $fechaVencimiento = new DateTime($tecno['fecha_vencimiento']);
-            $interval = $hoy->diff($fechaVencimiento);
-            $diasRestantes = (int)$interval->format('%r%a');
+            $diasRestantes = (int)$hoy->diff($fechaVencimiento)->format('%r%a');
 
             echo "<strong>Placa:</strong> {$tecno['placa']}<br>";
             echo "<strong>Usuario:</strong> {$tecno['nombre_completo']} ({$tecno['email']})<br>";
             echo "<strong>Fecha de vencimiento:</strong> {$tecno['fecha_vencimiento']}<br>";
+            echo $tecno['documento'] ? "<strong>Documento:</strong> {$tecno['documento']}<br>" : '';
             echo "<strong>Días restantes:</strong> $diasRestantes<br>";
 
             $mail->clearAddresses();
@@ -115,6 +115,22 @@ try {
 
             registrarLog("Correo enviado a {$tecno['email']} ($tipo_recordatorio)");
             echo "<span style='color: green;'>Correo enviado ($tipo_recordatorio)</span><hr>";
+
+            $mensaje_notif = '';
+            if ($tipo_recordatorio == '3_dia') {
+                $mensaje_notif = "La tecnomecánica de tu vehículo con placa {$tecno['placa']} vence en 3 días ({$tecno['fecha_vencimiento']}).";
+            } else if ($tipo_recordatorio == 'vencido') {
+                $mensaje_notif = "¡La tecnomecánica de tu vehículo con placa {$tecno['placa']} ha vencido hoy ({$tecno['fecha_vencimiento']})!";
+            }
+
+            if ($mensaje_notif) {
+                $insertNotif = $con->prepare("INSERT INTO notificaciones (documento_usuario, mensaje, tipo, fecha, leido) VALUES (?, ?, ?, NOW(), 0)");
+                $insertNotif->execute([
+                    $tecno['documento'],
+                    $mensaje_notif,
+                    'tecnomecanica'
+                ]);
+            }
 
         } catch (Exception $e) {
             registrarLog("ERROR al enviar a {$tecno['email']}: " . $mail->ErrorInfo);

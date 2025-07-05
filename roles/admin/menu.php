@@ -27,7 +27,7 @@ $imagePath = htmlspecialchars($foto_perfil) . '?v=' . time();
     <!-- Header del sidebar -->
     <div class="sidebar-header">
       <div class="logo-container">
-        <img src="../../css/img/logoagc-Photoroom-removebg-preview.png" alt="Logo" class="logo">
+        <img src="../../css/img/blanco.png" alt="Logo" class="logo">
         <div class="brand-text">
           <h1 class="brand-title">FLOTAX</h1>
           <span class="brand-subtitle">AGC</span>
@@ -86,10 +86,9 @@ $imagePath = htmlspecialchars($foto_perfil) . '?v=' . time();
           <span>Historial</span>
           <div class="nav-indicator"></div>
         </a>
-        <a href="#" class="nav-link">
-          <i class="bi bi-bell-fill"></i>
-          <span>Notificaciones</span>
-          <div class="nav-badge">12</div>
+        <a href="reportes.php" class="nav-link">
+                <i class="bi bi-graph-up"></i>
+          <span>Reportes</span>
           <div class="nav-indicator"></div>
         </a>
       </div>

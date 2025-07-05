@@ -24,41 +24,52 @@ try {
     $kilometraje_actual = $_POST['kilometraje_actual'] ?? '';
     $id_estado = $_POST['id_estado'] ?? '';
 
-    // Validate inputs
     if (empty($placa) || empty($documento) || empty($id_marca) || empty($modelo) || empty($kilometraje_actual) || empty($id_estado)) {
         error_log("Missing required fields in update_vehicle.php for placa: $placa");
         echo json_encode(['error' => 'Todos los campos son obligatorios']);
         exit;
     }
 
-    // Handle image upload
+    // Ruta donde se guardan las imágenes
+    $upload_dir = '../../../roles/usuario/vehiculos/listar/guardar_foto_vehiculo/';
     $foto_vehiculo = null;
+
+    // Si viene una imagen nueva
     if (isset($_FILES['foto_vehiculo']) && $_FILES['foto_vehiculo']['size'] > 0) {
-        $upload_dir = 'images/';
-        $file_name = $placa . '_' . time() . '.' . pathinfo($_FILES['foto_vehiculo']['name'], PATHINFO_EXTENSION);
+        $extension = strtolower(pathinfo($_FILES['foto_vehiculo']['name'], PATHINFO_EXTENSION));
+        $file_name = 'vehiculo_' . uniqid() . '.' . $extension;
         $file_path = $upload_dir . $file_name;
 
         if (move_uploaded_file($_FILES['foto_vehiculo']['tmp_name'], $file_path)) {
             $foto_vehiculo = $file_name;
-            // Delete old image if it exists
+
+            // Eliminar imagen anterior si existe
             $old_query = $con->prepare("SELECT foto_vehiculo FROM vehiculos WHERE placa = :placa");
             $old_query->bindParam(':placa', $placa, PDO::PARAM_STR);
             $old_query->execute();
             $old_image = $old_query->fetchColumn();
-            if ($old_image && file_exists($upload_dir . $old_image)) {
-                if (!unlink($upload_dir . $old_image)) {
-                    error_log("Failed to delete old image for placa $placa: $upload_dir$old_image");
+
+            $old_image_path = $upload_dir . $old_image;
+            if ($old_image && file_exists($old_image_path) && $old_image !== 'sin_foto_carro.png') {
+                if (!unlink($old_image_path)) {
+                    error_log("No se pudo eliminar la imagen anterior: $old_image_path");
                 }
             }
         } else {
-            error_log("Failed to upload image for placa: $placa");
+            error_log("Fallo al subir la nueva imagen para la placa: $placa");
             echo json_encode(['error' => 'Error al subir la imagen']);
             exit;
         }
     }
 
-    // Update vehicle
-    $query = $con->prepare("UPDATE vehiculos SET Documento = :documento, id_marca = :id_marca, modelo = :modelo, kilometraje_actual = :kilometraje_actual, id_estado = :id_estado" . ($foto_vehiculo ? ", foto_vehiculo = :foto_vehiculo" : "") . " WHERE placa = :placa");
+    // Construir SQL dinámico si hay nueva imagen
+    $sql = "UPDATE vehiculos SET Documento = :documento, id_marca = :id_marca, modelo = :modelo, kilometraje_actual = :kilometraje_actual, id_estado = :id_estado";
+    if ($foto_vehiculo) {
+        $sql .= ", foto_vehiculo = :foto_vehiculo";
+    }
+    $sql .= " WHERE placa = :placa";
+
+    $query = $con->prepare($sql);
     $query->bindParam(':placa', $placa, PDO::PARAM_STR);
     $query->bindParam(':documento', $documento, PDO::PARAM_STR);
     $query->bindParam(':id_marca', $id_marca, PDO::PARAM_INT);
@@ -72,11 +83,11 @@ try {
     if ($query->execute()) {
         echo json_encode(['success' => true]);
     } else {
-        error_log("Failed to update vehicle with placa: $placa");
+        error_log("Error al actualizar el vehículo con placa: $placa");
         echo json_encode(['error' => 'Error al actualizar el vehículo']);
     }
 } catch (PDOException $e) {
-    error_log("Database error in update_vehicle.php: " . $e->getMessage());
+    error_log("Excepción PDO en update_vehicle.php: " . $e->getMessage());
     echo json_encode(['error' => 'Error en la consulta: ' . $e->getMessage()]);
 }
 ?>

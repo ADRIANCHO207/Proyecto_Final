@@ -8,21 +8,21 @@ class Database
     private $password = "";
     private $charset = "utf8";
 
+//        private $hostname = "localhost";
+//     private $database = "    u148394603_flota
+// ";
+//     private $username = "    u148394603_flota
+// ";
+//     private $password = "Faridgomez04";
+//     private $charset = "utf8";
+
+
 
 
      function conectar()
      {
          try{
          $conexion = "mysql:host=". $this->hostname . "; dbname=" . $this->database . "; charset=" . $this->charset;
-
-        //  if (!$conexion){
-        //     echo ("No hubo conexion con la base de datos");  
-        //     }
-        //     else{
-        //     echo (" Tenemos conexion ");
-        //     }
-        
-
 
 
          $option = [

@@ -6,147 +6,80 @@ include '../../includes/validarsession.php';
 $db = new Database();
 $con = $db->conectar();
 
-// Validación de sesión
+// Validar sesión
 $documento = $_SESSION['documento'] ?? null;
 if (!$documento) {
     header('Location: ../../login.php');
     exit;
 }
 
-// Fetch nombre_completo and foto_perfil if not in session
+// Obtener datos de usuario si no están en sesión
 $nombre_completo = $_SESSION['nombre_completo'] ?? null;
 $foto_perfil = $_SESSION['foto_perfil'] ?? null;
 if (!$nombre_completo || !$foto_perfil) {
-    $user_query = $con->prepare("SELECT nombre_completo, foto_perfil FROM usuarios WHERE documento = :documento");
-    $user_query->bindParam(':documento', $documento, PDO::PARAM_STR);
-    $user_query->execute();
-    $user = $user_query->fetch(PDO::FETCH_ASSOC);
-    $nombre_completo = $user['nombre_completo'] ?? 'Usuario';
-    $foto_perfil = $user['foto_perfil'] ?: 'roles/user/css/img/perfil.jpg';
+    $query = $con->prepare("SELECT nombre_completo, foto_perfil FROM usuarios WHERE documento = :documento");
+    $query->bindParam(':documento', $documento);
+    $query->execute();
+    $usuario = $query->fetch(PDO::FETCH_ASSOC);
+
+    $nombre_completo = $usuario['nombre_completo'] ?? 'Usuario';
+    $foto_perfil = $usuario['foto_perfil'] ?: 'roles/user/css/img/perfil.jpg';
     $_SESSION['nombre_completo'] = $nombre_completo;
     $_SESSION['foto_perfil'] = $foto_perfil;
 }
 
-// Obtener estadísticas de mantenimientos
-$stats_query = $con->prepare("SELECT 
-        COUNT(*) as total_mantenimientos,
-        SUM(CASE WHEN estado = 'Completado' THEN 1 ELSE 0 END) as mantenimientos_completados,
-        SUM(CASE WHEN estado = 'Pendiente' THEN 1 ELSE 0 END) as mantenimientos_pendientes,
-        SUM(costo) as costo_total
-    FROM mantenimiento
+// Consulta de estadísticas
+$stats_query = $con->prepare("
+    SELECT 
+        COUNT(*) AS total_mantenimientos,
+        SUM(CASE WHEN fecha_realizada IS NOT NULL THEN 1 ELSE 0 END) AS mantenimientos_completados,
+        SUM(CASE WHEN fecha_realizada IS NULL THEN 1 ELSE 0 END) AS mantenimientos_pendientes
+    FROM mantenimiento m
 ");
 $stats_query->execute();
 $stats = $stats_query->fetch(PDO::FETCH_ASSOC);
 
-// Función para determinar la clase CSS del estado
+// Consulta de mantenimientos
+$mantenimientos_query = $con->prepare("
+    SELECT 
+        m.id_mantenimiento AS id,
+        m.placa,
+        tm.descripcion AS tipo,
+        m.kilometraje_actual AS kilometraje,
+        m.observaciones AS descripcion,
+        m.fecha_programada AS fecha,
+        m.fecha_realizada AS fecha_completado,
+        m.proximo_cambio_fecha,
+        CASE 
+            WHEN m.fecha_realizada IS NULL THEN 'Pendiente'
+            ELSE 'Completado'
+        END AS estado,
+        m.observaciones AS detalles
+    FROM mantenimiento m
+    LEFT JOIN tipo_mantenimiento tm ON m.id_tipo_mantenimiento = tm.id_tipo_mantenimiento
+    ORDER BY m.fecha_programada DESC
+");
+$mantenimientos_query->execute();
+$mantenimientos = $mantenimientos_query->fetchAll(PDO::FETCH_ASSOC);
+
+// Funciones para estilos CSS
 function getEstadoClass($estado) {
     switch (strtolower($estado)) {
-        case 'completado':
-        case 'listo':
-            return 'estado-completado';
-        case 'pendiente':
-            return 'estado-pendiente';
-        case 'en proceso':
-            return 'estado-proceso';
-        case 'cancelado':
-            return 'estado-cancelado';
-        default:
-            return 'estado-pendiente';
+        case 'completado': return 'estado-completado';
+        case 'pendiente': return 'estado-pendiente';
+        default: return '';
     }
 }
-
 function getTipoClass($tipo) {
     switch (strtolower($tipo)) {
-        case 'preventivo':
-            return 'tipo-preventivo';
-        case 'correctivo':
-            return 'tipo-correctivo';
-        case 'emergencia':
-            return 'tipo-emergencia';
-        default:
-            return '';
+        case 'preventivo': return 'tipo-preventivo';
+        case 'correctivo': return 'tipo-correctivo';
+        case 'emergencia': return 'tipo-emergencia';
+        default: return '';
     }
 }
-
-// Datos de ejemplo para mantenimientos (reemplazar con consulta real)
-$mantenimientos = [
-    [
-        'id' => 1,
-        'fecha' => '2025-05-20',
-        'placa' => 'ABC123',
-        'tipo' => 'Preventivo',
-        'kilometraje' => '55000',
-        'descripcion' => 'Cambio aceite y filtro',
-        'taller' => 'Taller Saldaña',
-        'costo' => '120000',
-        'estado' => 'Completado',
-        'detalles' => 'Se realizó cambio de aceite 20W50 sintético y filtro de aceite. También se revisaron niveles de líquidos y presión de neumáticos.',
-        'tecnico' => 'Juan Pérez',
-        'fecha_programada' => '2025-05-18',
-        'fecha_completado' => '2025-05-20'
-    ],
-    [
-        'id' => 2,
-        'fecha' => '2025-05-15',
-        'placa' => 'XYZ789',
-        'tipo' => 'Correctivo',
-        'kilometraje' => '78500',
-        'descripcion' => 'Cambio de frenos delanteros',
-        'taller' => 'AutoServicio Express',
-        'costo' => '350000',
-        'estado' => 'Completado',
-        'detalles' => 'Se reemplazaron pastillas de freno delanteras y se rectificaron discos. Se verificó el sistema hidráulico.',
-        'tecnico' => 'Carlos Rodríguez',
-        'fecha_programada' => '2025-05-15',
-        'fecha_completado' => '2025-05-15'
-    ],
-    [
-        'id' => 3,
-        'fecha' => '2025-06-05',
-        'placa' => 'DEF456',
-        'tipo' => 'Preventivo',
-        'kilometraje' => '32000',
-        'descripcion' => 'Revisión general',
-        'taller' => 'Taller Oficial',
-        'costo' => '180000',
-        'estado' => 'Pendiente',
-        'detalles' => 'Revisión de 30.000 km según manual del fabricante. Incluye cambio de aceite, filtros y revisión de 21 puntos.',
-        'tecnico' => 'Por asignar',
-        'fecha_programada' => '2025-06-05',
-        'fecha_completado' => null
-    ],
-    [
-        'id' => 4,
-        'fecha' => '2025-05-28',
-        'placa' => 'GHI789',
-        'tipo' => 'Emergencia',
-        'kilometraje' => '45200',
-        'descripcion' => 'Reparación sistema eléctrico',
-        'taller' => 'ElectriAutos',
-        'costo' => '280000',
-        'estado' => 'En proceso',
-        'detalles' => 'Falla en el sistema eléctrico. Se está revisando alternador y batería. Posible reemplazo de regulador de voltaje.',
-        'tecnico' => 'Roberto Gómez',
-        'fecha_programada' => '2025-05-28',
-        'fecha_completado' => null
-    ],
-    [
-        'id' => 5,
-        'fecha' => '2025-05-10',
-        'placa' => 'JKL012',
-        'tipo' => 'Correctivo',
-        'kilometraje' => '62300',
-        'descripcion' => 'Cambio de amortiguadores',
-        'taller' => 'Taller Saldaña',
-        'costo' => '420000',
-        'estado' => 'Completado',
-        'detalles' => 'Reemplazo de amortiguadores traseros y delanteros. Se alineó y balanceó el vehículo.',
-        'tecnico' => 'Juan Pérez',
-        'fecha_programada' => '2025-05-08',
-        'fecha_completado' => '2025-05-10'
-    ]
-];
 ?>
+
 
 <!DOCTYPE html>
 <html lang="es">
@@ -229,11 +162,7 @@ $mantenimientos = [
         <label class="filter-label">Vehículo</label>
         <select class="filter-select" id="filtroVehiculo" onchange="aplicarFiltros()">
           <option value="">Todos los vehículos</option>
-          <option value="ABC123">ABC123</option>
-          <option value="XYZ789">XYZ789</option>
-          <option value="DEF456">DEF456</option>
-          <option value="GHI789">GHI789</option>
-          <option value="JKL012">JKL012</option>
+
         </select>
       </div>
     </div>
@@ -256,8 +185,6 @@ $mantenimientos = [
               <th><i class="bi bi-tag"></i> Tipo</th>
               <th><i class="bi bi-speedometer2"></i> Kilometraje</th>
               <th><i class="bi bi-card-text"></i> Descripción</th>
-              <th><i class="bi bi-building"></i> Taller</th>
-              <th><i class="bi bi-cash"></i> Costo</th>
               <th><i class="bi bi-info-circle"></i> Estado</th>
               <th><i class="bi bi-tools"></i> Acciones</th>
             </tr>
@@ -269,20 +196,7 @@ $mantenimientos = [
               <td><span class="placa-cell"><?= htmlspecialchars($mant['placa']) ?></span></td>
               <td><span class="tipo-cell <?= getTipoClass($mant['tipo']) ?>"><?= htmlspecialchars($mant['tipo']) ?></span></td>
               <td><span class="kilometraje-cell"><?= number_format($mant['kilometraje'], 0, ',', '.') ?> km</span></td>
-              <td class="expandable-cell">
-                <span class="descripcion-cell"><?= htmlspecialchars($mant['descripcion']) ?></span>
-                <div class="expanded-details">
-                  <h5>Detalles del mantenimiento</h5>
-                  <p><?= htmlspecialchars($mant['detalles']) ?></p>
-                  <p><span class="label">Técnico:</span> <span class="value"><?= htmlspecialchars($mant['tecnico']) ?></span></p>
-                  <p><span class="label">Programado:</span> <span class="value"><?= date('d/m/Y', strtotime($mant['fecha_programada'])) ?></span></p>
-                  <?php if ($mant['fecha_completado']): ?>
-                  <p><span class="label">Completado:</span> <span class="value"><?= date('d/m/Y', strtotime($mant['fecha_completado'])) ?></span></p>
-                  <?php endif; ?>
-                </div>
-              </td>
-              <td><span class="taller-cell"><?= htmlspecialchars($mant['taller']) ?></span></td>
-              <td><span class="costo-cell">$<?= number_format($mant['costo'], 0, ',', '.') ?></span></td>
+              <td><span class="descripcion-cell"><?= htmlspecialchars($mant['descripcion']) ?></span></td>
               <td>
                 <span class="estado-cell <?= getEstadoClass($mant['estado']) ?>">
                   <?php if ($mant['estado'] == 'Completado'): ?>
@@ -298,10 +212,7 @@ $mantenimientos = [
                 </span>
               </td>
               <td>
-                <div class="action-buttons">
-                  <a href="#" onclick="verDetalles(<?= $mant['id'] ?>)" class="action-icon view" title="Ver detalles">
-                    <i class="bi bi-eye"></i>
-                  </a>
+
                   <a href="#" onclick="editarMantenimiento(<?= $mant['id'] ?>)" class="action-icon edit" title="Editar">
                     <i class="bi bi-pencil-square"></i>
                   </a>
@@ -332,20 +243,6 @@ $mantenimientos = [
     </div>
   </div>
 
-  <!-- Modal para detalles -->
-  <div class="modal fade" id="modalDetalles" tabindex="-1">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Detalles del Mantenimiento</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body" id="detallesContenido">
-          <!-- Contenido dinámico -->
-        </div>
-      </div>
-    </div>
-  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
@@ -446,55 +343,6 @@ $mantenimientos = [
       }
     }
 
-    // Funciones de interacción
-    function verDetalles(id) {
-      // Aquí implementarías la lógica para cargar los detalles del mantenimiento
-      // y mostrarlos en el modal
-      const modal = new bootstrap.Modal(document.getElementById('modalDetalles'));
-      
-      // Simulación de carga de datos
-      const detallesContenido = document.getElementById('detallesContenido');
-      detallesContenido.innerHTML = `
-        <div class="p-3">
-          <div class="mb-4">
-            <h4 class="text-primary">Mantenimiento #${id}</h4>
-            <p class="text-muted">Información detallada del mantenimiento</p>
-          </div>
-          
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <p><strong>Vehículo:</strong> ABC123</p>
-              <p><strong>Tipo:</strong> Preventivo</p>
-              <p><strong>Fecha:</strong> 20/05/2025</p>
-              <p><strong>Kilometraje:</strong> 55.000 km</p>
-            </div>
-            <div class="col-md-6">
-              <p><strong>Taller:</strong> Taller Saldaña</p>
-              <p><strong>Técnico:</strong> Juan Pérez</p>
-              <p><strong>Costo:</strong> $120.000</p>
-              <p><strong>Estado:</strong> <span class="badge bg-success">Completado</span></p>
-            </div>
-          </div>
-          
-          <div class="mb-3">
-            <h5>Descripción</h5>
-            <p>Cambio aceite y filtro</p>
-          </div>
-          
-          <div class="mb-3">
-            <h5>Detalles del trabajo</h5>
-            <p>Se realizó cambio de aceite 20W50 sintético y filtro de aceite. También se revisaron niveles de líquidos y presión de neumáticos.</p>
-          </div>
-          
-          <div class="mb-3">
-            <h5>Observaciones</h5>
-            <p>Se recomienda revisar frenos en el próximo mantenimiento.</p>
-          </div>
-        </div>
-      `;
-      
-      modal.show();
-    }
 
     function editarMantenimiento(id) {
       window.open(`editar_mantenimiento.php?id=${id}`, '', 'width=800, height=600, toolbar=NO');

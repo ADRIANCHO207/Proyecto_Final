@@ -61,10 +61,8 @@ $query = $con->prepare("
     LEFT JOIN tecnomecanica t ON v.placa = t.id_placa
     LEFT JOIN licencias l ON v.documento = l.id_documento
     LEFT JOIN usuarios u ON v.documento = u.documento
-    WHERE v.documento = :documento
 ");
 
-$query->bindParam(':documento', $documento);
 $query->execute();
 $resultados = $query->fetchAll(PDO::FETCH_ASSOC);
 
@@ -747,7 +745,7 @@ body {
                     $soat_status = getDocumentStatus($doc['soat_vence']);
                     $soat_fecha = new DateTime($doc['soat_vence']);
                     ?>
-                    <span class="status-<?= $soat_status ?> fecha-tooltip" 
+                   <center> <span class="status-<?= $soat_status ?> fecha-tooltip" 
                           data-tooltip="Vence: <?= $soat_fecha->format('d/m/Y') ?>">
                       <?php if ($soat_status === 'vigente'): ?>
                         Vigente
@@ -756,7 +754,7 @@ body {
                       <?php else: ?>
                         Vencido
                       <?php endif; ?>
-                    </span>
+                    </span></center>
                   </td>
                   <td>
                     <?php 
@@ -779,14 +777,8 @@ body {
                       <?= ucfirst($doc['licencia_estado']) ?>
                     </span>
                   </td>
-                  <td>
-                    <?php if ($doc['tarjeta_propiedad']): ?>
-                      <span class="documento-link" onclick="verDocumento('tarjeta', '<?= $doc['placa'] ?>')">
-                        Ver PDF
-                      </span>
-                    <?php else: ?>
-                      <span class="status-no-disponible">No disponible</span>
-                    <?php endif; ?>
+                     <td>
+                    <?= htmlspecialchars($doc['propietario']) ?>
                   </td>
                   <td>
                     <div class="action-buttons">

@@ -15,7 +15,8 @@ ini_set('display_errors', 1);
 ini_set('log_errors', 1);
 error_reporting(E_ALL);
 
-$logFile = __DIR__ . '/general.txt';
+$logFile = __DIR__ . '/log_general.txt';
+
 
 function registrarLog($mensaje) {
     global $logFile;
@@ -45,7 +46,8 @@ try {
     $mail->setFrom('flotavehicularagc@gmail.com', 'Sistema de Recordatorios');
 
     // Consulta: mantenimientos de aceite próximos a cambio
-    $query = "SELECT m.*, v.placa, u.email, u.nombre_completo, tm.descripcion AS tipo_mantenimiento
+    $query = "SELECT m.*, v.placa, u.email, u.documento, u.nombre_completo, tm.descripcion AS tipo_mantenimiento
+
               FROM mantenimiento m
               JOIN vehiculos v ON m.placa = v.placa
               JOIN usuarios u ON v.Documento = u.documento
@@ -67,6 +69,8 @@ try {
             echo "<strong>Placa:</strong> {$mantenimiento['placa']}<br>";
             echo "<strong>Usuario:</strong> {$mantenimiento['nombre_completo']} ({$mantenimiento['email']})<br>";
             echo "<strong>Fecha próximo cambio:</strong> {$mantenimiento['proximo_cambio_fecha']}<br>";
+            echo $mantenimiento['documento'] ? "<strong>documento:</strong> {$mantenimiento['documento']}<br>" : '';
+
             echo "<strong>Días exactos restantes:</strong> $diasRestantes<br>";
 
             $mail->clearAddresses();
@@ -121,6 +125,26 @@ try {
             registrarLog("Correo enviado a {$mantenimiento['email']} ($tipo_recordatorio)");
             echo "<span style='color: green;'>Correo enviado ($tipo_recordatorio)</span><hr>";
 
+            // Registro en tabla de notificaciones
+            $mensaje_notif = '';
+            if ($tipo_recordatorio == '3_dias') {
+                $mensaje_notif = "El mantenimiento {$mantenimiento['tipo_mantenimiento']} para tu vehículo con placa {$mantenimiento['placa']} es en 3 días ({$mantenimiento['proximo_cambio_fecha']}).";
+            } else if ($tipo_recordatorio == '1_dia') {
+                $mensaje_notif = "El mantenimiento de {$mantenimiento['tipo_mantenimiento']} para tu vehículo con placa {$mantenimiento['placa']} es mañana ({$mantenimiento['proximo_cambio_fecha']}).";
+            } else if ($tipo_recordatorio == 'hoy') {
+                $mensaje_notif = "¡Hoy debes realizar el mantenimiento {$mantenimiento['tipo_mantenimiento']} para tu vehículo con placa {$mantenimiento['placa']}!";
+            }
+
+            if ($mensaje_notif) {
+                $insertNotif = $con->prepare("INSERT INTO notificaciones (documento_usuario, mensaje, tipo, fecha, leido) VALUES (?, ?, ?, NOW(), 0)");
+                $insertNotif->execute([
+                    $mantenimiento['documento'], // o el campo correcto
+                    $mensaje_notif,
+                    'mantenimiento'
+                ]);
+            }
+
+
         } catch (Exception $e) {
             registrarLog("ERROR al enviar a {$mantenimiento['email']}: " . $mail->ErrorInfo);
             echo "<span style='color: red;'>Error al enviar: {$mail->ErrorInfo}</span><hr>";
@@ -141,7 +165,8 @@ function generarMensajeMantenimientoAceite($mantenimiento, $tiempo) {
     return "
     <html>
     <body style='font-family: Arial, sans-serif;'>
-        <h2>Recordatorio de Cambio de Aceite</h2>
+        <h2>Recordatorio de mantenimiento {$mantenimiento['tipo_mantenimiento']}</h2>
+
         <p>Estimado/a {$mantenimiento['nombre_completo']},</p>
         <p>Le recordamos que el próximo mantenimiento <strong>{$mantenimiento['tipo_mantenimiento']}</strong> para su vehículo con placa <strong>{$mantenimiento['placa']}</strong> está programado para <strong>{$mantenimiento['proximo_cambio_fecha']}</strong> ({$tiempo}).</p>
         <p>Detalles del mantenimiento:</p>

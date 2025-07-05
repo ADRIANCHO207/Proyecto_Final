@@ -28,7 +28,7 @@ try {
     $database = new Database();
     $con = $database->conectar();
 
-    $hoy = new DateTime();
+    $hoy = new DateTime(date('Y-m-d'));
 
     $mail = new PHPMailer(true);
     $mail->CharSet = 'UTF-8';
@@ -42,7 +42,7 @@ try {
     $mail->Port = 465;
     $mail->setFrom('flotavehicularagc@gmail.com', 'Sistema de Recordatorios');
 
-    $query = "SELECT s.*, v.placa, u.email, u.nombre_completo, a.nombre as nombre_aseguradora 
+    $query = "SELECT s.*, v.placa, u.email, u.documento, u.nombre_completo, a.nombre as nombre_aseguradora 
               FROM soat s 
               INNER JOIN vehiculos v ON s.id_placa = v.placa 
               INNER JOIN usuarios u ON v.Documento = u.documento 
@@ -56,12 +56,12 @@ try {
     foreach ($soats as $soat) {
         try {
             $fechaVencimiento = new DateTime($soat['fecha_vencimiento']);
-            $interval = $hoy->diff($fechaVencimiento);
-            $diasRestantes = (int)$interval->format('%r%a');
+            $diasRestantes = (int)$hoy->diff($fechaVencimiento)->format('%r%a');
 
             echo "<strong>Placa:</strong> {$soat['placa']}<br>";
             echo "<strong>Usuario:</strong> {$soat['nombre_completo']} ({$soat['email']})<br>";
             echo "<strong>Fecha de vencimiento:</strong> {$soat['fecha_vencimiento']}<br>";
+            echo $soat['documento'] ? "<strong>Documento:</strong> {$soat['documento']}<br>" : '';
             echo "<strong>Días restantes:</strong> $diasRestantes<br>";
 
             $mail->clearAddresses();
@@ -115,6 +115,24 @@ try {
 
             registrarLog("Correo enviado a {$soat['email']} ($tipo_recordatorio)");
             echo "<span style='color: green;'>Correo enviado ($tipo_recordatorio)</span><hr>";
+
+            // Mensaje para la interfaz
+            $mensaje_notif = '';
+            if ($tipo_recordatorio == '3_dia') {
+                $mensaje_notif = "Tu SOAT para el vehículo con placa {$soat['placa']} vence en 3 días ({$soat['fecha_vencimiento']}).";
+            } else if ($tipo_recordatorio == 'vencido') {
+                $mensaje_notif = "¡Tu SOAT para el vehículo con placa {$soat['placa']} ha vencido hoy ({$soat['fecha_vencimiento']})!";
+            }
+
+            // Guardar notificación en la tabla
+            if ($mensaje_notif) {
+                $insertNotif = $con->prepare("INSERT INTO notificaciones (documento_usuario, mensaje, tipo, fecha, leido) VALUES (?, ?, ?, NOW(), 0)");
+                $insertNotif->execute([
+                    $soat['documento'],
+                    $mensaje_notif,
+                    'soat'
+                ]);
+            }
 
         } catch (Exception $e) {
             registrarLog("ERROR al enviar a {$soat['email']}: " . $mail->ErrorInfo);

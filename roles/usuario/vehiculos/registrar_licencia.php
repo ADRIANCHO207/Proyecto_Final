@@ -2,6 +2,7 @@
 session_start();
 require_once('../../../conecct/conex.php');
 require_once('../../../includes/validarsession.php');
+include('../../../includes/auto_logout_modal.php');
 $db = new Database();
 $con = $db->conectar();
 
@@ -11,31 +12,32 @@ if (!$documento) {
     exit;
 }
 
-// fetch categorias
-$sql_categoria = $con->prepare("SELECT id_categoria, nombre_categoria FROM categoria_licencia;");
+// Obtener categorías
+$sql_categoria = $con->prepare("SELECT id_categoria, nombre_categoria FROM categoria_licencia");
 $sql_categoria->execute();
 $categorias = $sql_categoria->fetchAll(PDO::FETCH_ASSOC);
 
+// Datos del usuario
+$user_query = $con->prepare("SELECT nombre_completo, foto_perfil, fecha_nacimiento FROM usuarios WHERE documento = :documento");
+$user_query->bindParam(':documento', $documento, PDO::PARAM_STR);
+$user_query->execute();
+$user = $user_query->fetch(PDO::FETCH_ASSOC);
 
-// fetch categorias
-$sql_servicio = $con->prepare("SELECT id_servicio, nombre_servicios FROM servicios_licencias");
-$sql_servicio->execute();
-$servicios = $sql_servicio->fetchAll(PDO::FETCH_ASSOC);
-
-
-// Fetch nombre_completo and foto_perfil if not in session
-$nombre_completo = $_SESSION['nombre_completo'] ?? null;
-$foto_perfil = $_SESSION['foto_perfil'] ?? null;
-if (!$nombre_completo || !$foto_perfil) {
-    $user_query = $con->prepare("SELECT nombre_completo, foto_perfil FROM usuarios WHERE documento = :documento");
-    $user_query->bindParam(':documento', $documento, PDO::PARAM_STR);
-    $user_query->execute();
-    $user = $user_query->fetch(PDO::FETCH_ASSOC);
-    $nombre_completo = $user['nombre_completo'] ?? 'Usuario';
-    $foto_perfil = $user['foto_perfil'] ?: '/proyecto/roles/usuario/css/img/perfil.jpg';
-    $_SESSION['nombre_completo'] = $nombre_completo;
-    $_SESSION['foto_perfil'] = $foto_perfil;
+if (!$user) {
+    header('Location: ../../login/login.php');
+    exit;
 }
+
+$nombre_completo = $user['nombre_completo'] ?? 'Usuario';
+$foto_perfil = $user['foto_perfil'] ?: '/proyecto/roles/usuario/css/img/perfil.jpg';
+$fecha_nacimiento = $user['fecha_nacimiento'] ?? '';
+$_SESSION['nombre_completo'] = $nombre_completo;
+$_SESSION['foto_perfil'] = $foto_perfil;
+
+$errors = $_SESSION['errors'] ?? [];
+$success_message = $_SESSION['success_message'] ?? '';
+unset($_SESSION['errors']);
+unset($_SESSION['success_message']);
 ?>
 
 <!DOCTYPE html>
@@ -48,110 +50,77 @@ if (!$nombre_completo || !$foto_perfil) {
     <link rel="shortcut icon" href="../../../css/img/logo_sinfondo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <?php include('../header.php'); ?>
 
     <div class="container">
-        <form action="" method="post" class="form-llantas" id="formulario">
+        <form action="guardar_licencia.php" method="post" class="license-form" id="license-form">
             <h1>Registrar Licencia</h1>
-            <p class="instructions">Completa los detalles de la licencia para recibir alertas de vencimiento.</p>
+            <p class="instructions">Completa los detalles de la licencia.</p>
             
-            <div class="input-gruop">
-                <!-- Información del usuario -->
-                <div class="input-subgroup user-info">
-                    <div class="input-box">
-                        <label for="documento_usuario">Documento del Usuario:</label>
-                        <div class="input_field_documento_usuario" id="grupo_documento_usuario">
-                            <input type="text" name="documento_usuario" id="documento_usuario" value="<?php echo htmlspecialchars($documento); ?>" readonly>
-                            <i class="bi bi-person-fill"></i>
-                        </div>
-                    </div>
+            <?php if (!empty($errors)): ?>
+                <div class="form-error active">
+                    <b>Error:</b>
+                    <ul>
+                        <?php foreach ($errors as $error): ?>
+                            <li><?php echo htmlspecialchars($error); ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            <?php endif; ?>
+
+            <?php if ($success_message): ?>
+                <p class="form-success active"><?php echo htmlspecialchars($success_message); ?></p>
+            <?php endif; ?>
+
+            <div class="form-group">
+                <div class="form-field full-width">
+                    <label for="documento">Documento:</label>
+                    <input type="text" name="documento" id="documento" value="<?php echo htmlspecialchars($documento); ?>" readonly>
+                </div>
+                <div class="form-field">
+                    <label for="categoria">Categoría*:</label>
+                    <select name="categoria" id="categoria" required>
+                        <option value="">Seleccionar Categoría</option>
+                        <?php foreach ($categorias as $row): ?>
+                            <option value="<?php echo htmlspecialchars($row['id_categoria']); ?>">
+                                <?php echo htmlspecialchars($row['nombre_categoria']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <span class="error-text" id="error-categoria"></span>
+                </div>
+                <div class="form-field">
+                    <label for="fecha-nacimiento">Fecha de Nacimiento*:</label>
+                    <input type="date" name="fecha_nacimiento" id="fecha-nacimiento" required max="<?php echo date('Y-m-d'); ?>" value="<?php echo htmlspecialchars($fecha_nacimiento); ?>">
+                    <span class="error-text" id="error-fecha-nacimiento"></span>
+                </div>
+                <div class="form-field">
+                    <label for="fecha-expedicion">Fecha de Expedición*:</label>
+                    <input type="date" name="fecha_expedicion" id="fecha-expedicion" required max="<?php echo date('Y-m-d'); ?>">
+                    <span class="error-text" id="error-fecha-expedicion"></span>
                 </div>
 
-                <!-- Campos principales -->
-
-                <!-- Fecha y observaciones -->
-                <div class="input-subgroup">
-                    <div class="input-subgroup">
-                        <div class="input-box">
-                            <label for="categoria">Categoria*:</label>
-                            <div class="input_field_categoria" id="grupo_categoria">
-                                <select name="categoria" id="categoria" required>
-                                    <option value="">Seleccionar Categoria</option>
-                                    <?php foreach ($categorias as $row) { ?>
-                                        <option value="<?php echo htmlspecialchars($row['id_categoria']); ?>">
-                                            <?php echo htmlspecialchars($row['nombre_categoria']); ?>
-                                        </option>
-                                    <?php } ?>
-                                </select>
-                                <i class="bi bi-file-earmark-person"></i>
-                            </div>
-                            <p class="validacion_categoria" id="validacion_categoria">la categoria de licencia es obligatorio.</p>
-                        </div>
-                    </div>
-                    <div class="input-box">
-                        <label for="fecha_expedicion">Fecha de expedicion*:</label>
-                        <div class="input_field_fecha_expedicion" id="grupo_fecha_expedicion">
-                            <input type="date" name="fecha_expedicion" id="fecha_expedicion" required value="<?php echo htmlspecialchars($_POST['fecha_vencimiento'] ?? ''); ?>">
-                            <i class="bi bi-calendar-check"></i>
-                        </div>
-                        <p class="validacion_fecha_expedicion" id="validacion_fecha_expedicion">La fecha de expedicion es obligatoria y no puede ser futura.</p>
-                    </div>
-                    <div class="input-box">
-                        <label for="fecha_vencimiento">Fecha de Vencimiento*:</label>
-                        <div class="input_field_fecha_vencimiento" id="grupo_fecha_vencimiento">
-                            <input type="date" name="fecha_vencimiento" id="fecha_vencimiento" required value="<?php echo htmlspecialchars($_POST['fecha_vencimiento'] ?? ''); ?>">
-                            <i class="bi bi-calendar-check"></i>
-                        </div>
-                        <p class="validacion_fecha_vencimiento" id="validacion_fecha_vencimiento">La fecha de vencimiento es obligatoria y debe ser futura.</p>
-                    </div>
-
-                    <div class="input-box">
-                            <label for="tipo_servicio">Tipo de servicio*:</label>
-                            <div class="input_field_tipo_servicio" id="grupo_tipo_servicio">
-                                <select name="tipo_servicio" id="tipo_servicio" required>
-                                    <option value="">Seleccionar servicio</option>
-                                    <?php foreach ($servicios as $row) { ?>
-                                        <option value="<?php echo htmlspecialchars($row['id_servicio']); ?>">
-                                            <?php echo htmlspecialchars($row['nombre_servicios']); ?>
-                                        </option>
-                                    <?php } ?>
-                                </select>
-                                <i class="bi bi-gear-fill"></i>
-                            </div>
-                            <p class="validacion_tipo_servicio" id="validacion_tipo_servicio">Selecciona servicio de licencia.</p>
-                        </div>
-                    </div>
-
-                    <div class="input-box">
-                        <label for="observaciones">Restricciones del conductor (opcional):</label>
-                        <div class="input_field_observaciones" id="grupo_observaciones">
-                            <textarea name="observaciones" id="observaciones" rows="4"><?php echo htmlspecialchars($_POST['observaciones'] ?? ''); ?></textarea>
-                            <i class="bi bi-pencil"></i>
-                        </div>
-                        <p class="validacion_observaciones" id="validacion_observaciones">Máximo 500 caracteres, solo letras, números y puntuación básica.</p>
-                    </div>
-                
+                <!-- Aquí mostramos la vigencia calculada -->
+                <div class="form-field full-width">
+                    <label>Vigencia Calculada:</label>
+                    <div id="vigencia-resultado" style="font-weight: bold; color: green;">Seleccione categoría y fecha de nacimiento</div>
                 </div>
-            
-                <!-- Error general -->
-                <div>
-                    <p class="formulario_error" id="formulario_error"><b>Error:</b> Por favor complete todos los campos correctamente.</p>
+
+                <div class="form-field full-width">
+                    <label for="observaciones">Observaciones:</label>
+                    <textarea name="observaciones" id="observaciones" rows="4" maxlength="500"></textarea>
+                    <span class="error-text" id="error-observaciones"></span>
                 </div>
-                <div class="btn-field">
-                    <button type="submit" class="btn btn-primary">Registrar Licencia</button>
-                </div>
-                <!-- Mensaje de éxito -->   
-                <p class="formulario_exito" id="formulario_exito">Licencia registrado correctamente.</p>
+            </div>
+
+            <div class="form-buttons">
+                <button type="submit" class="btn btn-primary">Registrar Licencia</button>
             </div>
         </form>
     </div>
+
     <script src="../js/scriptlicencia.js"></script>
-    <?php
-      include('../../../includes/auto_logout_modal.php');
-    ?>
 </body>
 </html>

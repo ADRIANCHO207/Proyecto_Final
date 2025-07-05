@@ -28,7 +28,7 @@ try {
     $database = new Database();
     $con = $database->conectar();
 
-    $hoy = new DateTime();
+    $hoy = new DateTime(date('Y-m-d'));
 
     $mail = new PHPMailer(true);
     $mail->CharSet = 'UTF-8';
@@ -56,12 +56,13 @@ try {
     foreach ($licencias as $licencia) {
         try {
             $fechaVencimiento = new DateTime($licencia['fecha_vencimiento']);
-            $interval = $hoy->diff($fechaVencimiento);
-            $diasRestantes = (int)$interval->format('%r%a');
+            $diasRestantes = (int)$hoy->diff($fechaVencimiento)->format('%r%a');
 
             echo "<strong>Usuario:</strong> {$licencia['nombre_completo']} ({$licencia['email']})<br>";
             echo "<strong>Fecha de vencimiento:</strong> {$licencia['fecha_vencimiento']}<br>";
+            echo $licencia['id_documento'] ? "<strong>Documento:</strong> {$licencia['id_documento']}<br>" : '';
             echo "<strong>Días restantes:</strong> $diasRestantes<br>";
+            
 
             $mail->clearAddresses();
             $mail->addAddress($licencia['email']);
@@ -109,6 +110,22 @@ try {
 
             registrarLog("Correo enviado a {$licencia['email']} ($tipo_recordatorio)");
             echo "<span style='color: green;'>Correo enviado ($tipo_recordatorio)</span><hr>";
+
+            $mensaje_notif = '';
+            if ($tipo_recordatorio == '3_dia') {
+                $mensaje_notif = "Tu licencia ({$licencia['nombre_categoria']}) vence en 3 días ({$licencia['fecha_vencimiento']}).";
+            } else if ($tipo_recordatorio == 'vencido') {
+                $mensaje_notif = "¡Tu licencia ({$licencia['nombre_categoria']}) ha vencido hoy ({$licencia['fecha_vencimiento']})!";
+            }
+
+            if ($mensaje_notif) {
+                $insertNotif = $con->prepare("INSERT INTO notificaciones (documento_usuario, mensaje, tipo, fecha, leido) VALUES (?, ?, ?, NOW(), 0)");
+                $insertNotif->execute([
+                    $licencia['id_documento'],
+                    $mensaje_notif,
+                    'licencia'
+                ]);
+            }
 
         } catch (Exception $e) {
             registrarLog("ERROR al enviar a {$licencia['email']}: " . $mail->ErrorInfo);

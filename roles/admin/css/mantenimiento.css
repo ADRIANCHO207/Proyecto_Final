@@ -176,20 +176,21 @@ body {
 }
 
 .table thead {
+  background: var(--primary-gradient);
   color: white;
 }
 
 .table thead th {
-  padding: 18px 12px;
+  padding: 18px 15px;
   font-weight: 600;
-  font-size: 13px;
+  font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   border: none;
   white-space: nowrap;
   position: relative;
-  text-align: center;
 }
+
 
 .table thead th:first-child {
   border-top-left-radius: var(--border-radius);

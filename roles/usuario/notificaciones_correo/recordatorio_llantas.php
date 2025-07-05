@@ -29,7 +29,8 @@ try {
     $database = new Database();
     $con = $database->conectar();
 
-    $hoy = new DateTime();
+    $hoy = new DateTime((date('Y-m-d')));
+
 
     $mail = new PHPMailer(true);
     $mail->CharSet = 'UTF-8';
@@ -44,7 +45,8 @@ try {
     $mail->setFrom('flotavehicularagc@gmail.com', 'Sistema de Recordatorios');
 
     // Consulta: llantas activas y próximas a cambio
-    $query = "SELECT l.*, v.placa, u.email, u.nombre_completo
+    $query = "SELECT l.*, v.placa, u.email, u.nombre_completo, u.documento
+
               FROM llantas l
               INNER JOIN vehiculos v ON l.placa = v.placa
               INNER JOIN usuarios u ON v.Documento = u.documento
@@ -58,13 +60,15 @@ try {
         try {
             // Asegura que ambas fechas sean solo 'Y-m-d'
             $fechaHoy = new DateTime(date('Y-m-d'));
-            $fechaCambio = new DateTime(date('Y-m-d', strtotime($llanta['proximo_cambio_fecha'])));
-            $interval = $fechaHoy->diff($fechaCambio);
-            $diasRestantes = (int)$interval->format('%r%a');
+            $fechaCambio = new DateTime(substr($llanta['proximo_cambio_fecha'], 0, 10)); // solo la fecha
+            $diasRestantes = (int)$fechaHoy->diff($fechaCambio)->format('%r%a');
+
 
             echo "<strong>Placa:</strong> {$llanta['placa']}<br>";
             echo "<strong>Usuario:</strong> {$llanta['nombre_completo']} ({$llanta['email']})<br>";
             echo "<strong>Fecha próximo cambio:</strong> {$llanta['proximo_cambio_fecha']}<br>";
+            echo $llanta['documento'] ? "<strong>Documento:</strong> {$llanta['documento']}<br>" : '';
+
             echo "<strong>Días exactos restantes:</strong> $diasRestantes<br>";
 
             $mail->clearAddresses();
@@ -120,6 +124,25 @@ try {
 
             registrarLog("Correo enviado a {$llanta['email']} ($tipo_recordatorio)");
             echo "<span style='color: green;'>Correo enviado ($tipo_recordatorio)</span><hr>";
+
+            // Registro en tabla de notificaciones
+            $mensaje_notif = '';
+            if ($tipo_recordatorio == '3_dias') {
+                $mensaje_notif = "El próximo cambio de llantas para tu vehículo con placa {$llanta['placa']} es en 3 días ({$llanta['proximo_cambio_fecha']}).";
+            } else if ($tipo_recordatorio == '1_dia') {
+                $mensaje_notif = "El próximo cambio de llantas para tu vehículo con placa {$llanta['placa']} es mañana ({$llanta['proximo_cambio_fecha']}).";
+            } else if ($tipo_recordatorio == 'hoy') {
+                $mensaje_notif = "¡Hoy debes realizar el cambio de llantas para tu vehículo con placa {$llanta['placa']}!";
+            }
+
+            if ($mensaje_notif) {
+                $insertNotif = $con->prepare("INSERT INTO notificaciones (documento_usuario, mensaje, tipo, fecha, leido) VALUES (?, ?, ?, NOW(), 0)");
+                $insertNotif->execute([
+                    $llanta['documento'], // o el campo correcto
+                    $mensaje_notif,
+                    'llantas'
+                ]);
+            }
 
         } catch (Exception $e) {
             registrarLog("ERROR al enviar a {$llanta['email']}: " . $mail->ErrorInfo);

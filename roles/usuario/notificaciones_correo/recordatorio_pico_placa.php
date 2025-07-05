@@ -57,7 +57,7 @@ try {
 
             $placeholders = rtrim(str_repeat('?,', count($digitos)), ',');
             $sql = "
-                SELECT v.placa, u.email, u.nombre_completo
+                SELECT v.placa, u.email, u.nombre_completo, u.documento
                 FROM vehiculos v
                 INNER JOIN usuarios u ON v.Documento = u.documento
                 WHERE RIGHT(v.placa, 1) IN ($placeholders)
@@ -118,6 +118,15 @@ try {
                         registrarLog("Error al enviar correo a {$vehiculo['email']}: {$mail->ErrorInfo}");
                         echo "<span style='color: red;'>Error al enviar correo a {$vehiculo['email']}: {$mail->ErrorInfo}</span><hr>";
                     }
+
+                    // Guardar notificación en la tabla
+                    $mensaje_notif = "Mañana ({$dia_esp}) tu vehículo con placa {$vehiculo['placa']} tiene restricción de Pico y Placa en Ibague.";
+                    $insertNotif = $con->prepare("INSERT INTO notificaciones (documento_usuario, mensaje, tipo, fecha, leido) VALUES (?, ?, ?, NOW(), 0)");
+                    $insertNotif->execute([
+                        $vehiculo['documento'] ?? null,
+                        $mensaje_notif,
+                        'pico_placa'
+                    ]);
 
                 } catch (Exception $e) {
                     registrarLog("Excepción al enviar a {$vehiculo['email']}: {$mail->ErrorInfo}");

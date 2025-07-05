@@ -5,239 +5,132 @@
     font-family: 'Poppins', sans-serif;
 }
 
-body {
-    background-color: #f9f9f9;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
-
-/* Form Styles */
 .container {
-    width: 100%;
-    max-width: 800px;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin: 35px auto 20px auto;
-}
-
-.form-llantas {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.form-llantas h1 {
-    font-size: 30px;
-    margin-bottom: 10px;
-    font-weight: 700;
-    text-align: center;
-    color: #d32f2f;
-}
-
-.form-llantas .instructions {
-    font-size: 16px;
-    margin-bottom: 20px;
-    text-align: center;
-    color: #666;
-    margin-top: 20px;
-}
-
-.input-subgroup {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
-
-.input-subgroup.user-info {
-    background-color: #f0f0f0;
-    padding: 10px;
-    border-radius: 10px;
-    justify-content: center;
-}
-
-.input-subgroup > div {
-    flex: 1 1 48%;
-    display: flex;
-    flex-direction: column;
-}
-
-.input-box {
-    display: flex;
-    flex-direction: column;
-}
-
-.input_field_categoria, .input_field_fecha_expedicion,
-.input_field_fecha_vencimiento, .input_field_tipo_servicio,
-.input_field_observaciones, .input_field_documento_usuario {
-    background-color: #c2c2c2;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    padding: 5px;
-}
-
-.input_field_documento_usuario {
-    background-color: #e0e0e0;
-    opacity: 0.8;
-}
-
-.input_field_categoria label,
-.input_field_fecha_vencimiento label, .input_field_fecha_expedicion label,
-.input_field_tipo_servicio label,
-.input_field_observaciones label,
-.input_field_documento_usuario label {
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 5px;
-    display: block;
-}
-
-.input_field_categoria select,
-.input_field_tipo_servicio select {
-    cursor: pointer;
-}
-
-input, select, textarea {
-    width: 90%;
-    background: transparent;
-    border: none;
-    outline: none;
-    padding: 10px;
-    color: #000;
-    font-family: 'Poppins', sans-serif;
-}
-
-input[readonly] {
-    cursor: not-allowed;
-    color: #555;
-}
-
-input::placeholder, select::placeholder, textarea::placeholder {
-    color: #666;
-}
-
-.input_field_categoria i, .input_field_tipo_servicio i,
-.input_field_fecha_vencimiento i, .input_field_fecha_expedicion i, 
-.input_field_observaciones i,
-.input_field_documento_usuario i {
-    margin-left: 10px;
-    color: #fff;
-    width: 10%;
-}
-
-.btn-field {
-    padding: 20px 0;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-}
-
-.btn-field button {
-    border: solid 3px #d32f2f;
-    padding: 10px 30px;
-    background: #d32f2f;
-    font-weight: 600;
-    color: #fff;
-    transition: 0.3s;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 30px 20px;
+    background: #f9f9f9;
     border-radius: 12px;
-    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
-.btn-field button:hover {
-    border: solid 3px #d32f2f;
-    background-color: transparent;
-    color: #d32f2f;
+.license-form {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.05);
 }
 
-.validacion_categoria, .validacion_tipo_servicio,
-.validacion_fecha_vencimiento, .validacion_fecha_expedicion, .validacion_observaciones {
+.license-form h1 {
+    text-align: center;
+    font-size: 28px;
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.instructions {
+    text-align: center;
+    color: #7f8c8d;
+    margin-bottom: 30px;
+    font-size: 16px;
+}
+
+.form-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 30px;
+}
+
+.form-field.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-field label {
+    display: block;
     font-weight: 600;
-    font-size: 10px;
-    opacity: 0;
-    padding: 5px 0;
-    color: #c50000;
+    color: #34495e;
+    margin-bottom: 8px;
+    font-size: 15px;
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #bdc3c7;
+    border-radius: 6px;
+    font-size: 15px;
+    transition: all 0.3s ease;
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+    outline: none;
+}
+
+.form-field textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.form-field input:read-only {
+    background: #ecf0f1;
+}
+
+.error-text {
+    color: #e74c3c;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.form-error {
+    display: none;
+    color: #e74c3c;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.form-error.active {
     display: block;
 }
 
-.formulario_error {
-    font-weight: 600;
-    font-size: 13px;
+.form-success {
+    display: none;
+    color: #27ae60;
     text-align: center;
-    color: #c50000;
-    opacity: 0;
-    transition: opacity 0.5s ease;
+    margin-bottom: 20px;
 }
 
-.formulario_exito {
-    font-weight: 600;
-    font-size: 13px;
+.form-success.active {
+    display: block;
+}
+
+.form-buttons {
     text-align: center;
-    color: #158000;
-    opacity: 0;
-    transition: opacity 0.5s ease;
+    margin-top: 30px;
 }
 
-.input_field_categoria_correcto, .input_field_tipo_servicio_correcto,
-.input_field_fecha_vencimiento_correcto, .input_field_fecha_expedicion_correcto, .input_field_observaciones_correcto {
-    background-color: #c2c2c2;
-    border: solid 3px #158000;
-    color: #158000;
+.btn-primary {
+    background: #3498db;
+    color: #fff;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s ease;
 }
 
-.input_field_categoria_correcto i, .input_field_tipo_servicio_correcto i,
-.input_field_fecha_vencimiento_correcto i, .input_field_observaciones_correcto i, 
-.input_field_fecha_expedicion_correcto i {
-    color: #158000;
+.btn-primary:hover {
+    background: #2980b9;
 }
 
-.input_field_categoria_incorrecto, .input_field_tipo_servicio_incorrecto,
-.input_field_fecha_vencimiento_incorrecto, .input_field_observaciones_incorrecto, 
-.input_field_fecha_expedicion_incorrecto {
-    background-color: #c2c2c2;
-    border: solid 3px #c50000;
-    color: #c50000;
-}
-
-.input_field_categoria_incorrecto i, .input_field_tipo_servicio_incorrecto i,
-.input_field_fecha_vencimiento_incorrecto i, .input_field_observaciones_incorrecto i,
-.input_field_fecha_expedicion_incorrecto i {
-    color: #c50000;
-}
-
-@media screen and (max-width: 768px) {
-    .input-subgroup > div {
-        flex: 1 1 100%;
-    }
-
-    .container {
-        padding: 10px;
-        margin-top: 200px;
-    }
-
-    .form-llantas h1 {
-        font-size: 24px;
-    }
-
-    .input_field_categoria label, .input_field_tipo_servicio label,
-    .input_field_fecha_vencimiento label, .input_field_fecha_expedicion label, 
-    .input_field_observaciones label,
-    .input_field_documento_usuario label {
-        font-size: 14px;
-    }
-
-    input, select, textarea {
-        width: 85%;
-        padding: 8px;
-    }
-
-    .btn-field button {
-        width: 100%;
-        padding: 8px 20px;
+@media (max-width: 700px) {
+    .form-group {
+        grid-template-columns: 1fr;
     }
 }
