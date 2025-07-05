@@ -1,5 +1,12 @@
 <?php
+session_start();
 require_once('../../../conecct/conex.php');
+
+// Validación de sesión
+if (!isset($_SESSION['documento'])) {
+    echo "Sesión no válida. Por favor, inicie sesión nuevamente.";
+    exit();
+}
 
 $db = new Database();
 $con = $db->conectar();

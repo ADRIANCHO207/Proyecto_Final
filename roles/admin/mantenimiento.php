@@ -84,14 +84,13 @@ function getTipoClass($tipo) {
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Historial de Mantenimientos - Flotax AGC</title>
-  <link rel="shortcut icon" href="../../css/img/logo_sinfondo.png">
-  <link rel="stylesheet" href="css/mantenimiento.css" />
-  <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Mantenimientos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/mantenimiento.css">
+    <link rel="stylesheet" href="css/mantenimiento-modals.css">
 </head>
 <body>
   <?php include 'menu.php'; ?>
@@ -212,11 +211,11 @@ function getTipoClass($tipo) {
                 </span>
               </td>
               <td>
-
-                  <a href="#" onclick="editarMantenimiento(<?= $mant['id'] ?>)" class="action-icon edit" title="Editar">
+                <div class="action-buttons">
+                  <a href="" onclick="editarMantenimiento(<?= $mant['id'] ?>)" class="action-icon edit" title="Editar">
                     <i class="bi bi-pencil-square"></i>
                   </a>
-                  <a href="#" onclick="eliminarMantenimiento(<?= $mant['id'] ?>, '<?= $mant['placa'] ?>')" class="action-icon delete" title="Eliminar">
+                  <a href="" onclick="eliminarMantenimiento(<?= $mant['id'] ?>, '<?= $mant['placa'] ?>')" class="action-icon delete" title="Eliminar">
                     <i class="bi bi-trash"></i>
                   </a>
                 </div>
@@ -235,16 +234,19 @@ function getTipoClass($tipo) {
 
     <!-- Botón agregar -->
     <div class="boton-agregar">
-      <a href="agregar_mantenimiento.php" class="boton">
+      <button onclick="abrirModalAgregarMantenimiento()" class="boton">
         <i class="bi bi-plus-circle"></i>
         <i class="bi bi-tools"></i>
         Registrar Mantenimiento
-      </a>
+      </button>
     </div>
   </div>
 
+  <!-- Incluir modales -->
+  <?php include 'modals_mantenimiento/mantenimiento_modals.php'; ?>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="modals_mantenimiento/mantenimiento-scripts.js"></script>
   <script>
     // Función de filtrado mejorada
     function filtrarTabla() {
@@ -345,14 +347,11 @@ function getTipoClass($tipo) {
 
 
     function editarMantenimiento(id) {
-      window.open(`editar_mantenimiento.php?id=${id}`, '', 'width=800, height=600, toolbar=NO');
+      editarMantenimiento(id); // Llamar función del archivo de scripts
     }
 
     function eliminarMantenimiento(id, placa) {
-      if (confirm(`¿Está seguro de eliminar el mantenimiento #${id} del vehículo ${placa}?`)) {
-        // Implementar eliminación
-        console.log('Eliminar mantenimiento:', id);
-      }
+      eliminarMantenimiento(id, placa); // Llamar función del archivo de scripts
     }
 
     // Inicializar cuando el DOM esté listo

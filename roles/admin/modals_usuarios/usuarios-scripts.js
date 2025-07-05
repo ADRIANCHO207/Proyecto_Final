@@ -1,4 +1,23 @@
 document.addEventListener('DOMContentLoaded', function () {
+  // Función para mostrar mensajes
+  function showMessage(message, type = 'info') {
+    // Crear un toast o alert personalizado
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+    alertDiv.innerHTML = `
+      ${message}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.insertBefore(alertDiv, document.body.firstChild);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+      if (alertDiv.parentNode) {
+        alertDiv.remove();
+      }
+    }, 5000);
+  }
+
   // Abrir modal de agregar usuario
   document.getElementById('btnAgregarUsuario').addEventListener('click', function (e) {
     e.preventDefault();
@@ -12,16 +31,24 @@ document.addEventListener('DOMContentLoaded', function () {
     button.addEventListener('click', function (e) {
       e.preventDefault();
       const documento = this.getAttribute('data-id');
-      document.getElementById('documentoEditar').value = documento;
-      document.getElementById('documentoEliminar').textContent = documento;
-      document.getElementById('documentoEliminarInput').value = documento;
+      
+      if (!documento) {
+        showMessage('Error: No se pudo obtener el documento del usuario', 'danger');
+        return;
+      }
 
       // Cargar datos del usuario
       fetch(`modals_usuarios/get_usuario_data.php?documento=${encodeURIComponent(documento)}`)
-        .then(response => response.json())
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
         .then(data => {
           if (data.success) {
             const usuario = data.data;
+            document.getElementById('documentoEditar').value = documento;
             document.getElementById('nombreCompletoEditar').value = usuario.nombre_completo || '';
             document.getElementById('emailEditar').value = usuario.email || '';
             document.getElementById('telefonoEditar').value = usuario.telefono || '';
@@ -29,28 +56,52 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('rolEditar').value = usuario.id_rol || '';
             new bootstrap.Modal(document.getElementById('editarUsuarioModal')).show();
           } else {
-            alert('Error al cargar los datos del usuario');
+            showMessage('Error al cargar los datos del usuario: ' + (data.message || 'Error desconocido'), 'danger');
           }
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => {
+          console.error('Error:', error);
+          showMessage('Error de conexión al cargar los datos del usuario', 'danger');
+        });
     });
   });
 
   // Actualizar usuario
   document.getElementById('actualizarUsuario').addEventListener('click', function (e) {
     e.preventDefault();
-    const formData = new FormData(document.getElementById('editarUsuarioForm'));
-    fetch('actualizar_usuario.php', {
+    
+    // Validar formulario
+    const form = document.getElementById('editarUsuarioForm');
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    const formData = new FormData(form);
+    
+    fetch('modals_usuarios/actualizar_usuario.php', {
       method: 'POST',
       body: formData
     })
-    .then(response => response.text())
-    .then(result => {
-      alert(result);
-      new bootstrap.Modal(document.getElementById('editarUsuarioModal')).hide();
-      location.reload();
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.text();
     })
-    .catch(error => console.error('Error:', error));
+    .then(result => {
+      if (result.includes('exitosamente')) {
+        showMessage(result, 'success');
+        bootstrap.Modal.getInstance(document.getElementById('editarUsuarioModal')).hide();
+        setTimeout(() => location.reload(), 1500);
+      } else {
+        showMessage(result, 'danger');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      showMessage('Error de conexión al actualizar el usuario', 'danger');
+    });
   });
 
   // Abrir modal de eliminar usuario
@@ -58,6 +109,12 @@ document.addEventListener('DOMContentLoaded', function () {
     button.addEventListener('click', function (e) {
       e.preventDefault();
       const documento = this.getAttribute('data-id');
+      
+      if (!documento) {
+        showMessage('Error: No se pudo obtener el documento del usuario', 'danger');
+        return;
+      }
+      
       document.getElementById('documentoEliminar').textContent = documento;
       document.getElementById('documentoEliminarInput').value = documento;
       new bootstrap.Modal(document.getElementById('eliminarUsuarioModal')).show();
@@ -68,36 +125,75 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('confirmarEliminar').addEventListener('click', function (e) {
     e.preventDefault();
     const documento = document.getElementById('documentoEliminarInput').value;
-    fetch('eliminar_usuario.php', {
+    
+    if (!documento) {
+      showMessage('Error: No se pudo obtener el documento del usuario', 'danger');
+      return;
+    }
+
+    fetch('modals_usuarios/eliminar_usuario.php', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: `documento=${encodeURIComponent(documento)}`
     })
-    .then(response => response.text())
-    .then(result => {
-      alert(result);
-      new bootstrap.Modal(document.getElementById('eliminarUsuarioModal')).hide();
-      location.reload();
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
     })
-    .catch(error => console.error('Error:', error));
+    .then(data => {
+      if (data.success) {
+        showMessage(data.message, 'success');
+        bootstrap.Modal.getInstance(document.getElementById('eliminarUsuarioModal')).hide();
+        setTimeout(() => location.reload(), 1500);
+      } else {
+        showMessage(data.error || 'Error al eliminar el usuario', 'danger');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      showMessage('Error de conexión al eliminar el usuario', 'danger');
+    });
   });
 
   // Guardar nuevo usuario
   document.getElementById('guardarUsuario').addEventListener('click', function (e) {
     e.preventDefault();
-    const formData = new FormData(document.getElementById('agregarUsuarioForm'));
-    fetch('agregar_usuario.php', {
+    
+    // Validar formulario
+    const form = document.getElementById('agregarUsuarioForm');
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    const formData = new FormData(form);
+    
+    fetch('modals_usuarios/agregar_usuario.php', {
       method: 'POST',
       body: formData
     })
-    .then(response => response.text())
-    .then(result => {
-      alert(result);
-      new bootstrap.Modal(document.getElementById('agregarUsuarioModal')).hide();
-      location.reload();
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.text();
     })
-    .catch(error => console.error('Error:', error));
+    .then(result => {
+      if (result.includes('exitosamente')) {
+        showMessage(result, 'success');
+        bootstrap.Modal.getInstance(document.getElementById('agregarUsuarioModal')).hide();
+        setTimeout(() => location.reload(), 1500);
+      } else {
+        showMessage(result, 'danger');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      showMessage('Error de conexión al agregar el usuario', 'danger');
+    });
   });
 });

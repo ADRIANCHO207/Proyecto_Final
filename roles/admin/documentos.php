@@ -78,12 +78,13 @@ foreach ($resultados as $row) {
     ];
 }
 ?>
+ 
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Control de Documentos - Flotax AGC</title>
+  <title>Visualizacion de Documentos - Flotax AGC</title>
   <link rel="shortcut icon" href="../../css/img/logo_sinfondo.png">
   <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
@@ -711,13 +712,6 @@ body {
         <div class="buscador">
           <input type="text" id="buscar" placeholder="Buscar por placa, documento o estado..." onkeyup="filtrarTabla()">
         </div>
-        
-        <div class="boton-agregar">
-          <button class="btn btn-success" onclick="abrirModalNuevoDocumento()">
-            <i class="bi bi-plus-circle"></i>
-            Nuevo Documento
-          </button>
-        </div>
       </div>
 
       <!-- Tabla de documentos -->
@@ -731,7 +725,6 @@ body {
                 <th><i class="bi bi-gear"></i> TecnoMecánica</th>
                 <th><i class="bi bi-person-badge"></i> Licencia</th>
                 <th><i class="bi bi-file-earmark-text"></i>Propietario</th>
-                <th><i class="bi bi-tools"></i> Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -780,18 +773,6 @@ body {
                      <td>
                     <?= htmlspecialchars($doc['propietario']) ?>
                   </td>
-                  <td>
-                    <div class="action-buttons">
-                      <a href="#" onclick="editarDocumento('<?= $doc['placa'] ?>')" 
-                         class="action-icon edit" title="Editar">
-                        <i class="bi bi-pencil-square"></i>
-                      </a>
-                      <a href="#" onclick="eliminarDocumento('<?= $doc['placa'] ?>')" 
-                         class="action-icon delete" title="Eliminar">
-                        <i class="bi bi-trash"></i>
-                      </a>
-                    </div>
-                  </td>
                 </tr>
               <?php endforeach; ?>
             </tbody>
@@ -805,8 +786,8 @@ body {
       </div>
     </div>
   </div>
-
-  <script>
+<script>
+  
     // Función de filtrado mejorada
     function filtrarTabla() {
       const input = document.getElementById('buscar').value.toLowerCase();
@@ -870,11 +851,7 @@ body {
       }
     }
 
-    // Funciones de interacción
-    function abrirModalNuevoDocumento() {
-      // Implementar modal para nuevo documento
-      alert('Abrir modal para nuevo documento');
-    }
+  
 
     function editarDocumento(placa) {
       // Implementar edición de documento

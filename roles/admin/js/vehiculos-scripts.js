@@ -137,6 +137,13 @@ function cargarDatosEdicion(fila) {
   })
     .then((response) => response.json())
     .then((data) => {
+      // Verificar si hay redirección por sesión inválida
+      if (data.redirect) {
+        alert(data.message || 'Sesión expirada');
+        window.location.href = data.redirect_url || '../../login/login.php';
+        return;
+      }
+      
       if (data.success) {
         const vehiculo = data.vehiculo
 
@@ -218,6 +225,13 @@ function obtenerDatosVehiculo(placa) {
   })
     .then((response) => response.json())
     .then((data) => {
+      // Verificar si hay redirección por sesión inválida
+      if (data.redirect) {
+        alert(data.message || 'Sesión expirada');
+        window.location.href = data.redirect_url || '../../login/login.php';
+        return;
+      }
+      
       if (data.success) {
         cargarDatosEdicion(data.vehiculo)
       } else {
@@ -242,12 +256,19 @@ function eliminarVehiculo(idVehiculo) {
   })
     .then((response) => response.json())
     .then((data) => {
+      // Verificar si hay redirección por sesión inválida
+      if (data.redirect) {
+        alert(data.message || 'Sesión expirada');
+        window.location.href = data.redirect_url || '../../login/login.php';
+        return;
+      }
+      
       if (data.success) {
         alert(data.message)
         // Recargar la página para ver los cambios
         window.location.reload()
       } else {
-        alert("Error: " + data.message)
+        alert("Error al eliminar el vehículo: " + data.message)
       }
     })
     .catch((error) => {
