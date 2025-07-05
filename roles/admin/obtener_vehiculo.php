@@ -1,12 +1,18 @@
 <?php
 session_start();
 require_once('../../conecct/conex.php');
-include '../../includes/validarsession.php';
+
+// Establecer header JSON ANTES de cualquier validación
+header('Content-Type: application/json');
 
 // Verificar si el usuario está autenticado
-if (!isset($_SESSION['documento'])) {
-    header('Content-Type: application/json');
-    echo json_encode(['success' => false, 'message' => 'No autorizado']);
+if (!isset($_SESSION['documento']) || !isset($_SESSION['rol'])) {
+    echo json_encode([
+        'success' => false, 
+        'message' => 'Sesión no válida',
+        'redirect' => true,
+        'redirect_url' => '../../login/login.php'
+    ]);
     exit;
 }
 
@@ -16,7 +22,6 @@ $response = ['success' => false, 'message' => 'No se ha especificado una placa']
 
 // Verificar que se haya enviado una placa
 if (!isset($_POST['placa']) || empty($_POST['placa'])) {
-    header('Content-Type: application/json');
     echo json_encode($response);
     exit;
 }
@@ -50,5 +55,4 @@ try {
 }
 
 // Devolver respuesta en formato JSON
-header('Content-Type: application/json');
 echo json_encode($response);

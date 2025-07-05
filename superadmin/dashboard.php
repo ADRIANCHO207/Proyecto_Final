@@ -197,6 +197,9 @@ try {
                     <a class="nav-link" href="vehiculos_backend.php" onclick="showSection('vehiculos')">
                         <i class="fas fa-car me-2"></i> Gestión de Vehículos
                     </a>
+                    <a class="nav-link" href="licenciamiento.php">
+                        <i class="fas fa-certificate me-2"></i> Licenciamiento
+                    </a>
                     <a class="nav-link" href="reportes_backend.php" onclick="showSection('reportes')">
                         <i class="fas fa-chart-bar me-2"></i> Reportes Avanzados
                     </a>
