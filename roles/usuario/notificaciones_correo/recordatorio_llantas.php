@@ -31,6 +31,7 @@ try {
 
     $hoy = new DateTime((date('Y-m-d')));
 
+
     $mail = new PHPMailer(true);
     $mail->CharSet = 'UTF-8';
     $mail->Encoding = 'base64';
@@ -45,6 +46,7 @@ try {
 
     // Consulta: llantas activas y próximas a cambio
     $query = "SELECT l.*, v.placa, u.email, u.nombre_completo, u.documento
+
               FROM llantas l
               INNER JOIN vehiculos v ON l.placa = v.placa
               INNER JOIN usuarios u ON v.Documento = u.documento
@@ -61,10 +63,12 @@ try {
             $fechaCambio = new DateTime(substr($llanta['proximo_cambio_fecha'], 0, 10)); // solo la fecha
             $diasRestantes = (int)$fechaHoy->diff($fechaCambio)->format('%r%a');
 
+
             echo "<strong>Placa:</strong> {$llanta['placa']}<br>";
             echo "<strong>Usuario:</strong> {$llanta['nombre_completo']} ({$llanta['email']})<br>";
             echo "<strong>Fecha próximo cambio:</strong> {$llanta['proximo_cambio_fecha']}<br>";
             echo $llanta['documento'] ? "<strong>Documento:</strong> {$llanta['documento']}<br>" : '';
+
             echo "<strong>Días exactos restantes:</strong> $diasRestantes<br>";
 
             $mail->clearAddresses();

@@ -17,6 +17,7 @@ error_reporting(E_ALL);
 
 $logFile = __DIR__ . '/log_general.txt';
 
+
 function registrarLog($mensaje) {
     global $logFile;
     $fecha = date("Y-m-d H:i:s");
@@ -46,6 +47,7 @@ try {
 
     // Consulta: mantenimientos de aceite próximos a cambio
     $query = "SELECT m.*, v.placa, u.email, u.documento, u.nombre_completo, tm.descripcion AS tipo_mantenimiento
+
               FROM mantenimiento m
               JOIN vehiculos v ON m.placa = v.placa
               JOIN usuarios u ON v.Documento = u.documento
@@ -68,6 +70,7 @@ try {
             echo "<strong>Usuario:</strong> {$mantenimiento['nombre_completo']} ({$mantenimiento['email']})<br>";
             echo "<strong>Fecha próximo cambio:</strong> {$mantenimiento['proximo_cambio_fecha']}<br>";
             echo $mantenimiento['documento'] ? "<strong>documento:</strong> {$mantenimiento['documento']}<br>" : '';
+
             echo "<strong>Días exactos restantes:</strong> $diasRestantes<br>";
 
             $mail->clearAddresses();
@@ -141,6 +144,7 @@ try {
                 ]);
             }
 
+
         } catch (Exception $e) {
             registrarLog("ERROR al enviar a {$mantenimiento['email']}: " . $mail->ErrorInfo);
             echo "<span style='color: red;'>Error al enviar: {$mail->ErrorInfo}</span><hr>";
@@ -162,6 +166,7 @@ function generarMensajeMantenimientoAceite($mantenimiento, $tiempo) {
     <html>
     <body style='font-family: Arial, sans-serif;'>
         <h2>Recordatorio de mantenimiento {$mantenimiento['tipo_mantenimiento']}</h2>
+
         <p>Estimado/a {$mantenimiento['nombre_completo']},</p>
         <p>Le recordamos que el próximo mantenimiento <strong>{$mantenimiento['tipo_mantenimiento']}</strong> para su vehículo con placa <strong>{$mantenimiento['placa']}</strong> está programado para <strong>{$mantenimiento['proximo_cambio_fecha']}</strong> ({$tiempo}).</p>
         <p>Detalles del mantenimiento:</p>
