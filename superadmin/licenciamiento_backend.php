@@ -86,11 +86,7 @@ function crearLicencia($conexion, $datos) {
             $clave_licencia
         ]);
         
-        // Change this line (around line 67):
         registrarLog($conexion, 'crear_licencia', "Licencia creada para empresa: {$datos['nombre_empresa']}, asignada a usuario: {$datos['usuario_asignado']}");
-        
-        // To this:
-        registrarLog('crear_licencia', "Licencia creada para empresa: {$datos['nombre_empresa']}, asignada a usuario: {$datos['usuario_asignado']}");
         
         return [
             'success' => true,

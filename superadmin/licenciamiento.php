@@ -10,23 +10,52 @@ if (!isset($_SESSION['superadmin_logged']) || $_SESSION['superadmin_logged'] !==
 $nombre_superadmin = $_SESSION['superadmin_nombre'] ?? 'Superadmin';
 $documento_superadmin = $_SESSION['superadmin_documento'] ?? '';
 
+require_once '../includes/validarsession.php';
 require_once '../conecct/conex.php';
-$database = new Database();
-$conexion = $database->conectar();
+// Remover esta línea: require_once 'auth_superadmin.php';
 
-// Obtener información de licenciamiento
 try {
-    // Verificar si existe la tabla de licencias
+    $database = new Database();
+    $conexion = $database->conectar();
+    
+    // Verificar y crear tablas si no existen
+    $stmt = $conexion->prepare("SHOW TABLES LIKE 'empresas'");
+    $stmt->execute();
+    $tabla_empresas_existe = $stmt->rowCount() > 0;
+    
+    if (!$tabla_empresas_existe) {
+        $sql_empresas = "
+            CREATE TABLE IF NOT EXISTS empresas (
+                id_empresa INT AUTO_INCREMENT PRIMARY KEY,
+                nombre_empresa VARCHAR(255) NOT NULL,
+                nit VARCHAR(20) UNIQUE NOT NULL,
+                direccion VARCHAR(255),
+                telefono VARCHAR(20),
+                email VARCHAR(100),
+                fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                estado ENUM('activa', 'inactiva') DEFAULT 'activa'
+            )
+        ";
+        $conexion->exec($sql_empresas);
+        
+        // Insertar empresa por defecto
+        $stmt = $conexion->prepare("
+            INSERT INTO empresas (nombre_empresa, nit, direccion, telefono, email) 
+            VALUES ('FlotaX AGC', '900123456-1', 'Calle Principal 123', '3001234567', 'admin@flotaxagc.com')
+        ");
+        $stmt->execute();
+    }
+    
     $stmt = $conexion->prepare("SHOW TABLES LIKE 'sistema_licencias'");
     $stmt->execute();
-    $tabla_existe = $stmt->rowCount() > 0;
+    $tabla_licencias_existe = $stmt->rowCount() > 0;
     
-    if (!$tabla_existe) {
-        // Crear tabla de licencias si no existe
-        $sql_create = "
-            CREATE TABLE sistema_licencias (
+    if (!$tabla_licencias_existe) {
+        $sql_licencias = "
+            CREATE TABLE IF NOT EXISTS sistema_licencias (
                 id INT AUTO_INCREMENT PRIMARY KEY,
-                nombre_empresa VARCHAR(255) NOT NULL,
+                id_empresa INT NOT NULL,
+                usuario_asignado VARCHAR(20) NOT NULL,
                 tipo_licencia ENUM('basica', 'profesional', 'empresarial') DEFAULT 'basica',
                 fecha_inicio DATE NOT NULL,
                 fecha_vencimiento DATE NOT NULL,
@@ -35,24 +64,70 @@ try {
                 estado ENUM('activa', 'vencida', 'suspendida') DEFAULT 'activa',
                 clave_licencia VARCHAR(255) UNIQUE,
                 fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                FOREIGN KEY (id_empresa) REFERENCES empresas(id_empresa) ON DELETE CASCADE,
+                FOREIGN KEY (usuario_asignado) REFERENCES usuarios(documento) ON DELETE CASCADE
             )
         ";
-        $conexion->exec($sql_create);
+        $conexion->exec($sql_licencias);
         
         // Insertar licencia por defecto
         $stmt = $conexion->prepare("
-            INSERT INTO sistema_licencias (nombre_empresa, tipo_licencia, fecha_inicio, fecha_vencimiento, max_usuarios, max_vehiculos, clave_licencia) 
-            VALUES ('FlotaX AGC', 'empresarial', CURDATE(), DATE_ADD(CURDATE(), INTERVAL 1 YEAR), 100, 500, ?)
+            INSERT INTO sistema_licencias (id_empresa, usuario_asignado, tipo_licencia, fecha_inicio, fecha_vencimiento, max_usuarios, max_vehiculos, clave_licencia) 
+            VALUES (1, '987654321', 'empresarial', CURDATE(), DATE_ADD(CURDATE(), INTERVAL 1 YEAR), 100, 500, ?)
         ");
         $clave_default = 'FLOTAX-' . strtoupper(bin2hex(random_bytes(8)));
         $stmt->execute([$clave_default]);
     }
     
-    // Obtener licencia actual
-    $stmt = $conexion->prepare("SELECT * FROM sistema_licencias ORDER BY fecha_creacion DESC LIMIT 1");
+    // Obtener licencias con información de empresa y usuario
+    $stmt = $conexion->prepare("
+        SELECT l.*, e.nombre_empresa, e.nit, u.nombre_completo as usuario_nombre
+        FROM sistema_licencias l
+        LEFT JOIN empresas e ON l.id_empresa = e.id_empresa
+        LEFT JOIN usuarios u ON l.usuario_asignado = u.documento
+        ORDER BY l.fecha_creacion DESC
+    ");
     $stmt->execute();
-    $licencia_actual = $stmt->fetch(PDO::FETCH_ASSOC);
+    $licencias = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Obtener la licencia actual (la más reciente activa)
+    $licencia_actual = null;
+    foreach ($licencias as $licencia) {
+        if ($licencia['estado'] === 'activa') {
+            $licencia_actual = $licencia;
+            break;
+        }
+    }
+$stmt = $conexion->prepare("
+    SELECT *
+    FROM usuarios u
+    ORDER BY u.nombre_completo
+");
+$stmt->execute();
+$usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Debug temporal - agregar estas líneas
+echo "<script>console.log('Usuarios encontrados: " . count($usuarios) . "');</script>";
+echo "<script>console.log('Estado de conexión: " . ($conexion ? 'conectado' : 'no conectado') . "');</script>";
+if (empty($usuarios)) {
+    echo "<script>console.log('No se encontraron usuarios en la consulta');</script>";
+    // Verificar si la tabla existe
+    $stmt_check = $conexion->prepare("SHOW TABLES LIKE 'usuarios'");
+    $stmt_check->execute();
+    $tabla_existe = $stmt_check->rowCount() > 0;
+    echo "<script>console.log('Tabla usuarios existe: " . ($tabla_existe ? 'sí' : 'no') . "');</script>";
+} else {
+    echo "<script>console.log('Primer usuario: " . addslashes(json_encode($usuarios[0])) . "');</script>";
+}
+
+// Definir usuarios disponibles para el modal
+$usuarios_disponibles = $usuarios;
+echo "<script>console.log('usuarios_disponibles asignado, count: " . count($usuarios_disponibles) . "');</script>";
+    // Obtener empresas
+    $stmt = $conexion->prepare("SELECT * FROM empresas WHERE estado = 'activa' ORDER BY nombre_empresa");
+    $stmt->execute();
+    $empresas = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
     // Estadísticas de uso
     $stmt = $conexion->prepare("SELECT COUNT(*) as total FROM usuarios");
@@ -65,9 +140,13 @@ try {
     
 } catch (Exception $e) {
     error_log("Error en licenciamiento: " . $e->getMessage());
-    $licencia_actual = null;
+    $licencias = [];
+    $usuarios = [];
+    $usuarios_disponibles = [];
+    $empresas = [];
     $usuarios_actuales = 0;
     $vehiculos_actuales = 0;
+    $licencia_actual = null;
 }
 ?>
 <!DOCTYPE html>
@@ -210,23 +289,8 @@ try {
                     <a class="nav-link" href="dashboard.php">
                         <i class="fas fa-tachometer-alt me-2"></i> Dashboard
                     </a>
-                    <a class="nav-link" href="usuarios.php">
-                        <i class="fas fa-users me-2"></i> Gestión de Usuarios
-                    </a>
-                    <a class="nav-link" href="vehiculos_backend.php">
-                        <i class="fas fa-car me-2"></i> Gestión de Vehículos
-                    </a>
                     <a class="nav-link active" href="licenciamiento.php">
                         <i class="fas fa-certificate me-2"></i> Licenciamiento
-                    </a>
-                    <a class="nav-link" href="reportes_backend.php">
-                        <i class="fas fa-chart-bar me-2"></i> Reportes Avanzados
-                    </a>
-                    <a class="nav-link" href="configuracion_backend.php">
-                        <i class="fas fa-cogs me-2"></i> Configuración
-                    </a>
-                    <a class="nav-link" href="logs_backend.php">
-                        <i class="fas fa-file-alt me-2"></i> Logs del Sistema
                     </a>
                     <hr class="text-white-50">
                     <a class="nav-link text-danger" href="logout.php">
@@ -379,6 +443,10 @@ try {
                                 <input type="text" class="form-control" name="nombre_empresa" required>
                             </div>
                             <div class="col-md-6 mb-3">
+                                <label class="form-label">NIT de la Empresa</label>
+                                <input type="text" class="form-control" name="nit_empresa" placeholder="Ej: 900123456-1" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
                                 <label class="form-label">Asignar a Usuario</label>
                                 <select class="form-select" name="usuario_asignado" required>
                                     <option value="">Seleccione un usuario</option>
@@ -522,11 +590,3 @@ try {
     </script>
 </body>
 </html>
-
-<?php
-// Agregar después de la línea donde se obtienen las licencias (alrededor de la línea 70)
-// Obtener usuarios activos para el select
-$usuarios_query = $conexion->prepare("SELECT documento, nombre_completo FROM usuarios WHERE id_estado_usuario = 1 ORDER BY nombre_completo");
-$usuarios_query->execute();
-$usuarios_disponibles = $usuarios_query->fetchAll(PDO::FETCH_ASSOC);
-?>

@@ -93,3 +93,27 @@
 [04-Jul-2025 23:00:11 UTC] Result for soat: 0 records
 [04-Jul-2025 23:00:11 UTC] Executing query: SELECT COUNT(*) FROM tecnomecanica WHERE id_placa = :placa for placa: ASD231
 [04-Jul-2025 23:00:11 UTC] Result for tecnomecanica: 0 records
+[05-Jul-2025 17:19:39 Europe/Berlin] Database error in delete_vehicle.php: Query failed - SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`proyecto_flota`.`correos_enviados_mantenimiento`, CONSTRAINT `correos_enviados_mantenimiento_ibfk_1` FOREIGN KEY (`id_mantenimiento`) REFERENCES `mantenimiento` (`id_mantenimiento`))
+[05-Jul-2025 17:19:43 Europe/Berlin] Database error in delete_vehicle.php: Query failed - SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`proyecto_flota`.`correos_enviados_mantenimiento`, CONSTRAINT `correos_enviados_mantenimiento_ibfk_1` FOREIGN KEY (`id_mantenimiento`) REFERENCES `mantenimiento` (`id_mantenimiento`))
+[05-Jul-2025 17:19:47 Europe/Berlin] Executing query: SELECT COUNT(*) FROM mantenimiento WHERE placa = :placa for placa: ODZ06E
+[05-Jul-2025 17:19:47 Europe/Berlin] Result for mantenimiento: 0 records
+[05-Jul-2025 17:19:47 Europe/Berlin] Executing query: SELECT COUNT(*) FROM llantas WHERE placa = :placa for placa: ODZ06E
+[05-Jul-2025 17:19:47 Europe/Berlin] Result for llantas: 0 records
+[05-Jul-2025 17:19:47 Europe/Berlin] Executing query: SELECT COUNT(*) FROM multas WHERE placa = :placa for placa: ODZ06E
+[05-Jul-2025 17:19:47 Europe/Berlin] Result for multas: 0 records
+[05-Jul-2025 17:19:47 Europe/Berlin] Executing query: SELECT COUNT(*) FROM soat WHERE id_placa = :placa for placa: ODZ06E
+[05-Jul-2025 17:19:47 Europe/Berlin] Result for soat: 0 records
+[05-Jul-2025 17:19:47 Europe/Berlin] Executing query: SELECT COUNT(*) FROM tecnomecanica WHERE id_placa = :placa for placa: ODZ06E
+[05-Jul-2025 17:19:47 Europe/Berlin] Result for tecnomecanica: 0 records
+[05-Jul-2025 17:19:51 Europe/Berlin] Database error in delete_vehicle.php: Query failed - SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`proyecto_flota`.`correos_enviados_mantenimiento`, CONSTRAINT `correos_enviados_mantenimiento_ibfk_1` FOREIGN KEY (`id_mantenimiento`) REFERENCES `mantenimiento` (`id_mantenimiento`))
+[05-Jul-2025 17:20:13 Europe/Berlin] Executing query: SELECT COUNT(*) FROM mantenimiento WHERE placa = :placa for placa: FIS234
+[05-Jul-2025 17:20:13 Europe/Berlin] Result for mantenimiento: 0 records
+[05-Jul-2025 17:20:13 Europe/Berlin] Executing query: SELECT COUNT(*) FROM llantas WHERE placa = :placa for placa: FIS234
+[05-Jul-2025 17:20:13 Europe/Berlin] Result for llantas: 0 records
+[05-Jul-2025 17:20:13 Europe/Berlin] Executing query: SELECT COUNT(*) FROM multas WHERE placa = :placa for placa: FIS234
+[05-Jul-2025 17:20:13 Europe/Berlin] Result for multas: 0 records
+[05-Jul-2025 17:20:13 Europe/Berlin] Executing query: SELECT COUNT(*) FROM soat WHERE id_placa = :placa for placa: FIS234
+[05-Jul-2025 17:20:13 Europe/Berlin] Result for soat: 0 records
+[05-Jul-2025 17:20:13 Europe/Berlin] Executing query: SELECT COUNT(*) FROM tecnomecanica WHERE id_placa = :placa for placa: FIS234
+[05-Jul-2025 17:20:13 Europe/Berlin] Result for tecnomecanica: 0 records
+[05-Jul-2025 17:20:16 Europe/Berlin] Database error in delete_vehicle.php: Query failed - SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`proyecto_flota`.`correos_enviados_mantenimiento`, CONSTRAINT `correos_enviados_mantenimiento_ibfk_1` FOREIGN KEY (`id_mantenimiento`) REFERENCES `mantenimiento` (`id_mantenimiento`))

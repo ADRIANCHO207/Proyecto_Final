@@ -61,7 +61,8 @@ try {
     <title>Dashboard Superadmin - Sistema de Gestión de Flota</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.css" rel="stylesheet">
+    <!-- Eliminar la línea 64 que incluye Chart.js CSS -->
+    <!-- <link href="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.css" rel="stylesheet"> -->
     <style>
         :root {
             --primary-color: #2c3e50;
@@ -188,26 +189,11 @@ try {
                 </div>
                 
                 <nav class="nav flex-column">
-                    <a class="nav-link active" href="dashboard.php" onclick="showSection('dashboard')">
+                    <a class="nav-link active" href="dashboard.php">
                         <i class="fas fa-tachometer-alt me-2"></i> Dashboard
-                    </a>
-                    <a class="nav-link" href="usuarios.php" onclick="showSection('usuarios')">
-                        <i class="fas fa-users me-2"></i> Gestión de Usuarios
-                    </a>
-                    <a class="nav-link" href="vehiculos_backend.php" onclick="showSection('vehiculos')">
-                        <i class="fas fa-car me-2"></i> Gestión de Vehículos
                     </a>
                     <a class="nav-link" href="licenciamiento.php">
                         <i class="fas fa-certificate me-2"></i> Licenciamiento
-                    </a>
-                    <a class="nav-link" href="reportes_backend.php" onclick="showSection('reportes')">
-                        <i class="fas fa-chart-bar me-2"></i> Reportes Avanzados
-                    </a>
-                    <a class="nav-link" href="configuracion_backend.php" onclick="showSection('configuracion')">
-                        <i class="fas fa-cogs me-2"></i> Configuración
-                    </a>
-                    <a class="nav-link" href="logs_backend.php" onclick="showSection('logs')">
-                        <i class="fas fa-file-alt me-2"></i> Logs del Sistema
                     </a>
                     <hr class="text-white-50">
                     <a class="nav-link text-danger" href="logout.php">
@@ -297,13 +283,7 @@ try {
                     
                     <!-- Charts and Tables Row -->
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="chart-container">
-                                <h5 class="mb-3">Vehículos por Estado</h5>
-                                <canvas id="vehiculosChart" width="400" height="200"></canvas>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="table-container">
                                 <h5 class="mb-3">Últimos Usuarios Registrados</h5>
                                 <div class="table-responsive">
@@ -337,9 +317,13 @@ try {
                     </div>
                 </div>
                 
-            -->
+            </div>
+        </div>
+    </div>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Eliminar la línea que incluye Chart.js -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
     <script>
         // Función para mostrar secciones
         function showSection(sectionName) {
@@ -359,37 +343,6 @@ try {
             });
             event.target.classList.add('active');
         }
-        
-        // Gráfico de vehículos por estado
-        const ctx = document.getElementById('vehiculosChart').getContext('2d');
-        const vehiculosChart = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: [<?php echo !empty($vehiculos_por_estado) ? "'" . implode("', '", array_column($vehiculos_por_estado, 'estado')) . "'" : "'Sin datos'"; ?>],
-                datasets: [{
-                    data: [<?php echo !empty($vehiculos_por_estado) ? implode(', ', array_column($vehiculos_por_estado, 'cantidad')) : '1'; ?>],
-                    backgroundColor: [
-                        '#3498db',
-                        '#27ae60',
-                        '#f39c12',
-                        '#e74c3c',
-                        '#9b59b6',
-                        '#1abc9c'
-                    ],
-                    borderWidth: 2,
-                    borderColor: '#fff'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom'
-                    }
-                }
-            }
-        });
         
         // Auto-refresh cada 5 minutos
         setInterval(function() {
