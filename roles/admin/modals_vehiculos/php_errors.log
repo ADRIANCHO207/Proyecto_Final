@@ -5,60 +5,91 @@
 [13-Jun-2025 22:12:59 Europe/Berlin] PHP Warning:  move_uploaded_file(images/DHS121_1749845579.jpg): Failed to open stream: No such file or directory in C:\xampp\htdocs\proyecto\roles\admin\modals_vehiculos\update_vehicle.php on line 41
 [13-Jun-2025 22:12:59 Europe/Berlin] PHP Warning:  move_uploaded_file(): Unable to move &quot;C:\xampp\tmp\php7834.tmp&quot; to &quot;images/DHS121_1749845579.jpg&quot; in C:\xampp\htdocs\proyecto\roles\admin\modals_vehiculos\update_vehicle.php on line 41
 [13-Jun-2025 22:12:59 Europe/Berlin] Failed to upload image for placa: DHS121
-[13-Jun-2025 23:10:56 Europe/Berlin] PHP Warning:  move_uploaded_file(images/KKE332_1749849056.webp): Failed to open stream: No such file or directory in C:\xampp1\htdocs\proyecto\roles\admin\modals_vehiculos\update_vehicle.php on line 41
-[13-Jun-2025 23:10:56 Europe/Berlin] PHP Warning:  move_uploaded_file(): Unable to move &quot;C:\xampp1\tmp\phpF198.tmp&quot; to &quot;images/KKE332_1749849056.webp&quot; in C:\xampp1\htdocs\proyecto\roles\admin\modals_vehiculos\update_vehicle.php on line 41
-[13-Jun-2025 23:10:56 Europe/Berlin] Failed to upload image for placa: KKE332
-[13-Jun-2025 23:11:31 Europe/Berlin] PHP Warning:  move_uploaded_file(images/KKE332_1749849091.jpg): Failed to open stream: No such file or directory in C:\xampp1\htdocs\proyecto\roles\admin\modals_vehiculos\update_vehicle.php on line 41
-[13-Jun-2025 23:11:31 Europe/Berlin] PHP Warning:  move_uploaded_file(): Unable to move &quot;C:\xampp1\tmp\php7B99.tmp&quot; to &quot;images/KKE332_1749849091.jpg&quot; in C:\xampp1\htdocs\proyecto\roles\admin\modals_vehiculos\update_vehicle.php on line 41
-[13-Jun-2025 23:11:31 Europe/Berlin] Failed to upload image for placa: KKE332
-[15-Jun-2025 15:47:15 Europe/Berlin] PHP Warning:  move_uploaded_file(images/KKE332_1749995235.webp): Failed to open stream: No such file or directory in C:\xampp1\htdocs\proyecto\roles\admin\modals_vehiculos\update_vehicle.php on line 41
-[15-Jun-2025 15:47:15 Europe/Berlin] PHP Warning:  move_uploaded_file(): Unable to move &quot;C:\xampp1\tmp\php75EC.tmp&quot; to &quot;images/KKE332_1749995235.webp&quot; in C:\xampp1\htdocs\proyecto\roles\admin\modals_vehiculos\update_vehicle.php on line 41
-[15-Jun-2025 15:47:15 Europe/Berlin] Failed to upload image for placa: KKE332
-[15-Jun-2025 15:47:30 Europe/Berlin] PHP Warning:  move_uploaded_file(images/KKE332_1749995250.webp): Failed to open stream: No such file or directory in C:\xampp1\htdocs\proyecto\roles\admin\modals_vehiculos\update_vehicle.php on line 41
-[15-Jun-2025 15:47:30 Europe/Berlin] PHP Warning:  move_uploaded_file(): Unable to move &quot;C:\xampp1\tmp\phpB111.tmp&quot; to &quot;images/KKE332_1749995250.webp&quot; in C:\xampp1\htdocs\proyecto\roles\admin\modals_vehiculos\update_vehicle.php on line 41
-[15-Jun-2025 15:47:30 Europe/Berlin] Failed to upload image for placa: KKE332
-[15-Jun-2025 15:50:03 Europe/Berlin] Executing query: SELECT COUNT(*) FROM mantenimiento WHERE placa = :placa for placa: KKM223
-[15-Jun-2025 15:50:03 Europe/Berlin] Result for mantenimiento: 1 records
-[15-Jun-2025 15:50:03 Europe/Berlin] Cannot delete vehicle with placa KKM223 due to dependencies in mantenimiento
-[15-Jun-2025 15:50:06 Europe/Berlin] Executing query: SELECT COUNT(*) FROM mantenimiento WHERE placa = :placa for placa: KKM223
-[15-Jun-2025 15:50:06 Europe/Berlin] Result for mantenimiento: 1 records
-[15-Jun-2025 15:50:06 Europe/Berlin] Cannot delete vehicle with placa KKM223 due to dependencies in mantenimiento
-[15-Jun-2025 15:50:14 Europe/Berlin] Executing query: SELECT COUNT(*) FROM mantenimiento WHERE placa = :placa for placa: KKE332
-[15-Jun-2025 15:50:14 Europe/Berlin] Result for mantenimiento: 0 records
-[15-Jun-2025 15:50:14 Europe/Berlin] Executing query: SELECT COUNT(*) FROM llantas WHERE placa = :placa for placa: KKE332
-[15-Jun-2025 15:50:14 Europe/Berlin] Result for llantas: 0 records
-[15-Jun-2025 15:50:14 Europe/Berlin] Executing query: SELECT COUNT(*) FROM multas WHERE placa = :placa for placa: KKE332
-[15-Jun-2025 15:50:14 Europe/Berlin] Result for multas: 0 records
-[15-Jun-2025 15:50:14 Europe/Berlin] Executing query: SELECT COUNT(*) FROM soat WHERE id_placa = :placa for placa: KKE332
-[15-Jun-2025 15:50:14 Europe/Berlin] Database error in delete_vehicle.php: Query failed - SQLSTATE[42S02]: Base table or view not found: 1146 Table 'proyecto_flota.soat' doesn't exist
-[15-Jun-2025 15:50:20 Europe/Berlin] Executing query: SELECT COUNT(*) FROM mantenimiento WHERE placa = :placa for placa: KKE332
-[15-Jun-2025 15:50:20 Europe/Berlin] Result for mantenimiento: 0 records
-[15-Jun-2025 15:50:20 Europe/Berlin] Executing query: SELECT COUNT(*) FROM llantas WHERE placa = :placa for placa: KKE332
-[15-Jun-2025 15:50:20 Europe/Berlin] Result for llantas: 0 records
-[15-Jun-2025 15:50:20 Europe/Berlin] Executing query: SELECT COUNT(*) FROM multas WHERE placa = :placa for placa: KKE332
-[15-Jun-2025 15:50:20 Europe/Berlin] Result for multas: 0 records
-[15-Jun-2025 15:50:20 Europe/Berlin] Executing query: SELECT COUNT(*) FROM soat WHERE id_placa = :placa for placa: KKE332
-[15-Jun-2025 15:50:20 Europe/Berlin] Database error in delete_vehicle.php: Query failed - SQLSTATE[42S02]: Base table or view not found: 1146 Table 'proyecto_flota.soat' doesn't exist
-[15-Jun-2025 16:34:56 Europe/Berlin] PHP Warning:  move_uploaded_file(images/KKK222_1749998096.webp): Failed to open stream: No such file or directory in C:\xampp1\htdocs\proyecto\roles\admin\modals_vehiculos\update_vehicle.php on line 41
-[15-Jun-2025 16:34:56 Europe/Berlin] PHP Warning:  move_uploaded_file(): Unable to move &quot;C:\xampp1\tmp\php1C55.tmp&quot; to &quot;images/KKK222_1749998096.webp&quot; in C:\xampp1\htdocs\proyecto\roles\admin\modals_vehiculos\update_vehicle.php on line 41
-[15-Jun-2025 16:34:56 Europe/Berlin] Failed to upload image for placa: KKK222
-[15-Jun-2025 16:42:28 Europe/Berlin] PHP Warning:  move_uploaded_file(images/DAS231_1749998548.webp): Failed to open stream: No such file or directory in C:\xampp1\htdocs\proyecto\roles\admin\modals_vehiculos\update_vehicle.php on line 41
-[15-Jun-2025 16:42:28 Europe/Berlin] PHPHP Warning:  move_uploaded_file(): Unable to move &quot;C:\xampp1\tmp\phpBFDD.tmp&quot; to &quot;images/KKK333_1750244818.webp&quot; in C:\xampp1\htdocs\proyecto\roles\admin\modals_vehiculos\update_vehicle.php on line 41
-[18-Jun-2025 13:06:58 Europe/Berlin] Failed to upload image for placa: KKK333
-[18-Jun-2025 13:07:05 Europe/Berlin] PHP Warning:  move_uploaded_file(images/KKK333_1750244825.webp): Failed to open stream: No such file or directory in C:\xampp1\htdocs\proyecto\roles\admin\modals_vehiculos\update_vehicle.php on line 41
-[18-Jun-2025 13:07:05 Europe/Berlin] PHP Warning:  move_uploaded_file(): Unable to move &quot;C:\xampp1\tmp\phpDA5B.tmp&quot; to &quot;images/KKK333_1750244825.webp&quot; in C:\xampp1\htdocs\proyecto\roles\admin\modals_vehiculos\update_vehicle.php on line 41
-[18-Jun-2025 13:07:05 Europe/Berlin] Failed to upload image for placa: KKK333
-P Warning:  move_uploaded_file(): Unable to move &quot;C:\xampp1\tmp\php3BC.tmp&quot; to &quot;images/DAS231_1749998548.webp&quot; in C:\xampp1\htdocs\proyecto\roles\admin\modals_vehiculos\update_vehicle.php on line 41
-[15-Jun-2025 16:42:28 Europe/Berlin] Failed to upload image for placa: DAS231
-[18-Jun-2025 04:56:38 Europe/Berlin] Executing query: SELECT COUNT(*) FROM mantenimiento WHERE placa = :placa for placa: DHS121
-[18-Jun-2025 04:56:38 Europe/Berlin] Result for mantenimiento: 0 records
-[18-Jun-2025 04:56:38 Europe/Berlin] Executing query: SELECT COUNT(*) FROM llantas WHERE placa = :placa for placa: DHS121
-[18-Jun-2025 04:56:38 Europe/Berlin] Result for llantas: 0 records
-[18-Jun-2025 04:56:38 Europe/Berlin] Executing query: SELECT COUNT(*) FROM multas WHERE placa = :placa for placa: DHS121
-[18-Jun-2025 04:56:38 Europe/Berlin] Result for multas: 0 records
-[18-Jun-2025 04:56:38 Europe/Berlin] Executing query: SELECT COUNT(*) FROM soat WHERE id_placa = :placa for placa: DHS121
-[18-Jun-2025 04:56:38 Europe/Berlin] Result for soat: 0 records
-[18-Jun-2025 04:56:38 Europe/Berlin] Executing query: SELECT COUNT(*) FROM tecnomecanica WHERE id_placa = :placa for placa: DHS121
-[18-Jun-2025 04:56:38 Europe/Berlin] Result for tecnomecanica: 0 records
-[18-Jun-2025 13:06:58 Europe/Berlin] PHP Warning:  move_uploaded_file(images/KKK333_1750244818.webp): Failed to open stream: No such file or directory in C:\xampp1\htdocs\proyecto\roles\admin\modals_vehiculos\update_vehicle.php on line 41
-[18-Jun-2025 13:06:58 Europe/Berlin] 
+[14-Jun-2025 19:10:59 Europe/Berlin] Intentando conectar a: mysql:host=localhost;dbname=proyecto_flota;charset=utf8
+[14-Jun-2025 19:10:59 Europe/Berlin] Conexión exitosa a proyecto_flota
+[03-Jul-2025 00:56:59 Europe/Berlin] Intentando conectar a: mysql:host=localhost;dbname=proyecto_flota;charset=utf8
+[03-Jul-2025 00:56:59 Europe/Berlin] Conexión exitosa a proyecto_flota
+[03-Jul-2025 00:57:05 Europe/Berlin] Intentando conectar a: mysql:host=localhost;dbname=proyecto_flota;charset=utf8
+[03-Jul-2025 00:57:05 Europe/Berlin] Conexión exitosa a proyecto_flota
+[03-Jul-2025 00:57:14 Europe/Berlin] Intentando conectar a: mysql:host=localhost;dbname=proyecto_flota;charset=utf8
+[03-Jul-2025 00:57:14 Europe/Berlin] Conexión exitosa a proyecto_flota
+[03-Jul-2025 00:57:21 Europe/Berlin] Intentando conectar a: mysql:host=localhost;dbname=proyecto_flota;charset=utf8
+[03-Jul-2025 00:57:21 Europe/Berlin] Conexión exitosa a proyecto_flota
+[03-Jul-2025 00:57:46 Europe/Berlin] Intentando conectar a: mysql:host=localhost;dbname=proyecto_flota;charset=utf8
+[03-Jul-2025 00:57:46 Europe/Berlin] Conexión exitosa a proyecto_flota
+[03-Jul-2025 01:21:59 Europe/Berlin] Intentando conectar a: mysql:host=localhost;dbname=proyecto_flota;charset=utf8
+[03-Jul-2025 01:21:59 Europe/Berlin] Conexión exitosa a proyecto_flota
+[03-Jul-2025 01:21:59 Europe/Berlin] Executing query: SELECT COUNT(*) FROM mantenimiento WHERE placa = :placa for placa: FUN555
+[03-Jul-2025 01:21:59 Europe/Berlin] Result for mantenimiento: 0 records
+[03-Jul-2025 01:21:59 Europe/Berlin] Executing query: SELECT COUNT(*) FROM llantas WHERE placa = :placa for placa: FUN555
+[03-Jul-2025 01:21:59 Europe/Berlin] Result for llantas: 0 records
+[03-Jul-2025 01:21:59 Europe/Berlin] Executing query: SELECT COUNT(*) FROM multas WHERE placa = :placa for placa: FUN555
+[03-Jul-2025 01:21:59 Europe/Berlin] Result for multas: 0 records
+[03-Jul-2025 01:21:59 Europe/Berlin] Executing query: SELECT COUNT(*) FROM soat WHERE id_placa = :placa for placa: FUN555
+[03-Jul-2025 01:21:59 Europe/Berlin] Result for soat: 0 records
+[03-Jul-2025 01:21:59 Europe/Berlin] Executing query: SELECT COUNT(*) FROM tecnomecanica WHERE id_placa = :placa for placa: FUN555
+[03-Jul-2025 01:21:59 Europe/Berlin] Result for tecnomecanica: 0 records
+[03-Jul-2025 01:22:21 Europe/Berlin] Intentando conectar a: mysql:host=localhost;dbname=proyecto_flota;charset=utf8
+[03-Jul-2025 01:22:21 Europe/Berlin] Conexión exitosa a proyecto_flota
+[03-Jul-2025 01:22:21 Europe/Berlin] Executing query: SELECT COUNT(*) FROM mantenimiento WHERE placa = :placa for placa: FOR111
+[03-Jul-2025 01:22:21 Europe/Berlin] Result for mantenimiento: 0 records
+[03-Jul-2025 01:22:21 Europe/Berlin] Executing query: SELECT COUNT(*) FROM llantas WHERE placa = :placa for placa: FOR111
+[03-Jul-2025 01:22:21 Europe/Berlin] Result for llantas: 0 records
+[03-Jul-2025 01:22:21 Europe/Berlin] Executing query: SELECT COUNT(*) FROM multas WHERE placa = :placa for placa: FOR111
+[03-Jul-2025 01:22:21 Europe/Berlin] Result for multas: 0 records
+[03-Jul-2025 01:22:21 Europe/Berlin] Executing query: SELECT COUNT(*) FROM soat WHERE id_placa = :placa for placa: FOR111
+[03-Jul-2025 01:22:21 Europe/Berlin] Result for soat: 0 records
+[03-Jul-2025 01:22:21 Europe/Berlin] Executing query: SELECT COUNT(*) FROM tecnomecanica WHERE id_placa = :placa for placa: FOR111
+[03-Jul-2025 01:22:21 Europe/Berlin] Result for tecnomecanica: 0 records
+[04-Jul-2025 02:55:24 UTC] Executing query: SELECT COUNT(*) FROM mantenimiento WHERE placa = :placa for placa: ADS321
+[04-Jul-2025 02:55:24 UTC] Result for mantenimiento: 0 records
+[04-Jul-2025 02:55:24 UTC] Executing query: SELECT COUNT(*) FROM llantas WHERE placa = :placa for placa: ADS321
+[04-Jul-2025 02:55:24 UTC] Result for llantas: 0 records
+[04-Jul-2025 02:55:24 UTC] Executing query: SELECT COUNT(*) FROM multas WHERE placa = :placa for placa: ADS321
+[04-Jul-2025 02:55:24 UTC] Result for multas: 0 records
+[04-Jul-2025 02:55:24 UTC] Executing query: SELECT COUNT(*) FROM soat WHERE id_placa = :placa for placa: ADS321
+[04-Jul-2025 02:55:24 UTC] Result for soat: 0 records
+[04-Jul-2025 02:55:24 UTC] Executing query: SELECT COUNT(*) FROM tecnomecanica WHERE id_placa = :placa for placa: ADS321
+[04-Jul-2025 02:55:24 UTC] Result for tecnomecanica: 0 records
+[04-Jul-2025 18:30:01 UTC] Executing query: SELECT COUNT(*) FROM mantenimiento WHERE placa = :placa for placa: FIS234
+[04-Jul-2025 18:30:01 UTC] Result for mantenimiento: 0 records
+[04-Jul-2025 18:30:01 UTC] Executing query: SELECT COUNT(*) FROM llantas WHERE placa = :placa for placa: FIS234
+[04-Jul-2025 18:30:01 UTC] Result for llantas: 0 records
+[04-Jul-2025 18:30:01 UTC] Executing query: SELECT COUNT(*) FROM multas WHERE placa = :placa for placa: FIS234
+[04-Jul-2025 18:30:01 UTC] Result for multas: 0 records
+[04-Jul-2025 18:30:01 UTC] Executing query: SELECT COUNT(*) FROM soat WHERE id_placa = :placa for placa: FIS234
+[04-Jul-2025 18:30:01 UTC] Result for soat: 0 records
+[04-Jul-2025 18:30:01 UTC] Executing query: SELECT COUNT(*) FROM tecnomecanica WHERE id_placa = :placa for placa: FIS234
+[04-Jul-2025 18:30:01 UTC] Result for tecnomecanica: 0 records
+[04-Jul-2025 18:30:01 UTC] Database error in delete_vehicle.php: Query failed - SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`u148394603_proyecto_flota`.`correos_enviados_pico_placa`, CONSTRAINT `correos_enviados_pico_placa_ibfk_1` FOREIGN KEY (`placa`) REFERENCES `vehiculos` (`placa`))
+[04-Jul-2025 18:32:59 UTC] Executing query: SELECT COUNT(*) FROM mantenimiento WHERE placa = :placa for placa: FIS234
+[04-Jul-2025 18:32:59 UTC] Result for mantenimiento: 0 records
+[04-Jul-2025 18:32:59 UTC] Executing query: SELECT COUNT(*) FROM llantas WHERE placa = :placa for placa: FIS234
+[04-Jul-2025 18:32:59 UTC] Result for llantas: 0 records
+[04-Jul-2025 18:32:59 UTC] Executing query: SELECT COUNT(*) FROM multas WHERE placa = :placa for placa: FIS234
+[04-Jul-2025 18:32:59 UTC] Result for multas: 0 records
+[04-Jul-2025 18:32:59 UTC] Executing query: SELECT COUNT(*) FROM soat WHERE id_placa = :placa for placa: FIS234
+[04-Jul-2025 18:32:59 UTC] Result for soat: 0 records
+[04-Jul-2025 18:32:59 UTC] Executing query: SELECT COUNT(*) FROM tecnomecanica WHERE id_placa = :placa for placa: FIS234
+[04-Jul-2025 18:32:59 UTC] Result for tecnomecanica: 0 records
+[04-Jul-2025 18:32:59 UTC] Database error in delete_vehicle.php: Query failed - SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`u148394603_proyecto_flota`.`correos_enviados_pico_placa`, CONSTRAINT `correos_enviados_pico_placa_ibfk_1` FOREIGN KEY (`placa`) REFERENCES `vehiculos` (`placa`))
+[04-Jul-2025 19:36:11 UTC] Executing query: SELECT COUNT(*) FROM mantenimiento WHERE placa = :placa for placa: FIS234
+[04-Jul-2025 19:36:11 UTC] Result for mantenimiento: 0 records
+[04-Jul-2025 19:36:11 UTC] Executing query: SELECT COUNT(*) FROM llantas WHERE placa = :placa for placa: FIS234
+[04-Jul-2025 19:36:11 UTC] Result for llantas: 0 records
+[04-Jul-2025 19:36:11 UTC] Executing query: SELECT COUNT(*) FROM multas WHERE placa = :placa for placa: FIS234
+[04-Jul-2025 19:36:11 UTC] Result for multas: 0 records
+[04-Jul-2025 19:36:11 UTC] Executing query: SELECT COUNT(*) FROM soat WHERE id_placa = :placa for placa: FIS234
+[04-Jul-2025 19:36:11 UTC] Result for soat: 0 records
+[04-Jul-2025 19:36:11 UTC] Executing query: SELECT COUNT(*) FROM tecnomecanica WHERE id_placa = :placa for placa: FIS234
+[04-Jul-2025 19:36:11 UTC] Result for tecnomecanica: 0 records
+[04-Jul-2025 23:00:11 UTC] Executing query: SELECT COUNT(*) FROM mantenimiento WHERE placa = :placa for placa: ASD231
+[04-Jul-2025 23:00:11 UTC] Result for mantenimiento: 0 records
+[04-Jul-2025 23:00:11 UTC] Executing query: SELECT COUNT(*) FROM llantas WHERE placa = :placa for placa: ASD231
+[04-Jul-2025 23:00:11 UTC] Result for llantas: 0 records
+[04-Jul-2025 23:00:11 UTC] Executing query: SELECT COUNT(*) FROM multas WHERE placa = :placa for placa: ASD231
+[04-Jul-2025 23:00:11 UTC] Result for multas: 0 records
+[04-Jul-2025 23:00:11 UTC] Executing query: SELECT COUNT(*) FROM soat WHERE id_placa = :placa for placa: ASD231
+[04-Jul-2025 23:00:11 UTC] Result for soat: 0 records
+[04-Jul-2025 23:00:11 UTC] Executing query: SELECT COUNT(*) FROM tecnomecanica WHERE id_placa = :placa for placa: ASD231
+[04-Jul-2025 23:00:11 UTC] Result for tecnomecanica: 0 records

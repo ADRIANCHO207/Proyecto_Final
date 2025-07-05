@@ -223,6 +223,21 @@ if ($placa) {
     $error = "Por favor, seleccione un vehículo.";
     error_log("No vehicle selected.");
 }
+
+
+// Obtiene nombre completo y foto de perfil si no están en sesión
+$nombre_completo = $_SESSION['nombre_completo'] ?? null;
+$foto_perfil = $_SESSION['foto_perfil'] ?? null;
+if (!$nombre_completo || !$foto_perfil) {
+    $user_query = $con->prepare("SELECT nombre_completo, foto_perfil FROM usuarios WHERE documento = :documento");
+    $user_query->bindParam(':documento', $documento, PDO::PARAM_STR);
+    $user_query->execute();
+    $user = $user_query->fetch(PDO::FETCH_ASSOC);
+    $nombre_completo = $user['nombre_completo'] ?? 'Usuario';
+    $foto_perfil = $user['foto_perfil'] ?: '/roles/usuario/css/img/perfil.jpg';
+    $_SESSION['nombre_completo'] = $nombre_completo;
+    $_SESSION['foto_perfil'] = $foto_perfil;
+}
 ?>
 
 <!DOCTYPE html>

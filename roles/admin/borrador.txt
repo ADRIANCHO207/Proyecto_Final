@@ -88,3 +88,18 @@
                     <h3><i class="bi bi-pie-chart"></i> Distribución por Estado</h3>
                     <canvas id="estadoChart"></canvas>
                 </div> -->
+
+
+
+
+                      <td class="expandable-cell">
+                <span class="descripcion-cell"><?= htmlspecialchars($mant['descripcion']) ?></span>
+                <div class="expanded-details">
+                  <h5>Detalles del mantenimiento</h5>
+                  <p><?= htmlspecialchars($mant['detalles']) ?></p>
+                  <p><span class="label">Programado:</span> <span class="value"><?= date('d/m/Y', strtotime($mant['fecha_programada'])) ?></span></p>
+                  <?php if ($mant['fecha_completado']): ?>
+                  <p><span class="label">Completado:</span> <span class="value"><?= date('d/m/Y', strtotime($mant['fecha_realizado'])) ?></span></p>
+                  <?php endif; ?>
+                </div>
+              </td>

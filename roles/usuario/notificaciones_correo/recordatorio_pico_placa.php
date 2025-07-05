@@ -1,5 +1,5 @@
 <?php
-
+date_default_timezone_set('America/Bogota');
 require_once '../../../conecct/conex.php';
 require '../../../src/Exception.php';
 require '../../../src/PHPMailer.php';
@@ -57,7 +57,7 @@ try {
 
             $placeholders = rtrim(str_repeat('?,', count($digitos)), ',');
             $sql = "
-                SELECT v.placa, u.email, u.nombre_completo
+                SELECT v.placa, u.email, u.nombre_completo, u.documento
                 FROM vehiculos v
                 INNER JOIN usuarios u ON v.Documento = u.documento
                 WHERE RIGHT(v.placa, 1) IN ($placeholders)
@@ -119,6 +119,15 @@ try {
                         echo "<span style='color: red;'>Error al enviar correo a {$vehiculo['email']}: {$mail->ErrorInfo}</span><hr>";
                     }
 
+                    // Guardar notificación en la tabla
+                    $mensaje_notif = "Mañana ({$dia_esp}) tu vehículo con placa {$vehiculo['placa']} tiene restricción de Pico y Placa en Ibague.";
+                    $insertNotif = $con->prepare("INSERT INTO notificaciones (documento_usuario, mensaje, tipo, fecha, leido) VALUES (?, ?, ?, NOW(), 0)");
+                    $insertNotif->execute([
+                        $vehiculo['documento'] ?? null,
+                        $mensaje_notif,
+                        'pico_placa'
+                    ]);
+
                 } catch (Exception $e) {
                     registrarLog("Excepción al enviar a {$vehiculo['email']}: {$mail->ErrorInfo}");
                     echo "<span style='color: red;'>Excepción al enviar a {$vehiculo['email']}: {$mail->ErrorInfo}</span><hr>";
@@ -148,12 +157,16 @@ function generarMensaje($vehiculo, $dia) {
     <body style='font-family: Arial, sans-serif;'>
         <h2>Recordatorio de Pico y Placa</h2>
         <p>Estimado/a {$vehiculo['nombre_completo']},</p>
-        <p>Le recordamos que mañana <strong>{$dia}</strong> su vehículo con placa 
+        <p>Le recordamos que mañana en la ciudad de Ibague<strong>{$dia}</strong> su vehículo con placa 
            <strong>{$vehiculo['placa']}</strong> tiene restricción de Pico y Placa.</p>
         <p>Horarios de restricción:</p>
         <ul>
-            <li>Mañana: <strong>6:00 AM - 11:00 AM</strong></li>
-            <li>Tarde: <strong>3:00 PM - 5:00 PM</strong></li>
+            <li>Dia: <strong>6:00 AM - 9:00 PM</strong></li>
+        </ul>
+        <p><strong>Importante:</strong>Los conductores que tengan matriculado los vehiculos en la ciudad de Ibague pueden disfrutar del beneficio de la hora valle y transitar el dia de su pico y placa en los siguientes horarios:</p>
+        <ul>
+            <li>Desde: <strong>9:00 AM</strong> Hasta: <strong> 11:00 AM </strong></li>
+            <li>Desde: <strong>3:00 PM</strong> Hasta: <strong> 5:00 PM </strong></li>
         </ul>
         <p>Planifique sus desplazamientos teniendo en cuenta esta restricción.</p>
         <p>Atentamente,<br>Sistema de Recordatorios</p>

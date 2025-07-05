@@ -87,7 +87,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         // Generate unique file name
         $new_file_name = uniqid('vehiculo_') . '.' . $file_ext;
-        $upload_dir = '../vehiculos/listar/guardar_foto_vehiculo/';
+        $upload_dir = 'vehiculos/listar/guardar_foto_vehiculo/';
         $upload_path = $upload_dir . $new_file_name;
 
         // Resolve absolute path for logging

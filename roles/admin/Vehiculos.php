@@ -177,7 +177,7 @@ function getEstadoClass($estado) {
                     if (count($vehiculos) > 0):
                         foreach ($vehiculos as $resu):
                             error_log("Fetched vehicle: placa={$resu['placa']}, documento={$resu['Documento']}, id_marca={$resu['id_marca']}, modelo={$resu['modelo']}, id_estado={$resu['id_estado']}, kilometraje={$resu['kilometraje_actual']}");
-                            $image_path = 'modals_vehiculos/images/' . htmlspecialchars($resu['foto_vehiculo']);
+$image_path = '../../usuario/' . htmlspecialchars($resu['foto_vehiculo']);
                     ?>
                     <tr>    
                         <td><span class="numero-fila"><?php echo $count++; ?></span></td>
@@ -193,18 +193,16 @@ function getEstadoClass($estado) {
                         </td>
                         <td><span class="kilometraje-cell"><?php echo number_format($resu['kilometraje_actual']); ?></span></td>
                         <td><span class="fecha-cell"><?php echo date('d/m/Y', strtotime($resu['fecha_registro'])); ?></span></td>
-                        <td>
-                            <?php if (!empty($resu['foto_vehiculo']) && file_exists($image_path)): ?>
-                                <img src="<?php echo $image_path; ?>" 
-                                     alt="Vehículo <?php echo htmlspecialchars($resu['placa']); ?>" 
-                                     class="vehicle-image">
-                            <?php else: ?>
-                                <div class="no-image">
-                                    <i class="bi bi-image"></i>
-                                    <span>Sin imagen</span>
-                                </div>
-                            <?php endif; ?>
-                        </td>
+                                      <td>
+                                        <?php
+                                        $nombreImagen = htmlspecialchars($resu['foto_vehiculo']);
+                                        $rutaImagen = "../../roles/usuario/vehiculos/listar/guardar_foto_vehiculo/" . $nombreImagen;
+                                        ?>
+                                        <img src="<?php echo $rutaImagen; ?>"
+                                             alt="Vehículo <?php echo htmlspecialchars($resu['placa']); ?>" 
+                                             class="vehicle-image">
+                                        </td>
+
                         <td>
                             <div class="action-buttons">
                                 <a class="action-icon edit" data-id="<?php echo htmlspecialchars($resu['placa']); ?>" title="Editar vehículo">

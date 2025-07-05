@@ -24,6 +24,24 @@ try {
         exit;
     }
 
+    // Eliminar registros relacionados primero
+    $tablasRelacionadas = [
+        'correos_enviados_pico_placa',
+        'mantenimiento',
+        'llantas',
+        'multas',
+        'soat',
+        'tecnomecanica'
+    ];
+
+    foreach ($tablasRelacionadas as $tabla) {
+        $campo = ($tabla == 'soat' || $tabla == 'tecnomecanica') ? 'id_placa' : 'placa';
+        $sqlDelete = "DELETE FROM $tabla WHERE $campo = :placa";
+        $stmtDelete = $con->prepare($sqlDelete);
+        $stmtDelete->bindParam(':placa', $placa, PDO::PARAM_STR);
+        $stmtDelete->execute();
+    }
+
     // Check for dependencies with explicit queries
     $hasDependencies = false;
     $checkQueries = [

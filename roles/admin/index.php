@@ -6,6 +6,11 @@ include '../../includes/validarsession.php';
 $db = new Database();
 $con = $db->conectar();
 
+// if ($_SESSION['tipo'] !== 1) {
+//   header('Location:' . BASE_URL . '/includes/exit.php?motivo=acceso-denegado');
+//   exit;
+// }
+
 // Consulta para contar vehículos por id_estado específico
 $sql = $con->prepare("SELECT id_estado, COUNT(*) as cantidad 
     FROM vehiculos 
@@ -73,25 +78,58 @@ $sql_rtm->execute();
 $row_rtm = $sql_rtm->fetch(PDO::FETCH_ASSOC);
 $tecnomecanica_activa = $row_rtm['total'];
 
+// Agregar esta consulta para contar próximos mantenimientos
+$sql_prox_mant = $con->prepare("SELECT COUNT(*) AS total
+    FROM mantenimiento
+    WHERE proximo_cambio_fecha BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)
+");
+$sql_prox_mant->execute();
+$row_prox_mant = $sql_prox_mant->fetch(PDO::FETCH_ASSOC);
+$proximos_mantenimientos = $row_prox_mant['total'];
+
 $sql_mantenimiento = "SELECT * FROM mantenimiento 
                       WHERE proximo_cambio_fecha BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)";
 $stmt_mant = $con->prepare($sql_mantenimiento);
 $stmt_mant->execute();
 $datos_mant = $stmt_mant->fetchAll(PDO::FETCH_ASSOC);
 
-$sql_mant = $con->prepare("SELECT COUNT(*) AS total
-    FROM mantenimiento
-    WHERE proximo_cambio_fecha BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)
-");
-$sql_mant->execute();
-$row_mant = $sql_mant->fetch(PDO::FETCH_ASSOC);
-$proximos_mantenimientos = $row_mant['total'];
+$sql_logs = "
+    SELECT 'Vehículo' AS tipo, documento_usuario COLLATE utf8mb4_unicode_ci AS documento_usuario, placa_vehiculo COLLATE utf8mb4_unicode_ci AS dato, fecha_registro
+    FROM registro_vehiculos_log
 
-// Obtener actividad reciente desde logs de usuarios
-$sql_logs = "SELECT * FROM log_registros ORDER BY fecha_registro DESC LIMIT 5";
+    UNION ALL
+
+    SELECT 'Tecnomecánica' AS tipo, documento_usuario COLLATE utf8mb4_unicode_ci AS documento_usuario, placa_vehiculo COLLATE utf8mb4_unicode_ci AS dato, fecha_registro
+    FROM tecnomecanica_log
+
+    UNION ALL
+
+    SELECT 'SOAT' AS tipo, documento_usuario COLLATE utf8mb4_unicode_ci AS documento_usuario, placa_vehiculo COLLATE utf8mb4_unicode_ci AS dato, fecha_registro
+    FROM soat_log
+
+    UNION ALL
+
+    SELECT 'Mantenimiento' AS tipo, documento_usuario COLLATE utf8mb4_unicode_ci AS documento_usuario, placa_vehiculo COLLATE utf8mb4_unicode_ci AS dato, fecha_registro
+    FROM mantenimiento_log
+
+    UNION ALL
+
+    SELECT 'Llantas' AS tipo, documento_usuario COLLATE utf8mb4_unicode_ci AS documento_usuario, placa_vehiculo COLLATE utf8mb4_unicode_ci AS dato, fecha_registro
+    FROM llantas_log
+
+    UNION ALL
+
+    SELECT 'Licencia' AS tipo, documento_usuario COLLATE utf8mb4_unicode_ci AS documento_usuario, NULL AS dato, fecha_registro
+    FROM licencia_log
+
+    ORDER BY fecha_registro DESC
+    LIMIT 5
+";
+
 $stmt_logs = $con->prepare($sql_logs);
 $stmt_logs->execute();
 $actividades = $stmt_logs->fetchAll(PDO::FETCH_ASSOC);
+
 
 // Fecha actual para mostrar en el dashboard
 $fecha_actual = date("d M Y");
@@ -151,9 +189,9 @@ if (!$nombre_completo || !$foto_perfil) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/dashboard.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+
     <?php include 'menu.php'; ?>
 
     <div class="content">
@@ -327,31 +365,35 @@ if (!$nombre_completo || !$foto_perfil) {
             <div class="recent-activity">
                 <h3><i class="bi bi-activity"></i> Actividad Reciente</h3>
                 <div class="activity-list">
-                    <?php foreach ($actividades as $actividad): ?>
-                    <?php
-                    $fecha_actividad = new DateTime($actividad['fecha_registro']);
-                    $hace_tiempo = $fecha_actividad->diff(new DateTime());
-                    if ($hace_tiempo->d > 0) {
-                        $tiempo = 'Hace ' . $hace_tiempo->d . ' día(s)';
-                    } elseif ($hace_tiempo->h > 0) {
-                        $tiempo = 'Hace ' . $hace_tiempo->h . ' hora(s)';
-                    } elseif ($hace_tiempo->i > 0) {
-                        $tiempo = 'Hace ' . $hace_tiempo->i . ' min';
-                    } else {
-                        $tiempo = 'Reciente';
-                    }
-                    ?>
-                    <div class="activity-item">
-                        <div class="activity-icon">
-                            <i class="bi bi-person-plus"></i>
-                        </div>
-                        <div class="activity-content">
-                            <div class="activity-title"><?= $actividad['descripcion'] ?></div>
-                            <div class="activity-subtitle">Usuario: <?= $actividad['email_usuario'] ?> - Documento: <?= $actividad['documento_usuario'] ?></div>
-                        </div>
-                        <div class="activity-time"><?= $tiempo ?></div>
-                    </div>
-                    <?php endforeach; ?>
+                 <?php foreach ($actividades as $actividad): ?>
+    <?php
+    $fecha_actividad = new DateTime($actividad['fecha_registro']);
+    $hace_tiempo = $fecha_actividad->diff(new DateTime());
+
+    if ($hace_tiempo->d > 0) {
+        $tiempo = 'Hace ' . $hace_tiempo->d . ' día(s)';
+    } elseif ($hace_tiempo->h > 0) {
+        $tiempo = 'Hace ' . $hace_tiempo->h . ' hora(s)';
+    } elseif ($hace_tiempo->i > 0) {
+        $tiempo = 'Hace ' . $hace_tiempo->i . ' min';
+    } else {
+        $tiempo = 'Reciente';
+    }
+
+    $info = $actividad['tipo'] . ($actividad['dato'] ? " - Placa: {$actividad['dato']}" : '');
+    ?>
+    <div class="activity-item">
+        <div class="activity-icon">
+            <i class="bi bi-clock-history"></i>
+        </div>
+        <div class="activity-content">
+            <div class="activity-title"><?= $info ?></div>
+            <div class="activity-subtitle">Documento: <?= $actividad['documento_usuario'] ?></div>
+        </div>
+        <div class="activity-time"><?= $tiempo ?></div>
+    </div>
+<?php endforeach; ?>
+
                 </div>
             </div>
         </div>

@@ -291,17 +291,24 @@ body {
 }
 
 .profile-avatar {
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   overflow: hidden;
   border: 2px solid var(--primary-color);
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.avatar-img {
+.profile-avatar img,
+.profile-avatar .usu_imagen {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
+  border-radius: 50%;
 }
 
 .profile-info {
@@ -341,6 +348,54 @@ body {
 .sidebar.expanded .profile-arrow {
   opacity: 1;
   transform: translateX(0);
+}
+
+/* Ajuste para la foto de perfil cuando el sidebar NO está expandido */
+.sidebar .profile-link {
+  justify-content: center;
+  padding: 10px 0;
+  margin: 0 auto 15px auto;
+  width: 60px;
+  min-width: 0;
+  background: none;
+  border: none;
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+}
+
+.sidebar .profile-avatar {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--primary-color);
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar .profile-info,
+.sidebar .profile-arrow {
+  display: none !important;
+}
+
+.sidebar.expanded .profile-link {
+  justify-content: flex-start;
+  padding: 15px 20px;
+  margin: 0 8px 15px 8px;
+  width: auto;
+  background: var(--bg-hover);
+  border: 1px solid var(--border-color);
+  box-shadow: none;
+}
+
+.sidebar.expanded .profile-info,
+.sidebar.expanded .profile-arrow {
+  display: flex !important;
 }
 
 /* Acciones del footer */
@@ -470,4 +525,14 @@ body {
 .sidebar.expanded .nav-link:nth-child(5) {
   animation-delay: 0.3s;
 }
+
+
+
+/* Mostrar solo en móvil */
+@media (max-width: 768px) {
+  .open-sidebar-btn {
+    display: block;
+  }
+}
+
 
