@@ -1,11 +1,16 @@
 <?php
 session_start();
 require_once('../../../conecct/conex.php');
-include '../../../includes/validarsession.php';
-
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 ini_set('error_log', 'php_errors.log');
+
+// Validar sesión ANTES del header JSON
+if (!isset($_SESSION['documento'])) {
+    header('Content-Type: application/json');
+    echo json_encode(['error' => 'Sesión no válida', 'redirect' => true]);
+    exit;
+}
 
 $db = new Database();
 $con = $db->conectar();

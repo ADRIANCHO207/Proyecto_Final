@@ -5,13 +5,6 @@ ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 ini_set('error_log', 'php_errors.log');
 
-// Validar sesión ANTES del header JSON
-if (!isset($_SESSION['documento'])) {
-    header('Content-Type: application/json');
-    echo json_encode(['error' => 'Sesión no válida', 'redirect' => true]);
-    exit;
-}
-
 $db = new Database();
 $con = $db->conectar();
 
@@ -31,7 +24,25 @@ try {
         exit;
     }
 
-    // Verificar dependencias ANTES de eliminar
+    // Eliminar registros relacionados primero
+    $tablasRelacionadas = [
+        'correos_enviados_pico_placa',
+        'mantenimiento',
+        'llantas',
+        'multas',
+        'soat',
+        'tecnomecanica'
+    ];
+
+    foreach ($tablasRelacionadas as $tabla) {
+        $campo = ($tabla == 'soat' || $tabla == 'tecnomecanica') ? 'id_placa' : 'placa';
+        $sqlDelete = "DELETE FROM $tabla WHERE $campo = :placa";
+        $stmtDelete = $con->prepare($sqlDelete);
+        $stmtDelete->bindParam(':placa', $placa, PDO::PARAM_STR);
+        $stmtDelete->execute();
+    }
+
+    // Check for dependencies with explicit queries
     $hasDependencies = false;
     $checkQueries = [
         "SELECT COUNT(*) FROM mantenimiento WHERE placa = :placa",
@@ -44,34 +55,41 @@ try {
     foreach ($checkQueries as $queryStr) {
         $table = explode(' FROM ', $queryStr)[1];
         $table = strtok($table, ' ');
+        error_log("Executing query: $queryStr for placa: $placa");
         $query = $con->prepare($queryStr);
         $query->bindParam(':placa', $placa, PDO::PARAM_STR);
         $query->execute();
         $count = $query->fetchColumn();
+        error_log("Result for $table: $count records");
         if ($count > 0) {
+            error_log("Cannot delete vehicle with placa $placa due to dependencies in $table");
             echo json_encode(['error' => "No se puede eliminar el vehículo porque tiene registros asociados en $table"]);
-            exit;
+            $hasDependencies = true;
+            break;
         }
     }
 
-    // Si no hay dependencias, proceder con la eliminación
-    // Obtener y eliminar imagen
+    if ($hasDependencies) {
+        exit;
+    }
+
+    // Get and delete image
     $image_query = $con->prepare("SELECT foto_vehiculo FROM vehiculos WHERE placa = :placa");
     $image_query->bindParam(':placa', $placa, PDO::PARAM_STR);
     $image_query->execute();
     $image = $image_query->fetchColumn();
-    if ($image && file_exists('../../../roles/usuario/vehiculos/listar/guardar_foto_vehiculo/' . $image)) {
-        if (!unlink('../../../roles/usuario/vehiculos/listar/guardar_foto_vehiculo/' . $image)) {
-            error_log("Failed to delete image for placa $placa: $image");
+    if ($image && file_exists('../' . $image)) { // Adjusted path to match your schema
+        if (!unlink('../' . $image)) {
+            error_log("Failed to delete image for placa $placa: ../$image");
         }
     }
 
-    // Eliminar vehículo
+    // Delete vehicle
     $query = $con->prepare("DELETE FROM vehiculos WHERE placa = :placa");
     $query->bindParam(':placa', $placa, PDO::PARAM_STR);
 
     if ($query->execute()) {
-        echo json_encode(['success' => true, 'message' => 'Vehículo eliminado correctamente']);
+        echo json_encode(['success' => true]);
     } else {
         error_log("Failed to delete vehicle with placa: $placa");
         echo json_encode(['error' => 'Error al eliminar el vehículo']);
