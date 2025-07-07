@@ -35,21 +35,25 @@ if (!$nombre_completo || !$foto_perfil) {
     $_SESSION['foto_perfil'] = $foto_perfil;
 }
 
-// Fetch vehicle types from the tipo_vehiculo table using PDO
+// Consultas para poblar dropdowns
 $query_tipos = "SELECT * FROM tipo_vehiculo";
 $stmt_tipos = $con->prepare($query_tipos);
 $stmt_tipos->execute();
 $result_tipos = $stmt_tipos->fetchAll(PDO::FETCH_ASSOC);
 
-// Fetch states from the estado_vehiculo table using PDO
 $query_estados = "SELECT * FROM estado_vehiculo";
 $stmt_estados = $con->prepare($query_estados);
 $stmt_estados->execute();
 $result_estados = $stmt_estados->fetchAll(PDO::FETCH_ASSOC);
 
-$query_m
+// Reemplazar línea 44
+// $query_m
 
-
+// Por ejemplo:
+$query_marcas = "SELECT * FROM marca";
+$stmt_marcas = $con->prepare($query_marcas);
+$stmt_marcas->execute();
+$result_marcas = $stmt_marcas->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -170,6 +174,37 @@ $query_m
             </div>
           </div>
 
+          <!-- Propietario -->
+          <div>
+            <div class="input_field_propietario" id="grupo_propietario">
+              <label for="documento">Propietario del vehículo</label>
+              <i class="bi bi-person"></i>
+              <select name="documento" id="documento">
+                <option value="">Seleccione un propietario</option>
+                <?php
+                // Consulta para obtener usuarios activos
+                $query_usuarios = "SELECT documento, nombre_completo FROM usuarios WHERE id_estado = 1 ORDER BY nombre_completo";
+                $stmt_usuarios = $con->prepare($query_usuarios);
+                $stmt_usuarios->execute();
+                $result_usuarios = $stmt_usuarios->fetchAll(PDO::FETCH_ASSOC);
+                
+                if ($result_usuarios):
+                  foreach ($result_usuarios as $usuario):
+                ?>
+                    <option value="<?php echo htmlspecialchars($usuario['documento']); ?>">
+                      <?php echo htmlspecialchars($usuario['nombre_completo']) . ' - ' . htmlspecialchars($usuario['documento']); ?>
+                    </option>
+                <?php 
+                  endforeach;
+                endif;
+                ?>
+              </select>
+            </div>
+            <div class="formulario_error_propietario" id="formulario_correcto_propietario">
+              <p class="validacion" id="validacion8">Seleccione un propietario válido.</p>
+            </div>
+          </div>
+
           <!-- Fecha -->
           <div>
             <div class="input_field_fecha" id="grupo_fecha">
@@ -232,7 +267,28 @@ $query_m
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body" id="modalAgregarVehiculoBody">
-        <!-- Contenido dinámico se cargará aquí -->
+        // Agregar después de la línea 44
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        // Validar campos requeridos
+        $campos_requeridos = ['tipo_vehiculo', 'id_marca', 'placa', 'modelo', 'kilometraje', 'estado'];
+        $errores = [];
+        
+        <!-- Cambiar action del formulario -->
+        <form method="POST" action="procesar_vehiculo.php" enctype="multipart/form-data">
+        <input type="hidden" name="accion" value="agregar">
+        
+        foreach ($campos_requeridos as $campo) {
+        if (!isset($_POST[$campo]) || empty($_POST[$campo])) {
+        $errores[] = "El campo $campo es requerido";
+        }
+        }
+        
+        if (empty($errores)) {
+        // Procesar inserción en base de datos
+        // Manejar upload de imagen
+        // Redirigir con mensaje de éxito
+        }
+        }
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
@@ -298,3 +354,11 @@ $query_m
   <script src="../usuario/js/vehiculos_registro.js"></script>
 </body>
 </html>
+
+// Agregar después de las consultas existentes
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+// Validar campos
+// Procesar archivo de imagen
+// Insertar en base de datos
+// Mostrar mensaje de éxito/error
+}

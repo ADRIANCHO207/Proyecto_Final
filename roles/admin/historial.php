@@ -347,13 +347,7 @@ $registros = count(array_filter($historial, fn($h) => $h['tipo'] === 'registro')
                 </h1>
                 <p class="page-subtitle">Registro completo de actividades y eventos del sistema</p>
             </div>
-            <div class="page-actions">
-                <a href="#" onclick="exportarHistorial()" class="export-btn">
-                    <i class="bi bi-download"></i>
-                    Exportar Historial
-                </a>
-            </div>
-        </div>
+         </div>
 
         <!-- Estadísticas del historial -->
         <div class="history-stats">

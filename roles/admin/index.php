@@ -202,14 +202,22 @@ if (!$nombre_completo || !$foto_perfil) {
                 <p class="dashboard-subtitle"><?php echo $dia_semana_es . ', ' . $fecha_es; ?></p>
             </div>
             <div class="dashboard-actions">
-                <button class="dashboard-btn">
-                    <a href="generar_reporte.php">Exportar Reporte</a>
+                <button class="dashboard-btn" type="button" onclick="window.open('generar_reporte.php?formato=pdf', '_blank')">
                     <i class="bi bi-file-earmark-pdf"></i>
+                    PDF
                 </button>
-                <button class="dashboard-btn">
+                <button class="dashboard-btn" type="button" onclick="window.open('generar_reporte.php?formato=excel', '_blank')">
+                    <i class="bi bi-file-earmark-excel"></i>
+                    Excel
+                </button>
+                <button class="dashboard-btn" type="button" onclick="window.open('generar_reporte.php?formato=csv', '_blank')">
+                    <i class="bi bi-file-text"></i>
+                    CSV
+                </button>
+                <a href="agregar_vehiculo.php" class="dashboard-btn">
                     <i class="bi bi-plus-circle"></i>
                     Nuevo Vehículo
-                </button>
+                </a>
             </div>
         </div>
 
@@ -220,7 +228,6 @@ if (!$nombre_completo || !$foto_perfil) {
                 <h3>Vehículos Registrados</h3>
                 <p><?php echo $total_vehiculos; ?></p>
                 <div class="trend up">
-                    <i class="bi bi-arrow-up-right"></i>
                 </div>
             </div>
             <div class="card">
@@ -228,7 +235,6 @@ if (!$nombre_completo || !$foto_perfil) {
                 <h3>Usuarios</h3>
                 <p><?php echo $total_usuarios; ?></p>
                 <div class="trend up">
-                    <i class="bi bi-arrow-up-right"></i>
                 </div>
             </div>
             <div class="card">
@@ -236,8 +242,7 @@ if (!$nombre_completo || !$foto_perfil) {
                 <h3>Vehículos al Día</h3>
                 <p><?php echo $veh_dia; ?></p>
                 <div class="trend up">
-                    <i class="bi bi-arrow-up-right"></i>
-                    <span>8% vs mes anterior</span>
+               
                 </div>
             </div>
             <div class="card">
@@ -245,7 +250,6 @@ if (!$nombre_completo || !$foto_perfil) {
                 <h3>SOAT Vencido o por Vencer</h3>
                 <p><?php echo $soat_vencidos_o_por_vencer; ?></p>
                 <div class="trend down">
-                    <i class="bi bi-arrow-down-right"></i>
                 </div>
             </div>
             <div class="card">
@@ -253,8 +257,6 @@ if (!$nombre_completo || !$foto_perfil) {
                 <h3>Tecnomecánica Activa</h3>
                 <p><?php echo $tecnomecanica_activa; ?></p>
                 <div class="trend up">
-                    <i class="bi bi-arrow-up-right"></i>
-                    <span>Actualizado</span>
                 </div>
             </div>
             <div class="card">
@@ -262,8 +264,6 @@ if (!$nombre_completo || !$foto_perfil) {
                 <h3>Próximos Mantenimientos</h3>
                 <p><?php echo $proximos_mantenimientos; ?></p>
                 <div class="trend up">
-                    <i class="bi bi-arrow-up-right"></i>
-                    <span>Actualizado</span>
                 </div>
             </div>
         </div>
